@@ -157,4 +157,60 @@ router.post("/login", (req, res) => {
   });
 });
 
+// Teste de envio de query dobrada 
+router.post('/enviarPedido', (req, res) => {
+  if (!req.body || !req.body.pedido || !req.body.pedido.produtos) {
+    return res.status(400).send('Formato de pedido inválido');
+  }
+
+  const pedido = req.body.pedido;
+
+  // Obtenha uma conexão do pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Erro ao obter conexão do pool:', err);
+      return res.status(500).send('Erro ao obter conexão do pool');
+    }
+
+    // Comece a transação
+    connection.beginTransaction(err => {
+      if (err) {
+        console.error('Erro ao iniciar transação:', err);
+        pool.release(); // Libere a conexão de volta ao pool em caso de erro
+        return res.status(500).send('Erro ao iniciar transação');
+      }
+
+      pedido.produtos.forEach(produto => {
+        const sql = 'INSERT INTO teste1 (nome, preco) VALUES (?, ?)';
+        const values = [produto.nome, produto.preco];
+
+        pool.query(sql, values, (err, result) => {
+          if (err) {
+            return pool.rollback(() => {
+              console.error('Erro ao inserir produto no banco de dados:', err);
+              connection.release(); // Libere a conexão de volta ao pool em caso de erro
+              res.status(500).send('Erro ao inserir produto no banco de dados');
+            });
+          }
+        });
+      });
+
+      // Commita a transação
+      connection.commit(err => {
+        if (err) {
+          return pool.rollback(() => {
+            console.error('Erro ao commitar transação:', err);
+            connection.release(); // Libere a conexão de volta ao pool em caso de erro
+            res.status(500).send('Erro ao commitar transação');
+          });
+        }
+
+        console.log('Transação commitada com sucesso.');
+        connection.release(); // Libere a conexão de volta ao pool após o commit bem-sucedido
+        res.send('Pedido enviado com sucesso!');
+      });
+    });
+  });
+});
+// ---------------------------------------------------------- //
 module.exports = router;
