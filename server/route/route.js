@@ -168,7 +168,7 @@ router.post('/ped', (req, res) => {
     if (err) {
       console.error('Erro ao obter conexão do pool:', err);
       return res.status(500).send('Erro ao obter conexão do pool');
-    }
+    } 
 
     connection.beginTransaction(err => {
       if (err) {
@@ -178,23 +178,23 @@ router.post('/ped', (req, res) => {
       }
 
       pedido.produtos.forEach(produto => {
-        const sql = 'INSERT INTO pedno (prodno, valor_unit, unino, data_fechamento, sta) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)';
-        const values = [produto.prodno, produto.valor_unit, produto.unino, produto.sta];
+        const sql = 'INSERT INTO pedno (pedido, prodno, valor_unit, unino, data_fechamento, sta, userno) VALUES (?,?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
+        const values = [produto.pedido, produto.prodno, produto.valor_unit, produto.unino, produto.sta, produto.userno];
 
         pool.query(sql, values, (err, result) => {
           if (err) {
-            return pool.rollback(() => {
+            return connection.rollback(() => {
               console.error('Erro ao inserir produto no banco de dados:', err);
               connection.release();
               res.status(500).send('Erro ao inserir produto no banco de dados');
             });
           }
-        });
+        }); 
       });
-
+ 
       connection.commit(err => {
         if (err) {
-          return pool.rollback(() => {
+          return pool.rollback(() => { 
             console.error('Erro ao commitar transação:', err);
             connection.release();
             res.status(500).send('Erro ao commitar transação');
