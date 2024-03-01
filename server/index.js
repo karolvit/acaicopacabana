@@ -22,6 +22,6 @@ app.listen(port, (err) => {
     if (err) {
         console.error(err)
     } else {
-    console.log(`Servidor funcionando na porta ${port}`);
+    console.log(`Servidor rodando na porta ${port}`);
     }
 })
