@@ -6,7 +6,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require('../database/connection/cxx');
-const license = require('../system/verificarion');
+// const license = require('../system/verificarion');
 
 
 const jwtSecret = "token";
