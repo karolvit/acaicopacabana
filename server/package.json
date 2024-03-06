@@ -8,7 +8,8 @@
     "prod": "nodemon index.js",
     "teste": "nodemon notification.js",
     "license": "node ./system/authLi.js",
-    "vlicense": "node ./system/verificarion.js"
+    "vlicense": "node ./system/verificarion.js",
+    "extract": "node pedido.js"
   },
   "author": "celebre",
   "license": "ISC",
@@ -29,6 +30,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "tesseract.js": "^5.0.5"
   }
 }

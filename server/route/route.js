@@ -6,7 +6,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require('../database/connection/cxx');
-// const license = require('../system/verificarion');
+const license = require('../system/verificarion');
 
 
 const jwtSecret = "token";
@@ -208,4 +208,16 @@ router.post('/ped', (req, res) => {
     });
   });
 });
+
+router.get('/liuser', (req, res) => {
+  const query = 'SELECT * FROM usuario';
+  
+  pool.query(query, (err, results) => {
+    if (err) {
+      res.status(404).json({ success: false,  error: ['Erro ao listar usuários']});
+    } else {
+      res.status(200).json({success: true, data: results})
+    };
+  })
+})
 module.exports = router;
