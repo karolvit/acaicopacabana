@@ -71,6 +71,18 @@ router.get('/estoque', (req, res) => {
   });
 });
 
+router.get('/nped', async (req, res) => {
+  const query = 'SELECT MAX(pedido) + 1 as proximoNumero FROM pedidos ';
+
+    pool.query(query, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Erro ao buscar número do pedido']})
+      } else {
+        res.status(200).json({ success: true, message: results})
+      }
+    })
+});
+
 router.post('/produto', (req, res) => {
   const {nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,quantidade,data_venda,img_produto} = req.body;
   const values =[nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,quantidade,data_venda,img_produto];
