@@ -142,7 +142,6 @@ router.post("/login", (req, res) => {
 
   const query = "SELECT * FROM usuario WHERE usuario = ?";
 
-
   pool.query(query, [usuario], async (err, results) => {
     if (err) {
       res
@@ -155,7 +154,12 @@ router.post("/login", (req, res) => {
       if (isPasswordValid) {
         const payload = { id: user.id, usuario: user.usuario };
         const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+        const decodedToken = jwt.decode(token); // Decodificar o token
+        const expirationDate = new Date(decodedToken.exp * 1000); // Convertendo timestamp em Date
+        console.log("Data de expiração do token:", expirationDate); // Exibir a data de expiração
         res.json({ success: true, token: token });
+        console.log(payload)
+        console.log(token)
       } else {
         res
           .status(401)
