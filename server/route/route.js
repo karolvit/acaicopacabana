@@ -154,12 +154,9 @@ router.post("/login", (req, res) => {
       if (isPasswordValid) {
         const payload = { id: user.id, usuario: user.usuario };
         const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
-        const decodedToken = jwt.decode(token); // Decodificar o token
-        const expirationDate = new Date(decodedToken.exp * 1000); // Convertendo timestamp em Date
-        console.log("Data de expiração do token:", expirationDate); // Exibir a data de expiração
-        res.json({ success: true, token: token });
-        console.log(payload)
-        console.log(token)
+        const decodedToken = jwt.decode(token);
+        const expirationDate = new Date(decodedToken.exp * 1000); 
+        res.json({ success: true, token: token, expiration: expirationDate });
       } else {
         res
           .status(401)
