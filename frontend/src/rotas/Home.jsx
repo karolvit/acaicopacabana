@@ -1,6 +1,7 @@
 import "../components/SideBar";
 import SideBar from "../components/SideBar";
 import styled, { createGlobalStyle } from "styled-components";
+import imgFundo from "../assets/img/logo_sem_fundo.png";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -12,6 +13,10 @@ const GlobalStyle = createGlobalStyle`
 const Flex = styled.div`
   display: flex;
 `;
+const Fundo = styled.img`
+  opacity: 0.5;
+  margin: auto;
+`;
 
 const Home = () => {
   return (
@@ -19,7 +24,7 @@ const Home = () => {
       <GlobalStyle />
       <Flex>
         <SideBar></SideBar>
-        <table>Teste</table>
+        <Fundo src={imgFundo}></Fundo>
       </Flex>
     </>
   );
