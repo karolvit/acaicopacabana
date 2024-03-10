@@ -233,4 +233,17 @@ router.get('/liuser', (req, res) => {
     };
   })
 })
+
+router.get('/nextped', (req, res) => {
+  pool.query('SELECT MAX(pedido) AS maxProdNo FROM pedidos', (err, results) => {
+    if (err) {
+      console.error('Erro ao executar a consulta:', err);
+      res.status(500).send('Erro ao buscar próximo prodno');
+      return;
+    }
+
+    const proximoProdNo = results[0].maxProdNo + 1;
+    res.json({ success: true, message: proximoProdNo});
+  });
+});
 module.exports = router;

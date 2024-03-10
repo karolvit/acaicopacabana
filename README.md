@@ -163,3 +163,4 @@ paths:
           description: Erro ao inserir produto no banco de dados
         '401':
           description: Erro ao obter conexão do pool ou iniciar transação
+    
