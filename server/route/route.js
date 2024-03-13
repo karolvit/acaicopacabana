@@ -39,6 +39,24 @@ router.post('/estoque', (req, res) => {
     });
 });
 
+router.get('/user', passport.authenticate("jwt", { session: false }), (req, res) => {
+  const user = req.user;
+  const usuario = user.usuario;
+
+  const query = 'select * from usuario where usuario = ?';
+
+  pool.query(query, usuario, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, error: ['Erro ao buscar usuário, contate o administrador', err]})
+    } else if (results.length === 1) {
+      const dados = results[0];
+      res.status(404).json({ success: true, user: dados })
+    } else {
+      res.status(404).json({ success: false, error:['Nenhum usuário encontrado']})
+    }
+  })
+})
+
 router.get('/estoque', (req, res) => {
   
   function verifyLicense(licenseString) {
