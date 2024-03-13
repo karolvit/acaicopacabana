@@ -4,6 +4,7 @@ import logo from "../assets/img/logo.jpg";
 import computador from "../assets/img/computador.png";
 import pessoas from "../assets/img/pessoas.png";
 import relatorio from "../assets/img/relatorio.png";
+import estoque from "../assets/img/estoque.png";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -35,6 +36,7 @@ const Container1 = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 20px;
 `;
 
 const LogoImage = styled.img`
@@ -61,7 +63,7 @@ const Box = styled.div`
 const Container2 = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 25px;
 `;
 
 const SmallImage = styled.img`
@@ -83,6 +85,9 @@ const MainContainer = styled.div`
   flex-direction: column;
   width: 80%;
 `;
+const Footer = styled.div`
+  margin-top: 20px;
+`;
 
 const SideBar = () => {
   return (
@@ -103,6 +108,12 @@ const SideBar = () => {
               <Paragraph>PDV</Paragraph>
             </Box>
             <Box>
+              <NavLink to="/estoque">
+                <SmallImage src={estoque} alt="" />
+              </NavLink>
+              <Paragraph>Estoque</Paragraph>
+            </Box>
+            <Box>
               <SmallImage src={relatorio} alt="" />
               <Paragraph>Relatório</Paragraph>
             </Box>
@@ -111,9 +122,9 @@ const SideBar = () => {
               <Paragraph>Usuários</Paragraph>
             </Box>
           </Container2>
-          <div className="footer">
+          <Footer>
             <p>Versão 1.0.0</p>
-          </div>
+          </Footer>
         </SideBarClass>
         <MainContainer></MainContainer>
       </FlexContainer>

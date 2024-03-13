@@ -3,6 +3,7 @@ import { useAuth } from "./hooks/useAuth";
 import Home from "./rotas/Home";
 import TelaDeLogin from "./rotas/TelaDeLogin";
 import PDV from "./rotas/PDV";
+import Estoque from "./rotas/Estoque";
 
 function App() {
   const { auth, loading } = useAuth();
@@ -24,6 +25,10 @@ function App() {
         <Route
           path="/pdv"
           element={auth ? <PDV /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/estoque"
+          element={auth ? <Estoque /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

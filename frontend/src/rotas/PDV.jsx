@@ -179,17 +179,17 @@ const PDV = () => {
           <table className="tabela_pdv">
             <thead>
               <tr>
-                <th>ITEM</th>
-                <th>QTD</th>
-                <th>TOTAL</th>
+                <th className="thPDV">ITEM</th>
+                <th className="thPDV">QTD</th>
+                <th className="thPDV">TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {produtos.map((produto) => (
                 <tr key={produto.id}>
-                  <td>{produto.nome}</td>
-                  <td>{produto.quantidade}</td>
-                  <td>R$ {produto.total.toFixed(2)}</td>
+                  <td className="tdPDV">{produto.nome}</td>
+                  <td className="tdPDV">{produto.quantidade}</td>
+                  <td className="tdPDV">R$ {produto.total.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

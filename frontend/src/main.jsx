@@ -8,6 +8,7 @@ import PDV from "./rotas/PDV.jsx";
 import { Provider } from "react-redux";
 import { store } from "./store.js";
 import App from "./App.jsx";
+import Estoque from "./rotas/Estoque.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/pdv",
         element: <PDV />,
+      },
+      {
+        path: "/estoque",
+        element: <Estoque />,
       },
     ],
   },

@@ -204,15 +204,15 @@ footer {
   background-color: #fff;
 }
 
-th,
-td {
+.thPDV,
+.tdPDV {
   color: #0a0808;
   border: 1px solid #0a080839;
   padding: 25px;
   text-align: left;
 }
 
-th {
+.thPDV {
   text-align: start;
   background-color: #ffffff;
   font-size: 20px;
