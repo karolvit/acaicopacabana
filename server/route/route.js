@@ -116,7 +116,7 @@ router.post('/produto', (req, res) => {
 });
 
 router.get('/produto', (req, res) => {
-  const query = 'SELECT * FROM produto';
+  const query = 'SELECT * FROM estoque';
 
   pool.query(query, (err, results) => {
     if (err) {
