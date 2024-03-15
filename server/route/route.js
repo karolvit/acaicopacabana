@@ -58,24 +58,9 @@ router.get('/user', passport.authenticate("jwt", { session: false }), (req, res)
 })
 
 router.get('/estoque', (req, res) => {
-  
-  function verifyLicense(licenseString) {
-    const [token, expirationDateString] = licenseString.split('|');
-    const expirationDate = parseISO(expirationDateString);
-    
-    if (expirationDate < new Date()) {
-      return false;
-    }
-    return true;
-  }
-  const license = "8cd5b89e018bce4831e380057886246fe105ed2efdf691a835b93cffdb844571|2024-02-26T23:19:37.602Z";
-  
-  if (!verifyLicense(license)) {
-    return res.status(401).json({ success: false, error: ['Licença expirada, por favor contate o administrador'] });
-  }
-  // Se a licença for válida, continue com a rota
-
-  const query = `SELECT * FROM estoque`;
+  const query = `SELECT nome, no, categoria, data_compra, data_validade, tipo, SUM(quantidade) as quantidade, valor_compra
+                 FROM estoque
+                 GROUP BY nome`;
 
   pool.query(query, (err, results) => {
     if (err) {
