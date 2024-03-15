@@ -3,14 +3,18 @@ import dinhero from "../assets/img/dinheiro.png";
 import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
-
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const PDV = () => {
   const [produto, setProduto] = useState("");
   const [quantidade, setQuantidade] = useState("");
+  const [precoUnitario, setPrecoUnitario] = useState("");
   const [dataHora, setDataHora] = useState(new Date());
   const [produtos, setProdutos] = useState([]);
+  const [proximoPedido, setProximoPedido] = useState("");
 
   const [modalAberto, setModalAberto] = useState(false);
+  const navigate = useNavigate();
 
   const abrirModal = () => {
     setModalAberto(true);
@@ -26,7 +30,7 @@ const PDV = () => {
         id: produtos.length + 1,
         nome: `Produto ${produto}`,
         quantidade: parseInt(quantidade),
-        precoUnitario: 12,
+        precoUnitario: parseInt(precoUnitario),
         total: parseInt(quantidade),
       };
 
@@ -34,6 +38,7 @@ const PDV = () => {
 
       setProduto("");
       setQuantidade("");
+      setPrecoUnitario("");
     }
   };
 
@@ -44,7 +49,7 @@ const PDV = () => {
       const inserirNovoPedido = {
         pedido: {
           produtos: produtos.map((item) => ({
-            pedido: 145,
+            pedido: proximoPedido.message,
             prodno: item.id,
             valor_unit: item.precoUnitario,
             quantidade: item.quantidade,
@@ -58,7 +63,9 @@ const PDV = () => {
       const res = await apiAcai.post("/ped", inserirNovoPedido);
 
       if (res.status === 200) {
-        console.log("Sucesso", res);
+        console.log("Sucesso", res.data);
+        toast.success(res.data);
+        navigate("/");
       }
     } catch (error) {
       if (error.response.stats === 500) {
@@ -74,6 +81,18 @@ const PDV = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const carregarProximoPedido = async () => {
+      try {
+        const res = await apiAcai.get("/nextped");
+        setProximoPedido(res.data);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregarProximoPedido();
+  }, []);
+
   return (
     <>
       <nav>
@@ -82,7 +101,7 @@ const PDV = () => {
       <header className="pedidos">
         <div className="container-1">
           <div className="pedido-n">
-            <h2>Pedido #001</h2>
+            <h2>Pedido #{proximoPedido.message}</h2>
             <h2>{dataHora.toLocaleString()}</h2>
           </div>
           <div className="linha"></div>
@@ -133,7 +152,7 @@ const PDV = () => {
             </div>
             <div className="box-2">
               <input type="button" value="CANCELAR" id="vermelho" />
-              <input type="button" value="INSERIR PRODUTO" />
+              <input type="button" value="PROCURAR PRODUTO" />
             </div>
           </div>
         </div>
@@ -158,7 +177,7 @@ const PDV = () => {
               </div>
               <div className="box-flex">
                 <label>Valor Unit.</label>
-                <input type="text" />
+                <input type="text" value={precoUnitario} />
               </div>
             </form>
             <form className="form-02">

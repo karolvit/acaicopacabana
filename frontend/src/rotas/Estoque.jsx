@@ -2,6 +2,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import SideBar from "../components/SideBar";
 import agua from "../assets/img/agua.png";
 import imgFundo from "../assets/img/logo_sem_fundo.png";
+import { useState, useEffect } from "react";
+import apiAcai from "../axios/config";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -91,6 +93,19 @@ const Status = styled.div`
 `;
 
 const Estoque = () => {
+  const [produtos, setProdutos] = useState([]);
+  useEffect(() => {
+    const carregarEstoque = async () => {
+      try {
+        const res = await apiAcai.get("/produto");
+        console.log("Secesso", res.data);
+        setProdutos(res.data);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregarEstoque();
+  }, []);
   return (
     <>
       <GlobalStyle />
@@ -111,22 +126,28 @@ const Estoque = () => {
                 <th>Preço</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <TdImg>
-                  <img src={agua} />
-                  <p>Água mineral s/Gás</p>
-                </TdImg>
-                <td>Liquido</td>
-                <td>
-                  <Status></Status>
-                </td>
-                <td>
-                  <p>2</p>
-                </td>
-                <td>R$4,99</td>
-              </tr>
-            </tbody>
+            {!produtos || produtos.length === 0 ? (
+              <p>Não há produtos cadastrados no momento</p>
+            ) : (
+              produtos.data.map((produto) => (
+                <tbody key={produto.no}>
+                  <tr>
+                    <TdImg>
+                      <img src={agua} alt={produto.nome} />
+                      <p>{produto.nome}</p>
+                    </TdImg>
+                    <td>Líquido</td>
+                    <td>
+                      <Status></Status>
+                    </td>
+                    <td>
+                      <p>{produto.quantidade}</p>
+                    </td>
+                    <td>R$ {produto.valor_compra}</td>
+                  </tr>
+                </tbody>
+              ))
+            )}
           </Tabela>
         </ContainerFlex>
       </Flex>
