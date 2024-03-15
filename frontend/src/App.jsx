@@ -4,7 +4,8 @@ import Home from "./rotas/Home";
 import TelaDeLogin from "./rotas/TelaDeLogin";
 import PDV from "./rotas/PDV";
 import Estoque from "./rotas/Estoque";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const { auth, loading } = useAuth();
 
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <Routes>
         <Route path="/" element={auth ? <Home /> : <Navigate to="/login" />} />
         <Route
