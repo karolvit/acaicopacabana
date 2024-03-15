@@ -249,4 +249,24 @@ router.get('/nextped', (req, res) => {
     res.json({ success: true, message: proximoProdNo});
   });
 });
+
+router.get('/busca', (req, res) => {
+  const { no } = req.body;
+  const values = [ no ]
+  const query = 'SELECT * FROM estoque WHERE no = ?';
+
+  pool.query(query, values, (err, results) => {
+    
+    if (results.length === 0) {
+      res.status(404).json({ success: true, message:['Nenhum produto encontrado']})
+    }
+    
+    if (err) {
+      res.status(500).json({ success: false, error:['Por favor contatar o adminstrador']})
+    } else {
+      res.status(200).json(results)
+    }
+  })
+})
+
 module.exports = router;
