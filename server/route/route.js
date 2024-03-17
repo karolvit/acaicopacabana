@@ -58,9 +58,9 @@ router.get('/user', passport.authenticate("jwt", { session: false }), (req, res)
 })
 
 router.get('/estoque', (req, res) => {
-  const query = `SELECT nome, no, categoria, data_compra, data_validade, tipo, SUM(quantidade) as quantidade, valor_compra
-                 FROM estoque
-                 GROUP BY nome`;
+  const query = `select nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,SUM(quantidade),data_venda,img_produto
+from produto
+group by nome;`;
 
   pool.query(query, (err, results) => {
     if (err) {
