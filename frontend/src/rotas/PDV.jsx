@@ -12,9 +12,8 @@ const PDV = () => {
   const [dataHora, setDataHora] = useState(new Date());
   const [produtos, setProdutos] = useState([]);
   const [proximoPedido, setProximoPedido] = useState("");
-
-  const [modalAberto, setModalAberto] = useState(false);
   const navigate = useNavigate();
+  const [modalAberto, setModalAberto] = useState(false);
 
   const abrirModal = () => {
     setModalAberto(true);
