@@ -7,6 +7,10 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require('../database/connection/cxx');
 // const license = require('../system/verificarion');
+//Teste rota de up 
+const Tesseract = require('tesseract.js');
+const path = require('path');
+const fs = require('fs').promises;
 
 
 const jwtSecret = "token";
@@ -268,5 +272,45 @@ router.get('/busca', (req, res) => {
     }
   })
 })
+
+// teste rota up
+app.post('/up', async (req, res) => {
+  try {
+    // Verifica se a requisição contém um arquivo de imagem
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({ error: 'Nenhuma imagem fornecida' });
+    }
+
+    // Salva o arquivo de imagem no sistema de arquivos temporário
+    const imageFile = req.files.image;
+    const imagePath = path.join(__dirname, 'temp', imageFile.name);
+    await imageFile.mv(imagePath);
+
+    // Processa a imagem com Tesseract.js
+    const { data: { text } } = await Tesseract.recognize(
+      imagePath,
+      'eng',
+      { logger: info => console.log(info) }
+    );
+
+    // Extrai números do texto reconhecido
+    const numerosEncontrados = extrairNumeros(text);
+
+    // Retorna os números encontrados como resposta JSON
+    res.json({ numerosEncontrados });
+
+    // Remove o arquivo temporário
+    await fs.unlink(imagePath);
+  } catch (error) {
+    console.error('Erro ao processar a imagem:', error);
+    res.status(500).json({ error: 'Erro ao processar a imagem' });
+  }
+});
+
+function extrairNumeros(texto) {
+  const regexNumeros = /[-+]?\b\d+(\.\d+)?\b/g;
+  return texto.match(regexNumeros) || [];
+}
+
 
 module.exports = router;
