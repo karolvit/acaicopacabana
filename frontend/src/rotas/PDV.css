@@ -111,12 +111,14 @@ footer {
   cursor: pointer;
 }
 
-.flex-desc .botao-add {
+.botao-add {
   background-color: #8037b0;
   cursor: pointer;
   color: #fff;
   border: none;
-  height: 30px;
+  height: 29px;
+  width: 170px;
+  ;
 }
 
 .finaliza {
@@ -169,6 +171,7 @@ footer {
   height: 29px;
   border-radius: 20px;
   margin-top: 12px;
+  border: none;
 }
 
 .box-flex label,
@@ -199,7 +202,6 @@ footer {
 .tabela_pdv {
   margin-top: 5%;
   width: 100%;
-  position: relative;
   border-collapse: collapse;
   background-color: #fff;
 }
@@ -231,7 +233,7 @@ footer {
 
 .container-modal h2 {
   text-align: center;
-  margin-bottom: 5x;
+  margin-bottom: 5px;
 }
 
 .modal-mensagem h2 {
@@ -263,4 +265,8 @@ footer {
 
 .verde {
   background-color: #6DA64D;
+}
+
+.button-fechar {
+  position: relative;
 }
