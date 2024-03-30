@@ -1,10 +1,11 @@
 import "../rotas/PDV.css";
 import dinhero from "../assets/img/dinheiro.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Camera } from "react-camera-pro";
 const PDV = () => {
   const [produto, setProduto] = useState("");
   const [quantidade, setQuantidade] = useState("");
@@ -14,7 +15,22 @@ const PDV = () => {
   const [proximoPedido, setProximoPedido] = useState("");
   const navigate = useNavigate();
   const [modalAberto, setModalAberto] = useState(false);
+  const [cameraAberta, setCameraAberta] = useState(false);
+  const [imagePath, setImagePath] = useState("");
+  const [capturedImage, setCapturedImage] = useState(null);
+  const cameraRef = useRef();
 
+  const capturarImagem = (e) => {
+    e.preventDefault();
+    if (cameraRef.current) {
+      try {
+        const fotoCapturada = cameraRef.current.takePhoto();
+        setCapturedImage(fotoCapturada);
+      } catch (error) {
+        console.log("Erro ao capturar", error);
+      }
+    }
+  };
   const abrirModal = () => {
     setModalAberto(true);
   };
@@ -91,6 +107,28 @@ const PDV = () => {
     };
     carregarProximoPedido();
   }, []);
+  const abrirCamera = () => {
+    setCameraAberta(true);
+  };
+  const enviarFoto = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("imagePath", capturedImage);
+
+      const res = await apiAcai.post("/up", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (res.status === 201) {
+        console.log("Imagem enviada com sucesso", res);
+        setCapturedImage(null);
+      }
+    } catch (error) {
+      console.log("Erro", error);
+    }
+  };
 
   return (
     <>
@@ -179,17 +217,49 @@ const PDV = () => {
                 <input type="text" value={precoUnitario} />
               </div>
             </form>
-            <form className="form-02">
-              <div className="box-flex-2">
+            <form className="form-01">
+              <div className="box-flex">
                 <label>Descrição</label>
                 <div className="flex-desc">
                   <input type="text" />
                   <input
                     className="botao-add"
                     type="button"
-                    value="Adicionar produto"
-                    onClick={adicionarProduto}
+                    value="+   Adicionar Produto"
                   />
+                  <input
+                    type="button"
+                    value="+   Abrir camera Foto"
+                    className="botao-add"
+                    onClick={abrirCamera}
+                  />
+                  {cameraAberta && (
+                    <>
+                      <Camera ref={cameraRef} />
+                      <button
+                        className="button-fechar"
+                        onClick={capturarImagem}
+                      >
+                        Capturar Imagem
+                      </button>
+                      {capturedImage && (
+                        <div className="imagem-capturada">
+                          <img src={capturedImage} alt="Imagem Capturada" />
+                        </div>
+                      )}
+                      {capturedImage && (
+                        <button className="button-enviar" onClick={enviarFoto}>
+                          Enviar Imagem
+                        </button>
+                      )}
+                      <button
+                        className="button-fechar"
+                        onClick={() => setCameraAberta(false)}
+                      >
+                        Fechar Câmera
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </form>
@@ -214,7 +284,8 @@ const PDV = () => {
           </table>
         </div>
       </header>
-      <footer>Software Licensido pela Célebre</footer>
+
+      <footer>Software Licensido pela Célebre </footer>
     </>
   );
 };
