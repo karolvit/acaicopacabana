@@ -294,4 +294,20 @@ router.get('/busca', (req, res) => {
       res.status(201).json({ success: true, message: ['Imagem carreagada com sucesso']})
     }
   })
+
+router.post('/busca', (req, res) => {
+  const {nome} = req.body;
+  const values = [`${nome}%`];
+  const query = `SELECT * FROM produto WHERE nome like ? `;
+
+  pool.query(query, values, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, error: ['Erro no servidor, por favor contatar o administrador', err]})
+    } else if (results === 0) {
+      res.status(404).json({ success: true, message: ['Não foi encontrado nenhum produto com esse nome']})
+    } else {
+      res.status(200).json({ success: true, message: results})
+    }
+  })
+})
 module.exports = router;
