@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Camera } from "react-camera-pro";
+import SetaVoltar from "../components/SetaVoltar";
 const PDV = () => {
   const [produto, setProduto] = useState("");
   const [quantidade, setQuantidade] = useState("");
@@ -16,21 +17,33 @@ const PDV = () => {
   const navigate = useNavigate();
   const [modalAberto, setModalAberto] = useState(false);
   const [cameraAberta, setCameraAberta] = useState(false);
-  const [imagePath, setImagePath] = useState("");
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef();
 
-  const capturarImagem = (e) => {
+  const capturarImagem = async (e) => {
     e.preventDefault();
     if (cameraRef.current) {
       try {
-        const fotoCapturada = cameraRef.current.takePhoto();
-        setCapturedImage(fotoCapturada);
+        const fotoCapturada = await cameraRef.current.takePhoto();
+        const blob = dataURItoBlob(fotoCapturada);
+        const file = new File([blob], "foto.jpg", { type: "image/jpeg" });
+        setCapturedImage(file);
       } catch (error) {
         console.log("Erro ao capturar", error);
       }
     }
   };
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: mimeString });
+    return blob;
+  }
   const abrirModal = () => {
     setModalAberto(true);
   };
@@ -55,6 +68,9 @@ const PDV = () => {
       setQuantidade("");
       setPrecoUnitario("");
     }
+  };
+  const botaoCancelar = () => {
+    setProdutos([]);
   };
 
   const botaoEnvio = async (e) => {
@@ -133,6 +149,9 @@ const PDV = () => {
   return (
     <>
       <nav>
+        <div className="seta">
+          <SetaVoltar />
+        </div>
         <h1>PONTO DE VENDA</h1>
       </nav>
       <header className="pedidos">
@@ -188,8 +207,38 @@ const PDV = () => {
               <input type="button" value="RESUMO" />
             </div>
             <div className="box-2">
-              <input type="button" value="CANCELAR" id="vermelho" />
-              <input type="button" value="PROCURAR PRODUTO" />
+              <input
+                type="button"
+                value="CANCELAR"
+                id="vermelho"
+                onClick={botaoCancelar}
+              />
+              <input
+                type="button"
+                value="PROCURAR PRODUTO"
+                onClick={abrirModal}
+              />
+              <Modal
+                isOpen={modalAberto}
+                onRequestClose={fecharModal}
+                contentLabel="Confirmar Pedido"
+                style={{
+                  content: {
+                    width: "50%",
+                    height: "10%",
+                    margin: "auto",
+                    padding: 0,
+                  },
+                }}
+              >
+                <div className="modal-mensagem">
+                  <h2>Digite o produto que deseja pesquisar</h2>
+                </div>
+                <div className="container-modal-produto">
+                  <h2>Produto</h2>
+                  <input type="text" />
+                </div>
+              </Modal>
             </div>
           </div>
         </div>
@@ -207,7 +256,7 @@ const PDV = () => {
               <div className="box-flex">
                 <label>Quantidade</label>
                 <input
-                  type="text"
+                  type="number"
                   onChange={(e) => setQuantidade(e.target.value)}
                   value={quantidade}
                 />
@@ -226,6 +275,7 @@ const PDV = () => {
                     className="botao-add"
                     type="button"
                     value="+   Adicionar Produto"
+                    onClick={adicionarProduto}
                   />
                   <input
                     type="button"
@@ -244,7 +294,10 @@ const PDV = () => {
                       </button>
                       {capturedImage && (
                         <div className="imagem-capturada">
-                          <img src={capturedImage} alt="Imagem Capturada" />
+                          <img
+                            src={URL.createObjectURL(capturedImage)}
+                            alt="Imagem Capturada"
+                          />
                         </div>
                       )}
                       {capturedImage && (
