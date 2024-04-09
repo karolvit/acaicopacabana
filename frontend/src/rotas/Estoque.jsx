@@ -157,10 +157,7 @@ const Estoque = () => {
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState("");
   const [codigo_produto, setCodigo_Produto] = useState("");
-  const [codigo_personalizado, setCodigo_Personalizado] = useState("");
   const [preco_custo, setPreco_Custo] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [data_venda, setData_Venda] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [img_produto, setImg_Produto] = useState("");
   useEffect(() => {
@@ -194,7 +191,6 @@ const Estoque = () => {
         codigo_personalizado: 1,
         preco_custo,
         tipo: 1,
-        data_venda,
         quantidade,
         img_produto,
       };
