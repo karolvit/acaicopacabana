@@ -332,28 +332,6 @@ router.get("/nextped", (req, res) => {
   });
 });
 
-router.get("/busca", (req, res) => {
-  const { no } = req.body;
-  const values = [no];
-  const query = "SELECT * FROM estoque WHERE no = ?";
-
-  pool.query(query, values, (err, results) => {
-    if (results.length === 0) {
-      res
-        .status(404)
-        .json({ success: true, message: ["Nenhum produto encontrado"] });
-    }
-
-    if (err) {
-      res
-        .status(500)
-        .json({ success: false, error: ["Por favor contatar o adminstrador"] });
-    } else {
-      res.status(200).json(results);
-    }
-  });
-});
-
 // teste rota up
 // Configuração do multer
 const multer = require("multer");
@@ -378,7 +356,7 @@ router.post("/up", upload.single("imagePath"), (req, res) => {
   }
 });
 
-router.post("/busca", (req, res) => {
+router.get("/busca", (req, res) => {
   const { nome } = req.query;
   const values = [`${nome}%`];
   const query = `SELECT * FROM produto WHERE nome like ? `;
