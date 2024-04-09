@@ -355,41 +355,48 @@ router.get("/busca", (req, res) => {
 });
 
 // teste rota up
-app.post("/up", async (req, res) => {
-  try {
-    // Verifica se a requisição contém um arquivo de imagem
-    if (!req.files || !req.files.image) {
-      return res.status(400).json({ error: "Nenhuma imagem fornecida" });
-    }
-
-    // Salva o arquivo de imagem no sistema de arquivos temporário
-    const imageFile = req.files.image;
-    const imagePath = path.join(__dirname, "temp", imageFile.name);
-    await imageFile.mv(imagePath);
-
-    // Processa a imagem com Tesseract.js
-    const {
-      data: { text },
-    } = await Tesseract.recognize(imagePath, "eng", {
-      logger: (info) => console.log(info),
-    });
-
-    // Extrai números do texto reconhecido
-    const numerosEncontrados = extrairNumeros(text);
-
-    // Retorna os números encontrados como resposta JSON
-    res.json({ numerosEncontrados });
-
-    // Remove o arquivo temporário
-    await fs.unlink(imagePath);
-  } catch (error) {
-    console.error("Erro ao processar a imagem:", error);
-    res.status(500).json({ error: "Erro ao processar a imagem" });
+// Configuração do multer
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "assets/");
+  },
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${Date.now()}${extension}`);
+  },
+});
+const upload = multer({ storage: storage });
+//rota
+router.post("/up", upload.single("imagePath"), (req, res) => {
+  if (!req.file) {
+    res.status(404).json({ success: false, error: ["Nenhuma imagem enviada"] });
+  } else {
+    res
+      .status(201)
+      .json({ success: true, message: ["Imagem carreagada com sucesso"] });
   }
 });
 
-function extrairNumeros(texto) {
-  const regexNumeros = /[-+]?\b\d+(\.\d+)?\b/g;
-  return texto.match(regexNumeros) || [];
-}
+router.post("/busca", (req, res) => {
+  const { nome } = req.query;
+  const values = [`${nome}%`];
+  const query = `SELECT * FROM produto WHERE nome like ? `;
+
+  pool.query(query, values, (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        error: ["Erro no servidor, por favor contatar o administrador", err],
+      });
+    } else if (results === 0) {
+      res.status(404).json({
+        success: true,
+        message: ["Não foi encontrado nenhum produto com esse nome"],
+      });
+    } else {
+      res.status(200).json({ success: true, message: results });
+    }
+  });
+});
 module.exports = router;

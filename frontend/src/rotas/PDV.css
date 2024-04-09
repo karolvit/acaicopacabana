@@ -259,6 +259,19 @@ footer {
   width: 100px;
 }
 
+.container-modal-produto {
+  display: flex;
+  padding: 20px;
+  justify-content: center;
+}
+
+.container-modal-produto h2 {
+  font-size: 17px;
+  color: #46295A;
+  font-weight: 700;
+  text-align: center;
+}
+
 .vermelho {
   background-color: #FF0000;
 }
