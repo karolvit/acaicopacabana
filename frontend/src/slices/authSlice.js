@@ -35,6 +35,7 @@ export const login = createAsyncThunk("/login", async (user, thunkApi) => {
   if (data.errors) {
     return thunkApi.rejectWithValue(data.errors[0]);
   }
+  localStorage.setItem("token", data.token);
   return data;
 });
 

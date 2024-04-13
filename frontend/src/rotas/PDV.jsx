@@ -11,13 +11,17 @@ const PDV = () => {
   const [produto, setProduto] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [precoUnitario, setPrecoUnitario] = useState("");
+  const [nome, setNome] = useState("");
   const [dataHora, setDataHora] = useState(new Date());
   const [produtos, setProdutos] = useState([]);
   const [proximoPedido, setProximoPedido] = useState("");
   const navigate = useNavigate();
-  const [modalAberto, setModalAberto] = useState(false);
+  const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
+  const [modalPesquisaAberto, setModalPesquisaAberto] = useState(false);
   const [cameraAberta, setCameraAberta] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [resultadoPesquisaProduto, setResultadoPesquisaProduto] = useState("");
+  const [pesquisaProduto, setPesquisaProduto] = useState("");
   const cameraRef = useRef();
 
   const capturarImagem = async (e) => {
@@ -44,37 +48,53 @@ const PDV = () => {
     const blob = new Blob([ab], { type: mimeString });
     return blob;
   }
-  const abrirModal = () => {
-    setModalAberto(true);
+  const abrirModalConfirmacao = () => {
+    setModalConfirmacaoAberto(true);
   };
 
-  const fecharModal = () => {
-    setModalAberto(false);
+  const fecharModalConfirmacao = () => {
+    setModalConfirmacaoAberto(false);
+  };
+
+  const abrirModalPesquisa = () => {
+    setModalPesquisaAberto(true);
+  };
+
+  const fecharModalPesquisa = () => {
+    setModalPesquisaAberto(false);
   };
 
   const adicionarProduto = () => {
     if (produto && quantidade) {
       const novoProduto = {
         id: produtos.length + 1,
-        nome: `Produto ${produto}`,
+        nome: `Codigo do produto: ${produto}, Nome do produto: ${nome}`,
         quantidade: parseInt(quantidade),
         precoUnitario: parseInt(precoUnitario),
         total: parseInt(quantidade),
       };
 
       setProdutos([...produtos, novoProduto]);
-
+      setNome("");
       setProduto("");
       setQuantidade("");
       setPrecoUnitario("");
     }
   };
+  const valorTotal = () => {
+    let total = 0;
+    produtos.forEach((produto) => {
+      total += produto.precoUnitario * produto.quantidade;
+    });
+    return total.toFixed(2);
+  };
   const botaoCancelar = () => {
     setProdutos([]);
+    setModalConfirmacaoAberto(false);
   };
 
   const botaoEnvio = async (e) => {
-    fecharModal();
+    fecharModalConfirmacao();
     e.preventDefault();
     try {
       const inserirNovoPedido = {
@@ -84,6 +104,7 @@ const PDV = () => {
             prodno: item.id,
             valor_unit: item.precoUnitario,
             quantidade: item.quantidade,
+            nome: item.nome,
             unino: 2,
             sta: 1,
             userno: 20,
@@ -145,6 +166,27 @@ const PDV = () => {
       console.log("Erro", error);
     }
   };
+  const handlePesquisaProduto = async (e) => {
+    e.preventDefault();
+    try {
+      const encodedPesquisaProduto = encodeURIComponent(pesquisaProduto);
+      const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
+
+      setResultadoPesquisaProduto(res.data.message);
+      console.log(res.data.message);
+    } catch (error) {
+      console.error("Erro ao encontrar produto:", error.message);
+    }
+  };
+
+  const handleProdutoSelecionado = (produtoSelecionado) => {
+    abrirModalPesquisa(false);
+    setNome(produtoSelecionado.nome);
+    setPrecoUnitario(produtoSelecionado.preco_custo);
+    setProduto(produtoSelecionado.codigo_produto);
+    setModalPesquisaAberto(false);
+    setPesquisaProduto("");
+  };
 
   return (
     <>
@@ -163,7 +205,7 @@ const PDV = () => {
           <div className="linha"></div>
           <div className="pedido-n-n">
             <img src={dinhero} alt="" />
-            <h2> R$ 25,00</h2>
+            <h2>R$ {valorTotal()}</h2>
           </div>
           <div className="cliente">
             <p>CLIENTE BALCAO</p>
@@ -174,11 +216,11 @@ const PDV = () => {
                 type="button"
                 value="FINALIZAR"
                 id="verde"
-                onClick={abrirModal}
+                onClick={abrirModalConfirmacao}
               />
               <Modal
-                isOpen={modalAberto}
-                onRequestClose={fecharModal}
+                isOpen={modalConfirmacaoAberto}
+                onRequestClose={fecharModalConfirmacao}
                 contentLabel="Confirmar Pedido"
                 style={{
                   content: {
@@ -198,7 +240,10 @@ const PDV = () => {
                     <button onClick={botaoEnvio} className="verde">
                       Confirmar
                     </button>
-                    <button onClick={fecharModal} className="vermelho">
+                    <button
+                      onClick={fecharModalConfirmacao}
+                      className="vermelho"
+                    >
                       Cancelar
                     </button>
                   </div>
@@ -211,21 +256,52 @@ const PDV = () => {
                 type="button"
                 value="CANCELAR"
                 id="vermelho"
-                onClick={botaoCancelar}
-              />
-              <input
-                type="button"
-                value="PROCURAR PRODUTO"
-                onClick={abrirModal}
+                onClick={abrirModalConfirmacao}
               />
               <Modal
-                isOpen={modalAberto}
-                onRequestClose={fecharModal}
+                isOpen={modalConfirmacaoAberto}
+                onRequestClose={fecharModalConfirmacao}
                 contentLabel="Confirmar Pedido"
                 style={{
                   content: {
                     width: "50%",
-                    height: "10%",
+                    height: "20%",
+                    margin: "auto",
+                    padding: 0,
+                  },
+                }}
+              >
+                <div className="modal-mensagem">
+                  <h2>Confirmação de pedido</h2>
+                </div>
+                <div className="container-modal">
+                  <h2>Deseja confirmar a finalização do pedido?</h2>
+                  <div className="btn-modal">
+                    <button onClick={botaoCancelar} className="verde">
+                      Confirmar
+                    </button>
+                    <button
+                      onClick={fecharModalConfirmacao}
+                      className="vermelho"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              </Modal>
+              <input
+                type="button"
+                value="PROCURAR PRODUTO"
+                onClick={abrirModalPesquisa}
+              />
+              <Modal
+                isOpen={modalPesquisaAberto}
+                onRequestClose={fecharModalPesquisa}
+                contentLabel="Confirmar Pedido"
+                style={{
+                  content: {
+                    maxWidth: "70%",
+                    maxHeight: "20%",
                     margin: "auto",
                     padding: 0,
                   },
@@ -236,8 +312,24 @@ const PDV = () => {
                 </div>
                 <div className="container-modal-produto">
                   <h2>Produto</h2>
-                  <input type="text" />
+                  <input
+                    type="text"
+                    value={pesquisaProduto}
+                    onChange={(e) => setPesquisaProduto(e.target.value)}
+                  />
+                  <button onClick={handlePesquisaProduto}>Pesquisar</button>
                 </div>
+                <ul className="produtos-pesquisa">
+                  {resultadoPesquisaProduto &&
+                    resultadoPesquisaProduto.map((produto) => (
+                      <li
+                        key={produto.id}
+                        onClick={() => handleProdutoSelecionado(produto)}
+                      >
+                        {produto.nome}
+                      </li>
+                    ))}
+                </ul>
               </Modal>
             </div>
           </div>
@@ -263,14 +355,22 @@ const PDV = () => {
               </div>
               <div className="box-flex">
                 <label>Valor Unit.</label>
-                <input type="text" value={precoUnitario} />
+                <input
+                  type="number"
+                  value={precoUnitario}
+                  onChange={(e) => setPrecoUnitario(e.target.value)}
+                />
               </div>
             </form>
             <form className="form-01">
               <div className="box-flex">
                 <label>Descrição</label>
                 <div className="flex-desc">
-                  <input type="text" />
+                  <input
+                    type="text"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                  />
                   <input
                     className="botao-add"
                     type="button"
@@ -322,7 +422,7 @@ const PDV = () => {
               <tr>
                 <th className="thPDV">ITEM</th>
                 <th className="thPDV">QTD</th>
-                <th className="thPDV">TOTAL</th>
+                <th className="thPDV">VALOR</th>
               </tr>
             </thead>
             <tbody>

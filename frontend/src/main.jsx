@@ -9,6 +9,10 @@ import { Provider } from "react-redux";
 import { store } from "./store.js";
 import App from "./App.jsx";
 import Estoque from "./rotas/Estoque.jsx";
+import Modal from "react-modal";
+import Usuarios from "./rotas/Usuarios.jsx";
+
+Modal.setAppElement("#root");
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/estoque",
         element: <Estoque />,
+      },
+      {
+        path: "/usuarios",
+        element: <Usuarios />,
       },
     ],
   },

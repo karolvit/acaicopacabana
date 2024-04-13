@@ -17,15 +17,21 @@ body {
 nav {
   justify-content: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: flex-start;
   background-color: #46295A;
   width: 100%;
   height: 60px;
   text-align: center;
+  justify-content: flex-start;
+  gap: 40%;
+  align-items: center;
   color: #fff;
   margin-bottom: 20px;
 }
 
+.seta {
+  margin-left: 10px;
+}
 
 footer {
   height: 25px;
@@ -51,7 +57,7 @@ footer {
   justify-content: center;
   color: #fff;
   margin-left: 20px;
-  width: 500px;
+  width: 700px;
   height: 100px;
   display: flex;
   flex-direction: column;
@@ -74,7 +80,7 @@ footer {
   display: flex;
   align-items: center;
   margin-left: 20px;
-  width: 500px;
+  width: 700px;
   color: #fff;
   height: 100px;
   background-color: #46295A;
@@ -89,7 +95,7 @@ footer {
   display: flex;
   border-bottom: 1px solid #0000005a;
   margin-left: 20px;
-  width: 500px;
+  width: 700px;
   padding-top: 1px;
   background-color: #fff;
   text-align: center;
@@ -102,8 +108,8 @@ footer {
 .finaliza input {
   color: #fff;
   background-color: #46295A;
-  width: 170px;
-  height: 40px;
+  width: 270px;
+  height: 45px;
   margin-left: 20px;
   border-radius: 20px;
   border: none;
@@ -112,7 +118,7 @@ footer {
 }
 
 .botao-add {
-  background-color: #8037b0;
+  background-color: #bf6cf7;
   cursor: pointer;
   color: #fff;
   border: none;
@@ -125,7 +131,7 @@ footer {
   display: flex;
   flex-direction: column;
   margin-left: 20px;
-  width: 500px;
+  width: 700px;
   height: 150px;
   padding-top: 1px;
   background-color: #fff;
@@ -139,7 +145,7 @@ footer {
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
-  gap: 100px;
+  gap: 110px;
 }
 
 .box-1 #verde {
@@ -169,6 +175,7 @@ footer {
 .box-flex-2 input {
   border: 1px solid black;
   height: 29px;
+  padding-left: 5px;
   border-radius: 20px;
   margin-top: 12px;
   border: none;
@@ -262,14 +269,20 @@ footer {
 .container-modal-produto {
   display: flex;
   padding: 20px;
-  justify-content: center;
+  justify-content: space-between;
+
 }
 
 .container-modal-produto h2 {
-  font-size: 17px;
+  font-size: 28px;
   color: #46295A;
   font-weight: 700;
   text-align: center;
+}
+
+.container-modal-produto input {
+  width: 500px;
+  height: 25px;
 }
 
 .vermelho {
@@ -282,4 +295,23 @@ footer {
 
 .button-fechar {
   position: relative;
+}
+
+ul.produtos-pesquisa {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  list-style: none;
+
+}
+
+ul.produtos-pesquisa li {
+  cursor: pointer;
+  padding: 10px 50px;
+
+}
+
+ul.produtos-pesquisa li:hover {
+  background-color: #46295A;
+  color: #fff;
 }

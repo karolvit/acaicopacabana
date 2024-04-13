@@ -17,13 +17,12 @@ const NavBar = styled.nav`
   margin: auto;
   height: 80px;
   margin-top: 5px;
-  width: 83vw;
+  width: 95%;
   background-color: #46295a;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  gap: 690px;
+  justify-content: space-evenly;
   border-radius: 10px;
 `;
 const Flex = styled.div`
@@ -71,10 +70,14 @@ const Tabela = styled.table`
     text-align: center;
   }
   td {
-    border-bottom: 2px solid #d9d9d9b0;
+    border-bottom: 2px solid #9582a1;
+    color: #261136;
+    font-weight: 900;
+    font-size: 20px;
   }
   th {
-    background-color: #d9d9d9b0;
+    background-color: #46295a;
+    color: #fff;
   }
   td img {
     margin-top: 10px;
@@ -160,6 +163,7 @@ const Estoque = () => {
   const [preco_custo, setPreco_Custo] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [img_produto, setImg_Produto] = useState("");
+  const [pesquisa, setPesquisa] = useState("");
   useEffect(() => {
     const carregarEstoque = async () => {
       try {
@@ -202,6 +206,15 @@ const Estoque = () => {
       console.log("Erro", error);
     }
   };
+  const handlePesquisaChange = (e) => {
+    setPesquisa(e.target.value);
+  };
+
+  const filteredEstoque = pesquisa
+    ? produtos.data?.filter((produto) => {
+        return produto.nome?.toLowerCase().includes(pesquisa.toLowerCase());
+      })
+    : produtos.data;
 
   return (
     <>
@@ -210,7 +223,12 @@ const Estoque = () => {
         <SideBar />
         <ContainerFlex>
           <NavBar>
-            <InputPesquisa type="search" placeholder="Digite o nome do item" />
+            <InputPesquisa
+              type="search"
+              placeholder="Digite o nome do item"
+              value={pesquisa}
+              onChange={handlePesquisaChange}
+            />
             <InputButao type="button" onClick={abrirModal} value="+  Produto" />
             <Modal
               isOpen={modalAberto}
@@ -307,10 +325,10 @@ const Estoque = () => {
                 <th>Preço</th>
               </tr>
             </thead>
-            {!produtos || produtos.length === 0 ? (
-              <p>Não há produtos cadastrados no momento</p>
+            {!filteredEstoque || filteredEstoque.length === 0 ? (
+              <p>Nenhum usuário encontrado</p>
             ) : (
-              produtos.data.map((produto) => (
+              filteredEstoque.map((produto) => (
                 <tbody key={produto.no}>
                   <tr>
                     <TdImg>
