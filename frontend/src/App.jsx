@@ -6,6 +6,7 @@ import PDV from "./rotas/PDV";
 import Estoque from "./rotas/Estoque";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Usuarios from "./rotas/Usuarios";
 function App() {
   const { auth, loading } = useAuth();
 
@@ -31,6 +32,10 @@ function App() {
         <Route
           path="/estoque"
           element={auth ? <Estoque /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/usuarios"
+          element={auth ? <Usuarios /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>

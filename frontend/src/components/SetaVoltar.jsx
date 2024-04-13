@@ -5,6 +5,7 @@ import styled from "styled-components";
 const Seta = styled.div`
   cursor: pointer;
 `;
+("");
 
 const SetaVoltar = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const SetaVoltar = () => {
 
   return (
     <IconContext.Provider
-      value={{ color: "#fff", className: "global-class-name", size: "1.5em" }}
+      value={{ color: "#fff", className: "global-class-name", size: "2em" }}
     >
       <Seta onClick={botaoVoltar}>
         <CgArrowLeftO />

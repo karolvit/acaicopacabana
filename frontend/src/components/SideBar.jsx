@@ -118,7 +118,9 @@ const SideBar = () => {
               <Paragraph>Relatório</Paragraph>
             </Box>
             <Box>
-              <SmallImage src={pessoas} alt="" />
+              <NavLink to="/usuarios">
+                <SmallImage src={pessoas} alt="" />
+              </NavLink>
               <Paragraph>Usuários</Paragraph>
             </Box>
           </Container2>
