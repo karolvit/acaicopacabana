@@ -8,8 +8,6 @@ const jwt = require("jsonwebtoken");
 const pool = require("../database/connection/cxx");
 // const license = require('../system/verificarion');
 //Teste rota de up
-const Tesseract = require("tesseract.js");
-const path = require("path");
 const fs = require("fs").promises;
 
 const jwtSecret = "token";
@@ -358,6 +356,9 @@ router.get("/nextped", (req, res) => {
 });
 
 // teste rota up
+// importação dos modulos de extração
+const Tesseract = require('tesseract.js');
+const path = require('path');
 // Configuração do multer
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -375,11 +376,38 @@ router.post("/up", upload.single("imagePath"), (req, res) => {
   if (!req.file) {
     res.status(404).json({ success: false, error: ["Nenhuma imagem enviada"] });
   } else {
-    res
-      .status(201)
-      .json({ success: true, message: ["Imagem carreagada com sucesso"] });
+    const imagePath = req.file.path;
+    const extension = path.extname(req.file.originalname);
+    const imageName = req.file.filename;
+    const imageURL = `${imagePath}${extension}`;
+
+    Tesseract.recognize(
+      imagePath,
+      'eng',
+      {
+        logger: info => console.log(info),
+      }
+    ).then(({ data: { text } }) => {
+      const numerosEncontrados = extrairNumeros(text);
+      console.log('Números encontrados:', numerosEncontrados);
+      
+      res.status(201).json({
+        success: true,
+        message: ["Imagem carregada com sucesso"],
+        imagePath: imageURL,
+        numbers: numerosEncontrados
+      });
+    }).catch(error => {
+      console.error('Erro ao processar a imagem:', error);
+      res.status(500).json({ success: false, error: ["Erro ao processar a imagem"] });
+    });
   }
 });
+
+function extrairNumeros(texto) {
+  const regexNumeros = /[-+]?\b\d+(\.\d+)?\b/g;
+  return texto.match(regexNumeros) || [];
+}
 
 router.get("/busca", (req, res) => {
   const { nome } = req.query;
