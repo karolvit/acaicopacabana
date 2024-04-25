@@ -461,4 +461,16 @@ router.put('/acai', passport.authenticate("jwt", { session: false }),(req, res) 
   })
 })
 
+router.get('/acai', (req, res) => {
+  const query = 'select val from sys where id = 1';
+
+  pool.query(query, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, error: ['Por favor entrar em contato com o administrador']})
+    } else {
+      res.status(200).json({ success: true, message: results})
+    }
+  })
+})
+
 module.exports = router;
