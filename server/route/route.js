@@ -343,18 +343,34 @@ router.get("/liuser", (req, res) => {
 });
 
 router.get("/nextped", (req, res) => {
-  pool.query("SELECT MAX(pedido) AS maxProdNo FROM pedidos", (err, results) => {
+  pool.query(`
+    SELECT MAX(pedido) AS maxProdNo 
+    FROM pedidos
+  `, (err, maxResults) => {
     if (err) {
       console.error("Erro ao executar a consulta:", err);
-      res.status(500).send("Erro ao buscar próximo prodno");
+      res.status(500).send("Erro ao buscar próximo número do pedido");
       return;
     }
 
-    const proximoProdNo = results[0].maxProdNo + 1;
-    res.json({ success: true, message: proximoProdNo });
+    const proximoProdNo = maxResults[0].maxProdNo + 1;
+
+    pool.query(`
+      SELECT pedidos.pedido, sys.val as acai_valor
+      FROM pedidos
+      INNER JOIN sys
+      ON pedidos.bit1 = sys.id
+    `, (err, results) => {
+      if (err) {
+        console.error("Erro ao executar o INNER JOIN:", err);
+        res.status(500).send("Erro ao executar o INNER JOIN");
+        return;
+      }
+      const valor = results[0].acai_valor
+      res.json({ success: true, message: proximoProdNo, valor: valor });
+    });
   });
 });
-
 // teste rota up
 // importação dos modulos de extração
 const Tesseract = require('tesseract.js');
