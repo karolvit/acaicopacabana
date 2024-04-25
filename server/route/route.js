@@ -446,4 +446,19 @@ router.get("/busca", (req, res) => {
     }
   });
 });
+
+router.put('/acai', passport.authenticate("jwt", { session: false }),(req, res) => {
+  const query = "UPDATE sys SET val = ? WHERE id = 1";
+  const {valor_peso} = req.body;
+  const values = [valor_peso];
+
+  pool.query(query, values, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, error: ['Erro ao atualizar valor do açai, por favor contate o administrador']})
+    } else {
+      res.status(201).json({ success: true, message: ['Valor do açai atualizado com sucesso']})
+    }
+  })
+})
+
 module.exports = router;
