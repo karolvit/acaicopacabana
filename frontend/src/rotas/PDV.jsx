@@ -151,18 +151,6 @@ const PDV = () => {
     carregarProximoPedido();
   }, []);
 
-  const carregandoBalanca = async () => {
-    try {
-      const res = await apiAcai.get("/peso");
-      setPesoBalanca(res.data);
-      let totalAcaiBalaca = 0;
-      totalAcaiBalaca += pesoBalanca * precoacai;
-      setPrecoUnitario(totalAcaiBalaca);
-      console.log(totalAcaiBalaca);
-    } catch (error) {
-      console.log("Errooo", error);
-    }
-  };
   const abrirCamera = () => {
     setCameraAberta(true);
   };
@@ -222,12 +210,24 @@ const PDV = () => {
       setKgacai("0.000");
     }
   };
-  const calulaBalanca = (evento) => {
-    let totalAcaiBalaca = 0;
-    totalAcaiBalaca += pesoBalanca * precoacai;
-    setPrecoUnitario(totalAcaiBalaca);
+
+  const carregandoBalanca = async () => {
+    try {
+      const res = await apiAcai.get("/peso");
+      setPesoBalanca(res.data.peso);
+      console.log(pesoBalanca);
+
+      calculoBalanca();
+    } catch (error) {
+      console.log("Errooo", error);
+    }
   };
 
+  const calculoBalanca = () => {
+    let totalAcaiBalaca = pesoBalanca * precoacai;
+    setPrecoUnitario(totalAcaiBalaca);
+    console.log(totalAcaiBalaca);
+  };
   return (
     <>
       <nav>
@@ -416,7 +416,9 @@ const PDV = () => {
                         type="button"
                         value="+ Kg da Balança"
                         className="botao-add"
-                        onClick={carregandoBalanca}
+                        onClick={() => {
+                          carregandoBalanca();
+                        }}
                       />
                     </div>
                   </div>
