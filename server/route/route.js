@@ -6,6 +6,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require("../database/connection/cxx");
+const {SerialPort} = require('serialport');
 // const license = require('../system/verificarion');
 //Teste rota de up
 const fs = require("fs").promises;
