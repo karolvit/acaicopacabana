@@ -22,6 +22,10 @@ const PDV = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [resultadoPesquisaProduto, setResultadoPesquisaProduto] = useState("");
   const [pesquisaProduto, setPesquisaProduto] = useState("");
+  const [insersaoManual, setInsersaoManual] = useState(false);
+  const [kgacai, setKgacai] = useState("0.00");
+  const [precoacai, setPrecoAcai] = useState("");
+  const [pesoBalanca, setPesoBalanca] = useState("");
   const cameraRef = useRef();
 
   const capturarImagem = async (e) => {
@@ -70,8 +74,7 @@ const PDV = () => {
         id: produtos.length + 1,
         nome: `Codigo do produto: ${produto}, Nome do produto: ${nome}`,
         quantidade: parseInt(quantidade),
-        precoUnitario: parseInt(precoUnitario),
-        total: parseInt(quantidade),
+        precoUnitario: parseFloat(precoUnitario),
       };
 
       setProdutos([...produtos, novoProduto]);
@@ -94,6 +97,7 @@ const PDV = () => {
   };
 
   const botaoEnvio = async (e) => {
+    console.log("Método botaoEnvio chamado");
     fecharModalConfirmacao();
     e.preventDefault();
     try {
@@ -120,11 +124,12 @@ const PDV = () => {
         navigate("/");
       }
     } catch (error) {
-      if (error.response.stats === 500) {
+      if (error.response.status === 500) {
         console.log("Erro ao inserir produto no banco de dados");
       }
     }
   };
+
   useEffect(() => {
     const tempo = setInterval(() => setDataHora(new Date()), 1000);
 
@@ -138,12 +143,24 @@ const PDV = () => {
       try {
         const res = await apiAcai.get("/nextped");
         setProximoPedido(res.data);
+        setPrecoAcai(res.data.valor);
       } catch (error) {
         console.log("Erro", error);
       }
     };
     carregarProximoPedido();
   }, []);
+
+  const carregandoBalanca = async () => {
+    try {
+      const res = await apiAcai.get("/peso");
+      setPesoBalanca(res.data);
+      console.log(res.data);
+      console.log("Cliquei");
+    } catch (error) {
+      console.log("Errooo", error);
+    }
+  };
   const abrirCamera = () => {
     setCameraAberta(true);
   };
@@ -186,6 +203,22 @@ const PDV = () => {
     setProduto(produtoSelecionado.codigo_produto);
     setModalPesquisaAberto(false);
     setPesquisaProduto("");
+  };
+  const verificarCodigoProduto = (codigo) => {
+    if (parseInt(codigo) === 1) {
+      setInsersaoManual(true);
+      setNome("Açai");
+      setQuantidade(1);
+    }
+  };
+  const calculoKg = (evento) => {
+    if (evento.key == "Enter") {
+      let totalAcai = 0;
+      totalAcai += kgacai * precoacai;
+      setPrecoUnitario(totalAcai);
+      setInsersaoManual(false);
+      setKgacai("0.000");
+    }
   };
 
   return (
@@ -237,7 +270,7 @@ const PDV = () => {
                 <div className="container-modal">
                   <h2>Deseja confirmar a finalização do pedido?</h2>
                   <div className="btn-modal">
-                    <button onClick={botaoEnvio} className="verde">
+                    <button onClick={botaoCancelar} className="verde">
                       Confirmar
                     </button>
                     <button
@@ -277,7 +310,7 @@ const PDV = () => {
                 <div className="container-modal">
                   <h2>Deseja confirmar a finalização do pedido?</h2>
                   <div className="btn-modal">
-                    <button onClick={botaoCancelar} className="verde">
+                    <button onClick={botaoEnvio} className="verde">
                       Confirmar
                     </button>
                     <button
@@ -341,9 +374,46 @@ const PDV = () => {
                 <label>Produto</label>
                 <input
                   type="number"
-                  onChange={(e) => setProduto(e.target.value)}
+                  onChange={(e) => {
+                    setProduto(e.target.value);
+                    verificarCodigoProduto(e.target.value);
+                  }}
                   value={produto}
                 />
+                <Modal
+                  isOpen={insersaoManual}
+                  onRequestClose={() => setInsersaoManual(false)}
+                  contentLabel="Modal Produto Específico"
+                  style={{
+                    content: {
+                      width: "30%",
+                      height: "10%",
+                      margin: "auto",
+                      padding: 0,
+                    },
+                  }}
+                >
+                  <div className="modal-mensagem">
+                    <h2>Açai</h2>
+                    <div className="kg">
+                      <label>Kg do Açai</label>
+                      <input
+                        type="number"
+                        onChange={(e) => {
+                          setKgacai(e.target.value);
+                        }}
+                        onKeyPress={calculoKg}
+                        value={kgacai}
+                      />
+                      <input
+                        type="button"
+                        value="+ Kg da Balança"
+                        className="botao-add"
+                        onClick={carregandoBalanca}
+                      />
+                    </div>
+                  </div>
+                </Modal>
               </div>
               <div className="box-flex">
                 <label>Quantidade</label>
@@ -430,7 +500,7 @@ const PDV = () => {
                 <tr key={produto.id}>
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.quantidade}</td>
-                  <td className="tdPDV">R$ {produto.total.toFixed(2)}</td>
+                  <td className="tdPDV">R$ {produto.precoUnitario}</td>
                 </tr>
               ))}
             </tbody>
