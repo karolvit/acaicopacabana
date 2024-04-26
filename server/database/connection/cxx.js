@@ -2,10 +2,10 @@ const mysql = require('mysql2');
 const dotenv = require('dotenv').config
 
 const pool = mysql.createPool({
-    host: "54.39.129.84",
-    user: "celebrep_caiquecarvalho",
-    password: "585103Aa@",
-    database: "celebrep_baseteste_acaicopacabana"
+    host: "mysql29-farm10.kinghost.net",
+    user: "celebrepro_add1",
+    password: "585103Aa",
+    database: "celebreprojeto"
 });
 
 module.exports = pool
