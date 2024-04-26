@@ -155,8 +155,10 @@ const PDV = () => {
     try {
       const res = await apiAcai.get("/peso");
       setPesoBalanca(res.data);
-      console.log(res.data);
-      console.log("Cliquei");
+      let totalAcaiBalaca = 0;
+      totalAcaiBalaca += pesoBalanca * precoacai;
+      setPrecoUnitario(totalAcaiBalaca);
+      console.log(totalAcaiBalaca);
     } catch (error) {
       console.log("Errooo", error);
     }
@@ -219,6 +221,11 @@ const PDV = () => {
       setInsersaoManual(false);
       setKgacai("0.000");
     }
+  };
+  const calulaBalanca = (evento) => {
+    let totalAcaiBalaca = 0;
+    totalAcaiBalaca += pesoBalanca * precoacai;
+    setPrecoUnitario(totalAcaiBalaca);
   };
 
   return (
