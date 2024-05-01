@@ -9,7 +9,7 @@ import { Camera } from "react-camera-pro";
 import SetaVoltar from "../components/SetaVoltar";
 const PDV = () => {
   const [produto, setProduto] = useState("");
-  const [quantidade, setQuantidade] = useState("");
+  const [unino, setUnino] = useState("");
   const [precoUnitario, setPrecoUnitario] = useState("");
   const [nome, setNome] = useState("");
   const [dataHora, setDataHora] = useState(new Date());
@@ -69,25 +69,25 @@ const PDV = () => {
   };
 
   const adicionarProduto = () => {
-    if (produto && quantidade) {
+    if (produto && unino) {
       const novoProduto = {
         id: produtos.length + 1,
         nome: `Codigo do produto: ${produto}, Nome do produto: ${nome}`,
-        quantidade: parseInt(quantidade),
+        unino: parseInt(unino),
         precoUnitario: parseFloat(precoUnitario),
       };
 
       setProdutos([...produtos, novoProduto]);
       setNome("");
       setProduto("");
-      setQuantidade("");
+      setUnino("");
       setPrecoUnitario("");
     }
   };
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
-      total += produto.precoUnitario * produto.quantidade;
+      total += produto.precoUnitario * produto.unino;
     });
     return total.toFixed(2);
   };
@@ -107,9 +107,8 @@ const PDV = () => {
             pedido: proximoPedido.message,
             prodno: item.id,
             valor_unit: item.precoUnitario,
-            quantidade: item.quantidade,
+            unino: item.unino,
             nome: item.nome,
-            unino: 2,
             sta: 1,
             userno: 20,
           })),
@@ -198,7 +197,7 @@ const PDV = () => {
     if (parseInt(codigo) === 1) {
       setInsersaoManual(true);
       setNome("Açai");
-      setQuantidade(1);
+      setUnino(1);
     }
   };
   const calculoKg = (evento) => {
@@ -393,7 +392,7 @@ const PDV = () => {
                   contentLabel="Modal Produto Específico"
                   style={{
                     content: {
-                      width: "30%",
+                      width: "40%",
                       height: "10%",
                       margin: "auto",
                       padding: 0,
@@ -428,8 +427,8 @@ const PDV = () => {
                 <label>Quantidade</label>
                 <input
                   type="number"
-                  onChange={(e) => setQuantidade(e.target.value)}
-                  value={quantidade}
+                  onChange={(e) => setUnino(e.target.value)}
+                  value={unino}
                 />
               </div>
               <div className="box-flex">
@@ -508,7 +507,7 @@ const PDV = () => {
               {produtos.map((produto) => (
                 <tr key={produto.id}>
                   <td className="tdPDV">{produto.nome}</td>
-                  <td className="tdPDV">{produto.quantidade}</td>
+                  <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV">R$ {produto.precoUnitario}</td>
                 </tr>
               ))}

@@ -103,6 +103,7 @@ const ModalCadastroProduto = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 40px;
+  width: 100%;
 
   h2 {
     font-size: 25px;
@@ -118,7 +119,7 @@ const Form = styled.div`
   label {
     margin: 5px 20px;
     height: 25px;
-    width: 560px;
+    max-width: 700px;
     color: #46295a;
     font-weight: 700;
     font-size: 20px;
@@ -237,10 +238,13 @@ const Estoque = () => {
               style={{
                 content: {
                   borderRadius: "15px",
-                  width: "70%",
-                  height: "50%",
+                  maxWidth: "55%",
+                  height: "55%",
                   margin: "auto",
                   padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 },
               }}
             >

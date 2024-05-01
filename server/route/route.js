@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../database/connection/cxx");
 const {SerialPort} = require('serialport');
 // const license = require('../system/verificarion');
+const { SerialPort } = require("serialport");
 //Teste rota de up
 const fs = require("fs").promises;
 
@@ -95,12 +96,10 @@ router.get(
 
     pool.query(query, (err, results) => {
       if (err) {
-        res
-          .status(500)
-          .json({
-            success: false,
-            error: ["Por favor contate o administrador"],
-          });
+        res.status(500).json({
+          success: false,
+          error: ["Por favor contate o administrador"],
+        });
       } else if (results.length === 0) {
         res
           .status(404)
@@ -344,38 +343,44 @@ router.get("/liuser", (req, res) => {
 });
 
 router.get("/nextped", (req, res) => {
-  pool.query(`
+  pool.query(
+    `
     SELECT MAX(pedido) AS maxProdNo 
     FROM pedidos
-  `, (err, maxResults) => {
-    if (err) {
-      console.error("Erro ao executar a consulta:", err);
-      res.status(500).send("Erro ao buscar próximo número do pedido");
-      return;
-    }
+  `,
+    (err, maxResults) => {
+      if (err) {
+        console.error("Erro ao executar a consulta:", err);
+        res.status(500).send("Erro ao buscar próximo número do pedido");
+        return;
+      }
 
-    const proximoProdNo = maxResults[0].maxProdNo + 1;
+      const proximoProdNo = maxResults[0].maxProdNo + 1;
 
-    pool.query(`
+      pool.query(
+        `
       SELECT pedidos.pedido, sys.val as acai_valor
       FROM pedidos
       INNER JOIN sys
       ON pedidos.bit1 = sys.id
-    `, (err, results) => {
-      if (err) {
-        console.error("Erro ao executar o INNER JOIN:", err);
-        res.status(500).send("Erro ao executar o INNER JOIN");
-        return;
-      }
-      const valor = results[0].acai_valor
-      res.json({ success: true, message: proximoProdNo, valor: valor });
-    });
-  });
+    `,
+        (err, results) => {
+          if (err) {
+            console.error("Erro ao executar o INNER JOIN:", err);
+            res.status(500).send("Erro ao executar o INNER JOIN");
+            return;
+          }
+          const valor = results[0].acai_valor;
+          res.json({ success: true, message: proximoProdNo, valor: valor });
+        }
+      );
+    }
+  );
 });
 // teste rota up
 // importação dos modulos de extração
-const Tesseract = require('tesseract.js');
-const path = require('path');
+const Tesseract = require("tesseract.js");
+const path = require("path");
 // Configuração do multer
 const multer = require("multer");
 const storage = multer.diskStorage({
@@ -398,26 +403,26 @@ router.post("/up", upload.single("imagePath"), (req, res) => {
     const imageName = req.file.filename;
     const imageURL = `${imagePath}${extension}`;
 
-    Tesseract.recognize(
-      imagePath,
-      'eng',
-      {
-        logger: info => console.log(info),
-      }
-    ).then(({ data: { text } }) => {
-      const numerosEncontrados = extrairNumeros(text);
-      console.log('Números encontrados:', numerosEncontrados);
-      
-      res.status(201).json({
-        success: true,
-        message: ["Imagem carregada com sucesso"],
-        imagePath: imageURL,
-        numbers: numerosEncontrados
+    Tesseract.recognize(imagePath, "eng", {
+      logger: (info) => console.log(info),
+    })
+      .then(({ data: { text } }) => {
+        const numerosEncontrados = extrairNumeros(text);
+        console.log("Números encontrados:", numerosEncontrados);
+
+        res.status(201).json({
+          success: true,
+          message: ["Imagem carregada com sucesso"],
+          imagePath: imageURL,
+          numbers: numerosEncontrados,
+        });
+      })
+      .catch((error) => {
+        console.error("Erro ao processar a imagem:", error);
+        res
+          .status(500)
+          .json({ success: false, error: ["Erro ao processar a imagem"] });
       });
-    }).catch(error => {
-      console.error('Erro ao processar a imagem:', error);
-      res.status(500).json({ success: false, error: ["Erro ao processar a imagem"] });
-    });
   }
 });
 
@@ -448,56 +453,71 @@ router.get("/busca", (req, res) => {
   });
 });
 
-router.put('/acai', passport.authenticate("jwt", { session: false }),(req, res) => {
-  const query = "UPDATE sys SET val = ? WHERE id = 1";
-  const {valor_peso} = req.body;
-  const values = [valor_peso];
+router.put(
+  "/acai",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const query = "UPDATE sys SET val = ? WHERE id = 1";
+    const { valor_peso } = req.body;
+    const values = [valor_peso];
 
-  pool.query(query, values, (err, results) => {
-    if (err) {
-      res.status(500).json({ success: false, error: ['Erro ao atualizar valor do açai, por favor contate o administrador']})
-    } else {
-      res.status(201).json({ success: true, message: ['Valor do açai atualizado com sucesso']})
-    }
-  })
-})
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          error: [
+            "Erro ao atualizar valor do açai, por favor contate o administrador",
+          ],
+        });
+      } else {
+        res.status(201).json({
+          success: true,
+          message: ["Valor do açai atualizado com sucesso"],
+        });
+      }
+    });
+  }
+);
 
-router.get('/acai', (req, res) => {
-  const query = 'select val from sys where id = 1';
+router.get("/acai", (req, res) => {
+  const query = "select val from sys where id = 1";
 
   pool.query(query, (err, results) => {
     if (err) {
-      res.status(500).json({ success: false, error: ['Por favor entrar em contato com o administrador']})
+      res.status(500).json({
+        success: false,
+        error: ["Por favor entrar em contato com o administrador"],
+      });
     } else {
-      res.status(200).json({ success: true, message: results})
+      res.status(200).json({ success: true, message: results });
     }
-  })
-})
+  });
+});
 
 const serialPort = new SerialPort({
-  path: 'COM1', 
-  baudRate: 9600, 
-  autoOpen: false, 
+  path: "COM1",
+  baudRate: 9600,
+  autoOpen: false,
 });
 
 serialPort.open((err) => {
   if (err) {
-      console.error('Erro ao abrir a porta serial:', err.message);
+    console.error("Erro ao abrir a porta serial:", err.message);
   }
 });
 
-let weightData = '';
+let weightData = "";
 
-serialPort.on('data', (data) => {
-  const dataStr = data.toString().replace(/[^\d]/g, '');
+serialPort.on("data", (data) => {
+  const dataStr = data.toString().replace(/[^\d]/g, "");
 
   if (dataStr) {
-      weightData = Number(dataStr).toLocaleString('pt-BR'); 
+    weightData = Number(dataStr).toLocaleString("pt-BR");
   }
 });
 
-router.get('/peso', (req, res) => {
-  res.send({ peso: weightData }); 
+router.get("/peso", (req, res) => {
+  res.send({ peso: weightData });
 });
 
 module.exports = router;
