@@ -97,7 +97,7 @@ const SideBar = () => {
         <SideBarClass>
           <Container1>
             <LogoImage src={logo} alt="" />
-            <Title>Caique Carvalho</Title>
+            <Title>Karolina Almeida</Title>
             <Subtitle>Administrador</Subtitle>
           </Container1>
           <Container2>
@@ -114,8 +114,10 @@ const SideBar = () => {
               <Paragraph>Estoque</Paragraph>
             </Box>
             <Box>
-              <SmallImage src={relatorio} alt="" />
-              <Paragraph>Relatório</Paragraph>
+              <NavLink to="/relatorio">
+                <SmallImage src={relatorio} alt="" />
+              </NavLink>
+              <Paragraph>Relatorios</Paragraph>
             </Box>
             <Box>
               <NavLink to="/usuarios">

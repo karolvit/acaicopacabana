@@ -11,6 +11,7 @@ import App from "./App.jsx";
 import Estoque from "./rotas/Estoque.jsx";
 import Modal from "react-modal";
 import Usuarios from "./rotas/Usuarios.jsx";
+import Relatorio from "./rotas/Relatorio.jsx";
 
 Modal.setAppElement("#root");
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/usuarios",
         element: <Usuarios />,
+      },
+      {
+        path: "/relatorio",
+        element: <Relatorio />,
       },
     ],
   },

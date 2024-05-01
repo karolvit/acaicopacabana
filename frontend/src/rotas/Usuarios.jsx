@@ -92,6 +92,7 @@ const ModalCadastroProduto = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 40px;
+  width: 100%;
 
   h2 {
     font-size: 25px;
@@ -107,7 +108,7 @@ const Form = styled.div`
   label {
     margin: 5px 20px;
     height: 25px;
-    width: 560px;
+    max-width: 700px;
     color: #46295a;
     font-weight: 700;
     font-size: 20px;
@@ -201,7 +202,7 @@ const Usuarios = () => {
     setPesquisa(e.target.value);
   };
 
-  const filteredUsuarios = pesquisa
+  const filtroUsuarios = pesquisa
     ? usuarios.data?.filter((usuario) => {
         return (
           usuario.nome?.toLowerCase().includes(pesquisa.toLowerCase()) ||
@@ -232,15 +233,18 @@ const Usuarios = () => {
               style={{
                 content: {
                   borderRadius: "15px",
-                  width: "70%",
-                  height: "50%",
+                  maxWidth: "55%",
+                  height: "40%",
                   margin: "auto",
                   padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 },
               }}
             >
               <ModalCadastroProduto>
-                <h2>Cadastro de produto</h2>
+                <h2>Cadastro de usuario</h2>
               </ModalCadastroProduto>
               <form onSubmit={(e) => cadastrarUusuario(e)}>
                 <Form>
@@ -284,7 +288,7 @@ const Usuarios = () => {
                   </Form1>
                 </Form>
                 <ButaoEnvioUsuario>
-                  <input type="submit" value="Enviar produto" />
+                  <input type="submit" value="Enviar usuario" />
                 </ButaoEnvioUsuario>
               </form>
             </Modal>
@@ -298,10 +302,10 @@ const Usuarios = () => {
                 <th>Uusario</th>
               </tr>
             </thead>
-            {!filteredUsuarios || filteredUsuarios.length === 0 ? (
+            {!filtroUsuarios || filtroUsuarios.length === 0 ? (
               <p>Nenhum usuário encontrado</p>
             ) : (
-              filteredUsuarios.map((usuario) => (
+              filtroUsuarios.map((usuario) => (
                 <tbody key={usuario.id}>
                   <tr>
                     <td>
