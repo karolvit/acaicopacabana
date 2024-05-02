@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Usuarios from "./rotas/Usuarios";
 import Relatorio from "./rotas/Relatorio";
+import Configuracao from "./rotas/Configuracao";
 function App() {
   const { auth, loading } = useAuth();
 
@@ -41,6 +42,10 @@ function App() {
         <Route
           path="/relatorio"
           element={auth ? <Relatorio /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/configuracap"
+          element={auth ? <Configuracao /> : <Navigate to="/login" />}
         />
       </Routes>
     </div>
