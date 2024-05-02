@@ -44,7 +44,7 @@ function App() {
           element={auth ? <Relatorio /> : <Navigate to="/login" />}
         />
         <Route
-          path="/configuracap"
+          path="/configuracao"
           element={auth ? <Configuracao /> : <Navigate to="/login" />}
         />
       </Routes>

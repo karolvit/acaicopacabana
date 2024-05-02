@@ -68,8 +68,8 @@ const Container2 = styled.div`
 `;
 
 const SmallImage = styled.img`
-  width: 90px;
-  height: 90px;
+  width: 65px;
+  height: 65px;
   cursor: pointer;
 `;
 
@@ -92,9 +92,7 @@ const Footer = styled.div`
 
 const SideBar = () => {
   const userData = JSON.parse(localStorage.getItem("user"));
-  console.log(userData);
   const { user } = userData || {};
-  console.log(user);
 
   console.log(user.nome);
   return (
@@ -133,7 +131,7 @@ const SideBar = () => {
               <Paragraph>Usuários</Paragraph>
             </Box>
             <Box>
-              <NavLink to="/usuarios">
+              <NavLink to="/configuracao">
                 <SmallImage src={engrenagem} alt="" />
               </NavLink>
               <Paragraph>Configuração</Paragraph>
