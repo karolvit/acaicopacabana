@@ -6,7 +6,6 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require("../database/connection/cxx");
-const {SerialPort} = require('serialport');
 // const license = require('../system/verificarion');
 const { SerialPort } = require("serialport");
 //Teste rota de up
@@ -254,7 +253,14 @@ router.post("/login", (req, res) => {
         const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
         const decodedToken = jwt.decode(token);
         const expirationDate = new Date(decodedToken.exp * 1000);
-        res.json({ success: true, token: token, expiration: expirationDate });
+        res.json({ 
+          success: true,
+          token: token,
+          expiration: expirationDate,
+          nome: user.nome,
+          cargo: user.cargo,
+          adm: user.adm
+        });
       } else {
         res
           .status(401)
