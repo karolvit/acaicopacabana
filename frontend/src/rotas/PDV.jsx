@@ -276,7 +276,7 @@ const PDV = () => {
                 <div className="container-modal">
                   <h2>Deseja confirmar a finalização do pedido?</h2>
                   <div className="btn-modal">
-                    <button onClick={botaoCancelar} className="verde">
+                    <button onClick={botaoEnvio} className="verde">
                       Confirmar
                     </button>
                     <button
@@ -314,9 +314,9 @@ const PDV = () => {
                   <h2>Confirmação de pedido</h2>
                 </div>
                 <div className="container-modal">
-                  <h2>Deseja confirmar a finalização do pedido?</h2>
+                  <h2>Deseja cancelaro pedido?</h2>
                   <div className="btn-modal">
-                    <button onClick={botaoEnvio} className="verde">
+                    <button onClick={botaoCancelar} className="verde">
                       Confirmar
                     </button>
                     <button
