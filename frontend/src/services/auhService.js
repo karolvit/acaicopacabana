@@ -20,8 +20,12 @@ const login = async (data) => {
     console.log(error);
   }
 };
+const logout = () => {
+  localStorage.clear();
+};
 
 const authService = {
   login,
+  logout,
 };
 export default authService;
