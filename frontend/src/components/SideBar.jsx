@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import logo from "../assets/img/logo.jpg";
 import computador from "../assets/img/computador.png";
@@ -6,6 +6,9 @@ import pessoas from "../assets/img/pessoas.png";
 import relatorio from "../assets/img/relatorio.png";
 import estoque from "../assets/img/estoque.png";
 import engrenagem from "../assets/img/engrenagem.png";
+import sair from "../assets/img/sair.png";
+import { logout, reset } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -72,6 +75,11 @@ const SmallImage = styled.img`
   height: 65px;
   cursor: pointer;
 `;
+const SmallImage2 = styled.img`
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+`;
 
 const Paragraph = styled.p`
   font-size: 21px;
@@ -89,12 +97,24 @@ const MainContainer = styled.div`
 const Footer = styled.div`
   margin-top: 20px;
 `;
+const Configuracao = styled.div`
+  display: flex;
+  gap: 10px;
+`;
 
 const SideBar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userData = JSON.parse(localStorage.getItem("user"));
   const { user } = userData || {};
 
-  console.log(user.nome);
+  const botaoLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+
+    navigate("/login");
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -102,8 +122,8 @@ const SideBar = () => {
         <SideBarClass>
           <Container1>
             <LogoImage src={logo} alt="" />
-            <Title>{user.nome}</Title>
-            <Subtitle>{user.cargo}</Subtitle>
+            <Title>{user && user.nome}</Title>
+            <Subtitle>{user && user.cargo}</Subtitle>
           </Container1>
           <Container2>
             <Box>
@@ -131,10 +151,14 @@ const SideBar = () => {
               <Paragraph>Usuários</Paragraph>
             </Box>
             <Box>
-              <NavLink to="/configuracao">
-                <SmallImage src={engrenagem} alt="" />
-              </NavLink>
-              <Paragraph>Configuração</Paragraph>
+              <Configuracao>
+                <NavLink to="/configuracao">
+                  <SmallImage2 src={engrenagem} alt="" />
+                </NavLink>
+                <NavLink>
+                  <SmallImage2 src={sair} alt="" onClick={botaoLogout} />
+                </NavLink>
+              </Configuracao>
             </Box>
           </Container2>
           <Footer>
