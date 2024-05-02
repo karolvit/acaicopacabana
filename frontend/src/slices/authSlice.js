@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../services/auhService";
 
 const user = JSON.parse(localStorage.getItem("user"));
-
+console.log(user);
 const isTokenExpired = (user) => {
   if (user && user.expiration) {
     return new Date(user.expiration) < new Date();

@@ -5,6 +5,7 @@ import computador from "../assets/img/computador.png";
 import pessoas from "../assets/img/pessoas.png";
 import relatorio from "../assets/img/relatorio.png";
 import estoque from "../assets/img/estoque.png";
+import engrenagem from "../assets/img/engrenagem.png";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -90,6 +91,12 @@ const Footer = styled.div`
 `;
 
 const SideBar = () => {
+  const userData = JSON.parse(localStorage.getItem("user"));
+  console.log(userData);
+  const { user } = userData || {};
+  console.log(user);
+
+  console.log(user.nome);
   return (
     <>
       <GlobalStyle />
@@ -97,8 +104,8 @@ const SideBar = () => {
         <SideBarClass>
           <Container1>
             <LogoImage src={logo} alt="" />
-            <Title>Karolina Almeida</Title>
-            <Subtitle>Administrador</Subtitle>
+            <Title>{user.nome}</Title>
+            <Subtitle>{user.cargo}</Subtitle>
           </Container1>
           <Container2>
             <Box>
@@ -124,6 +131,12 @@ const SideBar = () => {
                 <SmallImage src={pessoas} alt="" />
               </NavLink>
               <Paragraph>Usuários</Paragraph>
+            </Box>
+            <Box>
+              <NavLink to="/usuarios">
+                <SmallImage src={engrenagem} alt="" />
+              </NavLink>
+              <Paragraph>Configuração</Paragraph>
             </Box>
           </Container2>
           <Footer>
