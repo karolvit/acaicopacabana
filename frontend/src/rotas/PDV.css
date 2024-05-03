@@ -184,7 +184,6 @@ footer {
 .box-flex label,
 .box-flex-2 label {
   font-size: 20px;
-
 }
 
 .kg {
@@ -250,24 +249,34 @@ footer {
 
 .modal-mensagem {
   background-color: #46295A;
-  height: 22px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 25%;
+
 }
 
 .container-modal {
   display: flex;
   flex-direction: column;
+
+
 }
 
 .container-modal h2 {
   text-align: center;
   margin-bottom: 5px;
+  font-size: 55px;
+
 }
 
 .modal-mensagem h2 {
-  font-size: 17px;
+  font-size: 25px;
   color: #F3EEF7;
   text-align: center;
-  font-weight: 100;
+  font-weight: 500;
+  margin-left: 20px;
 }
 
 .btn-modal {
@@ -289,8 +298,16 @@ footer {
 .container-modal-produto {
   display: flex;
   padding: 20px;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 30px;
 
+
+}
+
+.container-modal h2 {
+  color: #46295a;
+  font-size: 23px;
+  margin-top: 5px;
 }
 
 .container-modal-produto h2 {
@@ -303,6 +320,13 @@ footer {
 .container-modal-produto input {
   width: 500px;
   height: 25px;
+  border-bottom: 2px solid #46295A;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  outline-color: #46295A;
+  ;
 }
 
 .vermelho {
@@ -322,6 +346,10 @@ ul.produtos-pesquisa {
   align-items: center;
   flex-direction: column;
   list-style: none;
+  background-color: #3d0e5c;
+  color: #fff;
+  width: 50%;
+  margin-left: 30%;
 
 }
 

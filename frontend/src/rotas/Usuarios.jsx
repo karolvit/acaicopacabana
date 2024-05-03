@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
+import { FaPenToSquare } from "react-icons/fa6";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -89,7 +90,8 @@ const ModalCadastroProduto = styled.div`
   background-color: #46295a;
   height: 40px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 35%;
   align-items: center;
   margin-bottom: 40px;
   width: 100%;
@@ -98,7 +100,9 @@ const ModalCadastroProduto = styled.div`
     font-size: 25px;
     color: #f3eef7;
     text-align: center;
-    font-weight: 500;
+    margin-left: 10px;
+    font-weight: 900;
+    cursor: pointer;
   }
 `;
 const Form = styled.div`
@@ -143,7 +147,9 @@ const ButaoEnvioUsuario = styled.div`
     transition: 1s;
   }
 `;
-
+const IconeEditavel = styled(FaPenToSquare)`
+  cursor: pointer;
+`;
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
@@ -244,6 +250,7 @@ const Usuarios = () => {
               }}
             >
               <ModalCadastroProduto>
+                <h2 onClick={fecharModal}>X</h2>
                 <h2>Cadastro de usuario</h2>
               </ModalCadastroProduto>
               <form onSubmit={(e) => cadastrarUusuario(e)}>
@@ -300,6 +307,7 @@ const Usuarios = () => {
                 <th>Nome</th>
                 <th>Cargo</th>
                 <th>Uusario</th>
+                <th>Editar usuario</th>
               </tr>
             </thead>
             {!filtroUsuarios || filtroUsuarios.length === 0 ? (
@@ -318,6 +326,12 @@ const Usuarios = () => {
                       <p>{usuario.cargo}</p>
                     </td>
                     <td>{usuario.usuario}</td>
+                    <td>
+                      {" "}
+                      <p>
+                        <IconeEditavel color="#46295a" onClick={abrirModal} />
+                      </p>
+                    </td>
                   </tr>
                 </tbody>
               ))
