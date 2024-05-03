@@ -566,4 +566,69 @@ router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res
       }
     })
   })
+
+  router.get("/lvendas", (req, res) => {
+    const query = `
+      SELECT
+        pedno.pedido,
+        produto.nome,
+        pedno.unino,
+        pedno.valor_unit,
+        DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
+      FROM 
+        pedno
+      INNER JOIN
+        produto
+      ON
+        pedno.prodno = produto.codigo_produto
+      WHERE
+        pedno.pedido = ?
+    `;
+
+    const { pedido } = req.body;
+    const values = [ pedido ];
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Entre em contato com administrador']});
+      } else {
+        res.status(200).json(results);
+      }
+    })
+  })
+
+  router.get("/rvendas", (req, res) => {
+    const query = `
+    SELECT
+      pedno.pedido,
+      SUM(pedno.valor_unit) as total,
+      usuario.nome as operador,
+      DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda,
+    FROM
+      pedno
+    INNER JOIN
+      produto
+    ON
+      pedno.produto = produto.codigo_produto
+    INNER JOIN 
+      usuario
+    ON 
+      pedno.userno = usuario.id
+    WHERE
+      pedno.data_fechamento BETWEEN ? AND ?
+    GROUP BY 
+      (pedido)`;
+
+    const { data_inicial, data_final } = req.body;
+    const values = [ data_inicial, data_final];
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Erro no sistema, contate o administrador']})
+      } else {
+        res.status(200).json(results);
+      }
+    })
+  })
+  
 module.exports = router;
