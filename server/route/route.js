@@ -556,7 +556,7 @@ router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res
   router.get("/produtonome", (req, res) => {
     const query = "SELECT * FROM produto WHERE nome LIKE ? ";
     const { nome } = req.body;
-    const values [ `${nome}%`];
+    const values = [ `${nome}%`];
 
     pool.query(query, values, (err, results) => {
       if (err) {
