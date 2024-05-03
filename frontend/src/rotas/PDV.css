@@ -249,6 +249,7 @@ footer {
 
 .modal-mensagem {
   background-color: #46295A;
+  flex-direction: column;
   height: 40px;
   display: flex;
   align-items: center;

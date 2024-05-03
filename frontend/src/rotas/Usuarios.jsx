@@ -6,6 +6,7 @@ import apiAcai from "../axios/config";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { FaPenToSquare } from "react-icons/fa6";
+import { MdDelete } from "react-icons/md";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -308,6 +309,7 @@ const Usuarios = () => {
                 <th>Cargo</th>
                 <th>Uusario</th>
                 <th>Editar usuario</th>
+                <th>Deletar usuario</th>
               </tr>
             </thead>
             {!filtroUsuarios || filtroUsuarios.length === 0 ? (
@@ -331,6 +333,11 @@ const Usuarios = () => {
                       <p>
                         <IconeEditavel color="#46295a" onClick={abrirModal} />
                       </p>
+                    </td>
+                    <td>
+                      <span style={{ cursor: "pointer" }}>
+                        <MdDelete color="#46295a" />
+                      </span>
                     </td>
                   </tr>
                 </tbody>

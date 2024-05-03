@@ -413,7 +413,7 @@ const PDV = () => {
                   style={{
                     content: {
                       width: "40%",
-                      height: "10%",
+                      height: "12%",
                       margin: "auto",
                       padding: 0,
                     },
