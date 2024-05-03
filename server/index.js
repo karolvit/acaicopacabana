@@ -14,7 +14,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(route)
 
 // Mudar variável para pegar do arquivo env 
-const port = 3050;
+const port = 21176;
 
 
 // Iniciar Servidor 
