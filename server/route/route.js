@@ -630,5 +630,18 @@ router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res
       }
     })
   })
-  
+
+  router.delete("/usuario", (req, res) => {
+    const query = `DELETE FROM usuario WHERE id = ?`;
+    const { id } = req.body;
+    const values = [ id];
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Contate o administrador']})
+      } else {
+        res.status(200).json({ success: true, message: ['Usuario excluido com sucesso']})
+      }
+    })
+  })
 module.exports = router;
