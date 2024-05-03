@@ -27,6 +27,7 @@ const PDV = () => {
   const [precoacai, setPrecoAcai] = useState("");
   const [pesoBalanca, setPesoBalanca] = useState("");
   const cameraRef = useRef();
+  const [modalCancelamento, setModalCancelamento] = useState(false);
 
   const capturarImagem = async (e) => {
     e.preventDefault();
@@ -66,6 +67,12 @@ const PDV = () => {
 
   const fecharModalPesquisa = () => {
     setModalPesquisaAberto(false);
+  };
+  const fecharModalCancelamento = () => {
+    setModalCancelamento(false);
+  };
+  const abrirModalCancelamento = () => {
+    setModalCancelamento(true);
   };
 
   const adicionarProduto = () => {
@@ -173,15 +180,17 @@ const PDV = () => {
     }
   };
   const handlePesquisaProduto = async (e) => {
-    e.preventDefault();
-    try {
-      const encodedPesquisaProduto = encodeURIComponent(pesquisaProduto);
-      const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
+    if (e.key == "Enter") {
+      e.preventDefault();
+      try {
+        const encodedPesquisaProduto = encodeURIComponent(pesquisaProduto);
+        const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
 
-      setResultadoPesquisaProduto(res.data.message);
-      console.log(res.data.message);
-    } catch (error) {
-      console.error("Erro ao encontrar produto:", error.message);
+        setResultadoPesquisaProduto(res.data.message);
+        console.log(res.data.message);
+      } catch (error) {
+        console.error("Erro ao encontrar produto:", error.message);
+      }
     }
   };
 
@@ -264,7 +273,7 @@ const PDV = () => {
                 style={{
                   content: {
                     width: "50%",
-                    height: "10%",
+                    height: "120px",
                     margin: "auto",
                     padding: 0,
                   },
@@ -295,32 +304,32 @@ const PDV = () => {
                 type="button"
                 value="CANCELAR"
                 id="vermelho"
-                onClick={abrirModalConfirmacao}
+                onClick={abrirModalCancelamento}
               />
               <Modal
-                isOpen={modalConfirmacaoAberto}
-                onRequestClose={fecharModalConfirmacao}
+                isOpen={modalCancelamento}
+                onRequestClose={fecharModalCancelamento}
                 contentLabel="Confirmar Pedido"
                 style={{
                   content: {
                     width: "50%",
-                    height: "20%",
+                    height: "120px",
                     margin: "auto",
                     padding: 0,
                   },
                 }}
               >
                 <div className="modal-mensagem">
-                  <h2>Confirmação de pedido</h2>
+                  <h2>Confirmação de cancelamento</h2>
                 </div>
                 <div className="container-modal">
-                  <h2>Deseja cancelaro pedido?</h2>
+                  <h2>Deseja cancelar o pedido?</h2>
                   <div className="btn-modal">
                     <button onClick={botaoCancelar} className="verde">
                       Confirmar
                     </button>
                     <button
-                      onClick={fecharModalConfirmacao}
+                      onClick={fecharModalCancelamento}
                       className="vermelho"
                     >
                       Cancelar
@@ -339,14 +348,16 @@ const PDV = () => {
                 contentLabel="Confirmar Pedido"
                 style={{
                   content: {
-                    maxWidth: "70%",
-                    maxHeight: "20%",
+                    width: "60%",
+                    maxHeight: "100%",
                     margin: "auto",
                     padding: 0,
+                    overflowX: "auto",
                   },
                 }}
               >
                 <div className="modal-mensagem">
+                  <h2 onClick={fecharModalPesquisa}>X</h2>
                   <h2>Digite o produto que deseja pesquisar</h2>
                 </div>
                 <div className="container-modal-produto">
@@ -354,9 +365,11 @@ const PDV = () => {
                   <input
                     type="text"
                     value={pesquisaProduto}
-                    onChange={(e) => setPesquisaProduto(e.target.value)}
+                    onChange={(e) => {
+                      setPesquisaProduto(e.target.value);
+                    }}
+                    onKeyPress={handlePesquisaProduto}
                   />
-                  <button onClick={handlePesquisaProduto}>Pesquisar</button>
                 </div>
                 <ul className="produtos-pesquisa">
                   {resultadoPesquisaProduto &&
@@ -383,6 +396,13 @@ const PDV = () => {
                   onChange={(e) => {
                     setProduto(e.target.value);
                     verificarCodigoProduto(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handlePesquisaProduto(e);
+                      handleProdutoSelecionado(e);
+                    }
                   }}
                   value={produto}
                 />
@@ -429,6 +449,7 @@ const PDV = () => {
                   type="number"
                   onChange={(e) => setUnino(e.target.value)}
                   value={unino}
+                  required
                 />
               </div>
               <div className="box-flex">
@@ -437,6 +458,7 @@ const PDV = () => {
                   type="number"
                   value={precoUnitario}
                   onChange={(e) => setPrecoUnitario(e.target.value)}
+                  disabled
                 />
               </div>
             </form>
@@ -448,6 +470,7 @@ const PDV = () => {
                     type="text"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
+                    disabled
                   />
                   <input
                     className="botao-add"

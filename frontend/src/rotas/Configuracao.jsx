@@ -92,8 +92,6 @@ const Configuracao = () => {
         },
       });
 
-      console.log(res);
-      console.log("Cliquei");
       if (res.status === 201) {
         toast.success(res.data.message[0]);
         fechaModal();

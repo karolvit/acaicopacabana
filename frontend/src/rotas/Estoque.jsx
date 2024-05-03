@@ -100,7 +100,8 @@ const ModalCadastroProduto = styled.div`
   background-color: #46295a;
   height: 40px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 35%;
   align-items: center;
   margin-bottom: 40px;
   width: 100%;
@@ -109,7 +110,9 @@ const ModalCadastroProduto = styled.div`
     font-size: 25px;
     color: #f3eef7;
     text-align: center;
-    font-weight: 500;
+    margin-left: 10px;
+    font-weight: 900;
+    cursor: pointer;
   }
 `;
 const Form = styled.div`
@@ -249,6 +252,7 @@ const Estoque = () => {
               }}
             >
               <ModalCadastroProduto>
+                <h2 onClick={fecharModal}>X</h2>
                 <h2>Cadastro de produto</h2>
               </ModalCadastroProduto>
               <form onSubmit={(e) => cadastrarProduto(e)}>
