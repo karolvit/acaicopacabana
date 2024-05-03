@@ -111,7 +111,7 @@ router.get(
 );
 
 router.get("/estoque", (req, res) => {
-  const query = `select nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,SUM(quantidade) as quantidade,data_venda,img_produto
+  const query = `select nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,SUM(quantidade) as quantidade,img_produto
 from produto
 group by nome;`;
 
