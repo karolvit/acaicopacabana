@@ -91,7 +91,7 @@ router.get(
   "/alluser",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const query = `SELECT * FROM usuario`;
+    const query = `SELECT id, nome, usuario as nome_usuario, senha, cargo, adm FROM usuario`;
 
     pool.query(query, (err, results) => {
       if (err) {
@@ -203,7 +203,7 @@ router.get("/produto", (req, res) => {
 });
 
 router.post("/user", async (req, res) => {
-  const { nome, usuario, senha, cargo } = req.body;
+  const { nome, nome_usuario, senha, cargo } = req.body;
   const hashedsenha = await bcrypt.hash(senha, 10);
 
   bcrypt.hash(senha, 10, (err, hash) => {
@@ -528,8 +528,8 @@ router.get("/peso", (req, res) => {
 
 router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res) => {
             const query = `UPDATE usuario set usuario = ? AND senha = ? WHERE id = ? `;
-            const { usuario, senha, id } = req.body;
-            const values = [ usuario, senha, id];
+            const { nome_usuario, senha, id } = req.body;
+            const values = [ nome_usuario, senha, id];
 
   pool.query(query, values, (err, results) => {
       if (err) {
