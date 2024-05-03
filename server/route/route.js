@@ -526,4 +526,44 @@ router.get("/peso", (req, res) => {
   res.send({ peso: weightData });
 });
 
+router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res) => {
+            const query = `UPDATE usuario set usuario = ? AND senha = ? WHERE id = ? `;
+            const { usuario, senha, id } = req.body;
+            const values = [ usuario, senha, id];
+
+  pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+      } else {
+        res.status(201).json({ success: true, message: ['Usuário alterado com sucesso']})
+      }
+  })
+  })
+  router.get("/produtoid", (req, res) => {
+    const query = "SELECT * FROM produto WHERE codigo_produto = ?";
+    const { codigo_produto } = req.body;
+    const values = [codigo_produto];
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Por favor entrar em contato com o administrador']})
+      } else {
+        res.status(200).json(results)
+      }
+    })
+  })
+
+  router.get("/produtonome", (req, res) => {
+    const query = "SELECT * FROM produto WHERE nome LIKE ? ";
+    const {`${nome}%`} = req.body;
+    const values [nome];
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+      } else {
+        res.status(200).json(results)
+      }
+    })
+  })
 module.exports = router;
