@@ -154,8 +154,10 @@ const IconeEditavel = styled(FaPenToSquare)`
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [id, setId] = useState("");
   const [nome, setNome] = useState("");
-  const [usuario, setUsuario] = useState("");
+  const [nome_usuario, setNome_Usuario] = useState("");
   const [cargo, setCargo] = useState("");
   const [senha, setSenha] = useState("");
   const [pesquisa, setPesquisa] = useState("");
@@ -184,13 +186,38 @@ const Usuarios = () => {
   const fecharModal = () => {
     setModalAberto(false);
   };
+  const editarUsuario = async (e) => {
+    e.preventDefault();
+
+    try {
+      const usuarioEditado = {
+        id,
+        nome_usuario,
+        senha,
+      };
+      const token = localStorage.getItem("token");
+      const res = await apiAcai.put("/user", usuarioEditado, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 201) {
+        toast.success(res.data.message[0]);
+        fechaModalEdi();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const cadastrarUusuario = async (e) => {
     e.preventDefault();
 
     try {
       const usuarioCadastro = {
+        id,
         nome,
-        usuario,
+        nome_usuario,
         senha,
         cargo,
       };
@@ -218,6 +245,17 @@ const Usuarios = () => {
         );
       })
     : usuarios.data;
+
+  const abrirModalEdi = (userId, nome, senha, nomeUsuario) => {
+    setModalEdit(true);
+    console.log("ID do usuário:", userId, nomeUsuario, senha);
+    setId(userId);
+    setSenha(senha);
+    setNome_Usuario(nomeUsuario);
+  };
+  const fechaModalEdi = () => {
+    setModalEdit(false);
+  };
 
   return (
     <>
@@ -281,8 +319,8 @@ const Usuarios = () => {
                     <input
                       type="text"
                       placeholder="Digite o usario de login"
-                      value={usuario}
-                      onChange={(e) => setUsuario(e.target.value)}
+                      value={nome_usuario}
+                      onChange={(e) => setNome_Usuario(e.target.value)}
                     />
                   </Form1>
                   <Form1>
@@ -327,12 +365,79 @@ const Usuarios = () => {
                     <td>
                       <p>{usuario.cargo}</p>
                     </td>
-                    <td>{usuario.usuario}</td>
+                    <td>{usuario.nome_usuario}</td>
                     <td>
                       {" "}
                       <p>
-                        <IconeEditavel color="#46295a" onClick={abrirModal} />
+                        <IconeEditavel
+                          color="#46295a"
+                          onClick={() =>
+                            abrirModalEdi(
+                              usuario.id,
+                              usuario.nome_usuario,
+                              usuario.senha
+                            )
+                          }
+                        />
                       </p>
+                      <Modal
+                        isOpen={modalEdit}
+                        onRequestClose={fechaModalEdi}
+                        contentLabel="Confirmar Pedido"
+                        style={{
+                          content: {
+                            borderRadius: "15px",
+                            maxWidth: "55%",
+                            height: "40%",
+                            margin: "auto",
+                            padding: 0,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          },
+                        }}
+                      >
+                        <ModalCadastroProduto>
+                          <h2 onClick={fechaModalEdi}>X</h2>
+                          <h2>Editação de usuario</h2>
+                        </ModalCadastroProduto>
+                        <form onSubmit={(e) => editarUsuario(e)}>
+                          <Form>
+                            <Form1>
+                              <label>ID</label>
+                              <input
+                                type="text"
+                                placeholder="ID do Usuário"
+                                value={id}
+                                onChange={(e) => setId(e.target.value)}
+                              />
+                            </Form1>
+                            <Form1>
+                              <label>Usuario</label>
+                              <input
+                                type="text"
+                                placeholder="ID do Usuário"
+                                value={nome_usuario}
+                                onChange={(e) =>
+                                  setNome_Usuario(e.target.value)
+                                }
+                              />
+                            </Form1>
+                            <Form1>
+                              <label>Senha</label>
+                              <input
+                                type="text"
+                                placeholder="ID do Usuário"
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                              />
+                            </Form1>
+                          </Form>
+                          <ButaoEnvioUsuario>
+                            <input type="submit" value="Enviar usuario" />
+                          </ButaoEnvioUsuario>
+                        </form>
+                      </Modal>
                     </td>
                     <td>
                       <span style={{ cursor: "pointer" }}>
