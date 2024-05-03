@@ -216,7 +216,7 @@ router.post("/user", async (req, res) => {
     }
 
     const query = `INSERT INTO usuario (nome, usuario, senha, cargo) VALUES (?, ?, ?, ?)`;
-    const values = [nome, usuario, hashedsenha, cargo];
+    const values = [nome, nome_usuario, hashedsenha, cargo];
 
     pool.query(query, values, (err, results) => {
       if (err) {
