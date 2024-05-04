@@ -198,7 +198,17 @@ router.post("/user", async (req, res) => {
 router.post("/login", (req, res) => {
   const { usuario, senha } = req.body;
 
-  const query = "SELECT * FROM usuario WHERE usuario = ?";
+  const query = `
+  SELECT 
+    id, 
+    SELECT UPPER(nome) AS nome, 
+    usuario, 
+    senha, 
+    SELECT UPPER(cargo) AS cargo, 
+    adm
+  FROM usuario
+  WHERE usuario = ?
+  `;
 
   pool.query(query, [usuario], async (err, results) => {
     if (err) {
