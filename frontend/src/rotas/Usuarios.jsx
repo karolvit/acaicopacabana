@@ -161,6 +161,8 @@ const Usuarios = () => {
   const [cargo, setCargo] = useState("");
   const [senha, setSenha] = useState("");
   const [pesquisa, setPesquisa] = useState("");
+  const [deletarUsuario, setDeletarUsuario] = useState("");
+  const [modalConfirmacao, setModalConfirmacao] = useState(false);
   useEffect(() => {
     const carregarUsuarios = async () => {
       try {
@@ -185,6 +187,12 @@ const Usuarios = () => {
 
   const fecharModal = () => {
     setModalAberto(false);
+  };
+  const fecharModalConfirmacao = () => {
+    setModalConfirmacao(false);
+  };
+  const abrirModalConfirmacao = () => {
+    setModalConfirmacao(true);
   };
   const editarUsuario = async (e) => {
     e.preventDefault();
@@ -232,6 +240,31 @@ const Usuarios = () => {
       toast.error("Erro");
     }
   };
+  const botaoDeleteUsuario = async (userId) => {
+    try {
+      setDeletarUsuario(userId);
+      const usuarioDelete = {
+        id: userId,
+      };
+      const token = localStorage.getItem("token");
+      const res = await apiAcai.delete(
+        "/usuario",
+        { data: usuarioDelete },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        toast.success(res.data.message[0]);
+        console.log("Cliquei", res.data.message[0]);
+        setModalConfirmacao(false);
+      }
+    } catch (error) {
+      toast.error("Por favor entrar em contato com admistrador do sistema");
+    }
+  };
   const handlePesquisaChange = (e) => {
     setPesquisa(e.target.value);
   };
@@ -246,7 +279,7 @@ const Usuarios = () => {
       })
     : usuarios.data;
 
-  const abrirModalEdi = (userId, nome, senha, nomeUsuario) => {
+  const abrirModalEdi = (userId, senha, nomeUsuario) => {
     setModalEdit(true);
     console.log("ID do usuário:", userId, nomeUsuario, senha);
     setId(userId);
@@ -416,8 +449,7 @@ const Usuarios = () => {
                               <label>Usuario</label>
                               <input
                                 type="text"
-                                placeholder="ID do Usuário"
-                                value={nome_usuario}
+                                placeholder="Nova senha de usuario"
                                 onChange={(e) =>
                                   setNome_Usuario(e.target.value)
                                 }
@@ -426,23 +458,59 @@ const Usuarios = () => {
                             <Form1>
                               <label>Senha</label>
                               <input
-                                type="text"
-                                placeholder="ID do Usuário"
-                                value={senha}
+                                type="password"
+                                placeholder="Senha nova"
                                 onChange={(e) => setSenha(e.target.value)}
                               />
                             </Form1>
                           </Form>
                           <ButaoEnvioUsuario>
-                            <input type="submit" value="Enviar usuario" />
+                            <input type="submit" value="Enviar atualização" />
                           </ButaoEnvioUsuario>
                         </form>
                       </Modal>
                     </td>
                     <td>
                       <span style={{ cursor: "pointer" }}>
-                        <MdDelete color="#46295a" />
+                        <MdDelete
+                          color="#46295a"
+                          onClick={abrirModalConfirmacao}
+                        />
                       </span>
+                      <Modal
+                        isOpen={modalConfirmacao}
+                        onRequestClose={fecharModalConfirmacao}
+                        contentLabel="Confirmar Pedido"
+                        style={{
+                          content: {
+                            width: "50%",
+                            height: "120px",
+                            margin: "auto",
+                            padding: 0,
+                          },
+                        }}
+                      >
+                        <div className="modal-mensagem">
+                          <h2>Confirmação de exlusão</h2>
+                        </div>
+                        <div className="container-modal">
+                          <h2>Deseja confirmar a exclusão do pedido?</h2>
+                          <div className="btn-modal">
+                            <button
+                              onClick={() => botaoDeleteUsuario(usuario.id)}
+                              className="verde"
+                            >
+                              Confirmar
+                            </button>
+                            <button
+                              onClick={fecharModalConfirmacao}
+                              className="vermelho"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </Modal>
                     </td>
                   </tr>
                 </tbody>
