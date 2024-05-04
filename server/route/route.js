@@ -114,7 +114,6 @@ router.post("/produto", (req, res) => {
   const {
     nome,
     categoria,
-    codigo_produto,
     codigo_personalizado,
     preco_custo,
     tipo,
@@ -125,14 +124,13 @@ router.post("/produto", (req, res) => {
   const values = [
     nome,
     categoria,
-    codigo_produto,
     codigo_personalizado,
     preco_custo,
     tipo,
     quantidade,
     img_produto,
   ];
-  const query = `INSERT INTO produto (nome,categoria,codigo_produto,codigo_personalizado,preco_custo,tipo,quantidade,img_produto) VALUES (?,?,?,?,?,?,?,?)`;
+  const query = `INSERT INTO produto (nome,categoria,codigo_personalizado,preco_custo,tipo,quantidade,img_produto) VALUES (?,?,?,?,?,?,?)`;
 
   pool.query(query, values, (err, results) => {
     if (err) {
