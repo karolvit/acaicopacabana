@@ -175,7 +175,7 @@ router.post("/produto", (req, res) => {
     if (err) {
       res
         .status(400)
-        .json({ success: false, error: ["Erro ao cadastrar produto"] });
+        .json({ success: false, error: ["Erro ao cadastrar produto", err] });
     } else {
       res
         .status(201)
