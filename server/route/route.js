@@ -699,4 +699,31 @@ router.put("/param/estoque", (req, res) => {
         }
     })
 })
+
+// Testando WebSocket para balança 
+
+const WebSocket = require('ws');
+
+const serverURL = 'ws://192.168.88.200:8080'; // Ajuste para o endereço do PC local
+const ws = new WebSocket(serverURL);
+
+ws.on('open', () => {
+    console.log('Conectado ao servidor WebSocket');
+
+    // Enviar uma mensagem para solicitar dados, se necessário
+    ws.send('Solicitando dados');
+});
+
+ws.on('message', (message) => {
+    console.log('Dados recebidos do PC local:', message);
+    // Processar os dados recebidos do PC local
+});
+
+ws.on('close', () => {
+    console.log('Conexão WebSocket fechada');
+});
+
+ws.on('error', (err) => {
+    console.error('Erro no WebSocket:', err);
+});
 module.exports = router;
