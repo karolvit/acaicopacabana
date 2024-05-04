@@ -130,7 +130,7 @@ router.post("/produto", (req, res) => {
     quantidade,
     img_produto,
   ];
-  const query = `INSERT INTO produto (nome,categoria,codigo_personalizado,preco_custo,tipo,quantidade,img_produto) VALUES (?,?,?,?,?,?,?)`;
+  const query = `INSERT INTO produto (codigo_produto,nome,categoria,codigo_personalizado,preco_custo,tipo,quantidade,img_produto) VALUES (null,?,?,?,?,?,?,?)`;
 
   pool.query(query, values, (err, results) => {
     if (err) {
