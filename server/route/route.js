@@ -24,42 +24,6 @@ passport.use(
   })
 );
 
-router.post("/estoque", (req, res) => {
-  const query = `INSERT INTO estoque (nome, categoria, data_compra, data_validade, quantidade, valor_compra) VALUES (?, ?, ?, ? ,?, ?)`;
-  const {
-    nome,
-    categoria,
-    data_compra,
-    data_validade,
-    quantidade,
-    valor_compra,
-  } = req.body;
-  const values = [
-    nome,
-    categoria,
-    data_compra,
-    data_validade,
-    quantidade,
-    valor_compra,
-  ];
-
-  pool.query(query, values, (err, results) => {
-    if (err) {
-      console.error("Error executing query:", err);
-      res.status(500).json({
-        success: false,
-        error: ["Erro ao inserir produto no estoque"],
-      });
-      return;
-    }
-
-    console.log(results);
-    res
-      .status(200)
-      .json({ success: true, data: [" Produto inserido com sucesso "] });
-  });
-});
-
 router.get(
   "/user",
   passport.authenticate("jwt", { session: false }),
