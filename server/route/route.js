@@ -201,10 +201,10 @@ router.post("/login", (req, res) => {
   const query = `
   SELECT 
     id, 
-    SELECT UPPER(nome) AS nome, 
+    UPPER(nome) AS nome, 
     usuario, 
     senha, 
-    SELECT UPPER(cargo) AS cargo, 
+    UPPER(cargo) AS cargo, 
     adm
   FROM usuario
   WHERE usuario = ?
