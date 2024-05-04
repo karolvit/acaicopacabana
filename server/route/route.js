@@ -644,4 +644,60 @@ router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res
       }
     })
   })
+
+ router.get("/red", (req, res) => {
+    const query = "SELECT * FROM sys WHERE id = 2"
+    const { id } = req.body;
+    const values = [ id ]
+
+    pool.query(query, values, (err, results) => {
+        if (err) {
+            res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+        } else {
+            res.status(200).json(results)
+        }
+    })
+})
+
+router.get("/yellow", (req, res) => {
+    const query = "SELECT * FROM sys WHERE id = 3"
+    const { id } = req.body;
+    const values = [ id ]
+
+    pool.query(query, values, (err, results) => {
+        if (err) {
+            res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+        } else {
+            res.status(200).json(results)
+        }
+    })
+})
+
+router.get("/blue", (req, res) => {
+    const query = "SELECT * FROM sys WHERE id = 4"
+    const { id } = req.body;
+    const values = [ id ]
+
+    pool.query(query, values, (err, results) => {
+        if (err) {
+            res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+        } else {
+            res.status(200).json(results)
+        }
+    })
+})
+
+router.put("/param/estoque", (req, res) => {
+    const query = "UPDATE sys SET val = ? WHERE id = ?"
+    const { val, id } = req.body;
+    const values = [ val, id ]
+
+    pool.query(query, values, (err, results) => {
+        if (err) {
+            res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+        } else {
+            res.status(200).json({ success: true, message: ['Parametros alterado com sucesso']})
+        }
+    })
+})
 module.exports = router;
