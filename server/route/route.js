@@ -658,30 +658,25 @@ router.put("/param/estoque", (req, res) => {
     })
 })
 
-// Testando WebSocket para balança 
+router.put("/attestoque", (req, res) => {
+  const query = `
+  INSERT INTO 
+    produto (codigo_produto, quantidade)
+  VALUES 
+    (?, ?)
+  ON DUPLICATE KEY UPDATE
+    quantidade = quantidade + VALUES(quantidade);
+  `
+  const { codigo_produto, quantidade } = req.body;
+  const values = [ codigo_produto, quantidade ];
 
-const WebSocket = require('ws');
+  pool.query(query, values, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, error:[' Por favor contate o administrador']})
+    } else {
+      res.status(201).json({ success: true, message: ['Estoque atualizado com sucesso']})
+    }
+  })
+})
 
-const serverURL = 'ws://192.168.88.200:8080'; // Ajuste para o endereço do PC local
-const ws = new WebSocket(serverURL);
-
-ws.on('open', () => {
-    console.log('Conectado ao servidor WebSocket');
-
-    // Enviar uma mensagem para solicitar dados, se necessário
-    ws.send('Solicitando dados');
-});
-
-ws.on('message', (message) => {
-    console.log('Dados recebidos do PC local:', message);
-    // Processar os dados recebidos do PC local
-});
-
-ws.on('close', () => {
-    console.log('Conexão WebSocket fechada');
-});
-
-ws.on('error', (err) => {
-    console.error('Erro no WebSocket:', err);
-});
 module.exports = router;
