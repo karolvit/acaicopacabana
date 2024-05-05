@@ -88,14 +88,6 @@ const TdImg = styled.td`
   display: flex;
   align-items: center;
 `;
-const Status = styled.div`
-  border-radius: 50%;
-  height: 20px;
-  width: 20px;
-  background: red;
-  margin: auto;
-`;
-
 const ModalCadastroProduto = styled.div`
   background-color: #46295a;
   height: 40px;
@@ -168,6 +160,9 @@ const Estoque = () => {
   const [quantidade, setQuantidade] = useState("");
   const [img_produto, setImg_Produto] = useState("");
   const [pesquisa, setPesquisa] = useState("");
+  const [estoqueRed, setEstoqueRed] = useState("");
+  const [estoqueYellow, setEstoqueYellow] = useState("");
+  const [estoqueBlue, setEstoqueBlue] = useState("");
   useEffect(() => {
     const carregarEstoque = async () => {
       try {
@@ -180,6 +175,63 @@ const Estoque = () => {
     };
     carregarEstoque();
   }, []);
+
+  useEffect(() => {
+    const carregandoRed = async () => {
+      try {
+        const res = await apiAcai.get("/red");
+        console.log("Sucesso", res.data[0].val);
+        setEstoqueRed(res.data[0].val);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoRed();
+  }, []);
+
+  useEffect(() => {
+    const carregandoYellow = async () => {
+      try {
+        const res = await apiAcai.get("/yellow");
+        console.log("Sucesso", res.data[0].val);
+        setEstoqueYellow(res.data[0].val);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoYellow();
+  }, []);
+  useEffect(() => {
+    const carregandoBlue = async () => {
+      try {
+        const res = await apiAcai.get("/blue");
+        console.log("Sucesso", res.data[0].val);
+        setEstoqueBlue(res.data[0].val);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoBlue();
+  }, []);
+
+  const Status = styled.div`
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin: auto;
+    background: ${({ quantidade }) => {
+      const red = parseInt(estoqueRed);
+      const yellow = parseInt(estoqueYellow);
+      const blue = parseInt(estoqueBlue);
+      if (quantidade <= red) {
+        return "red";
+      } else if (quantidade <= yellow) {
+        return "yellow";
+      } else if (quantidade >= blue) {
+        return "green";
+      }
+    }};
+  `;
 
   const abrirModal = () => {
     setModalAberto(true);
@@ -195,8 +247,6 @@ const Estoque = () => {
       const produtosCadastro = {
         nome,
         categoria,
-        codigo_produto,
-        codigo_personalizado: 1,
         preco_custo,
         tipo: 1,
         quantidade,
@@ -345,7 +395,12 @@ const Estoque = () => {
                     </TdImg>
                     <td>Líquido</td>
                     <td>
-                      <Status></Status>
+                      <Status
+                        quantidade={produto.quantidade}
+                        estoqueRed={estoqueRed}
+                        estoqueYellow={estoqueYellow}
+                        estoqueBlue={estoqueBlue}
+                      ></Status>
                     </td>
                     <td>
                       <p>{produto.quantidade}</p>
