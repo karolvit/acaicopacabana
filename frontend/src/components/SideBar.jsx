@@ -126,40 +126,72 @@ const SideBar = () => {
             <Subtitle>{user && user.cargo}</Subtitle>
           </Container1>
           <Container2>
-            <Box>
-              <NavLink to="/pdv">
-                <SmallImage src={computador} alt="" />
-              </NavLink>
-              <Paragraph>PDV</Paragraph>
-            </Box>
-            <Box>
-              <NavLink to="/estoque">
-                <SmallImage src={estoque} alt="" />
-              </NavLink>
-              <Paragraph>Estoque</Paragraph>
-            </Box>
-            <Box>
-              <NavLink to="/relatorio">
-                <SmallImage src={relatorio} alt="" />
-              </NavLink>
-              <Paragraph>Relatorios</Paragraph>
-            </Box>
-            <Box>
-              <NavLink to="/usuarios">
-                <SmallImage src={pessoas} alt="" />
-              </NavLink>
-              <Paragraph>Usuários</Paragraph>
-            </Box>
-            <Box>
-              <Configuracao>
-                <NavLink to="/configuracao">
-                  <SmallImage2 src={engrenagem} alt="" />
-                </NavLink>
-                <NavLink>
-                  <SmallImage2 src={sair} alt="" onClick={botaoLogout} />
-                </NavLink>
-              </Configuracao>
-            </Box>
+            {user && user.adm === 1 ? (
+              <>
+                <Box>
+                  <NavLink to="/pdv">
+                    <SmallImage src={computador} alt="" />
+                  </NavLink>
+                  <Paragraph>PDV</Paragraph>
+                </Box>
+                <Box>
+                  <NavLink to="/estoque">
+                    <SmallImage src={estoque} alt="" />
+                  </NavLink>
+                  <Paragraph>Estoque</Paragraph>
+                </Box>
+                <Box>
+                  <NavLink to="/relatorio">
+                    <SmallImage src={relatorio} alt="" />
+                  </NavLink>
+                  <Paragraph>Relatorios</Paragraph>
+                </Box>
+                <Box>
+                  <NavLink to="/usuarios">
+                    <SmallImage src={pessoas} alt="" />
+                  </NavLink>
+                  <Paragraph>Usuários</Paragraph>
+                </Box>
+                <Box>
+                  <Configuracao>
+                    <NavLink to="/configuracao">
+                      <SmallImage2 src={engrenagem} alt="" />
+                    </NavLink>
+                    <NavLink>
+                      <SmallImage2 src={sair} alt="" onClick={botaoLogout} />
+                    </NavLink>
+                  </Configuracao>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box>
+                  <NavLink to="/pdv">
+                    <SmallImage
+                      src={computador}
+                      alt=""
+                      style={{ width: "80px", height: "90px" }}
+                    />
+                  </NavLink>
+                  <Paragraph>PDV</Paragraph>
+                </Box>
+                <Box>
+                  <NavLink>
+                    <SmallImage
+                      src={sair}
+                      alt=""
+                      onClick={botaoLogout}
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        marginTop: "20px",
+                      }}
+                    />
+                  </NavLink>
+                  <Paragraph>SAIR</Paragraph>
+                </Box>
+              </>
+            )}
           </Container2>
           <Footer>
             <p>Versão 1.0.0</p>

@@ -194,6 +194,7 @@ footer {
   font-size: 20px;
   color: #46295A;
   font-weight: 800;
+
 }
 
 .kg input {
@@ -202,6 +203,7 @@ footer {
   padding-left: 10px;
   border-radius: 20px;
   margin-left: 10px;
+  margin-right: 10px;
 
 }
 
@@ -249,7 +251,6 @@ footer {
 
 .modal-mensagem {
   background-color: #46295A;
-  flex-direction: column;
   height: 40px;
   display: flex;
   align-items: center;

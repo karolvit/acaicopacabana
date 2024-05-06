@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { FaPenToSquare } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
+import SetaFechar from "../components/SetaFechar";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -280,11 +281,14 @@ const Usuarios = () => {
     : usuarios.data;
 
   const abrirModalEdi = (userId, senha, nomeUsuario) => {
-    setModalEdit(true);
-    console.log("ID do usuário:", userId, nomeUsuario, senha);
-    setId(userId);
-    setSenha(senha);
-    setNome_Usuario(nomeUsuario);
+    if (userId === 1) {
+      toast.error("Usuário ADM não é permitido alteração");
+    } else {
+      setModalEdit(true);
+      setId(userId);
+      setSenha(senha);
+      setNome_Usuario(nomeUsuario);
+    }
   };
   const fechaModalEdi = () => {
     setModalEdit(false);
@@ -299,7 +303,7 @@ const Usuarios = () => {
           <NavBar>
             <InputPesquisa
               type="search"
-              placeholder="Digite o nome do item"
+              placeholder="Digite o nome do usuário"
               value={pesquisa}
               onChange={handlePesquisaChange}
             />
@@ -322,7 +326,7 @@ const Usuarios = () => {
               }}
             >
               <ModalCadastroProduto>
-                <h2 onClick={fecharModal}>X</h2>
+                <SetaFechar Click={fecharModal} />
                 <h2>Cadastro de usuario</h2>
               </ModalCadastroProduto>
               <form onSubmit={(e) => cadastrarUusuario(e)}>
@@ -400,7 +404,6 @@ const Usuarios = () => {
                     </td>
                     <td>{usuario.nome_usuario}</td>
                     <td>
-                      {" "}
                       <p>
                         <IconeEditavel
                           color="#46295a"
@@ -431,7 +434,7 @@ const Usuarios = () => {
                         }}
                       >
                         <ModalCadastroProduto>
-                          <h2 onClick={fechaModalEdi}>X</h2>
+                          <SetaFechar Click={fechaModalEdi} />
                           <h2>Editação de usuario</h2>
                         </ModalCadastroProduto>
                         <form onSubmit={(e) => editarUsuario(e)}>
@@ -491,10 +494,11 @@ const Usuarios = () => {
                         }}
                       >
                         <div className="modal-mensagem">
+                          <SetaFechar Click={fecharModalConfirmacao} />
                           <h2>Confirmação de exlusão</h2>
                         </div>
                         <div className="container-modal">
-                          <h2>Deseja confirmar a exclusão do pedido?</h2>
+                          <h2>Deseja confirmar a exclusão do usuário?</h2>
                           <div className="btn-modal">
                             <button
                               onClick={() => botaoDeleteUsuario(usuario.id)}
