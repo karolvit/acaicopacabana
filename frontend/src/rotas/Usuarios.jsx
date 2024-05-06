@@ -210,7 +210,7 @@ const Usuarios = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.status === 201) {
+      if (res.status === 200) {
         toast.success(res.data.message[0]);
         fechaModalEdi();
       }
@@ -286,8 +286,8 @@ const Usuarios = () => {
     } else {
       setModalEdit(true);
       setId(userId);
-      setSenha(senha);
       setNome_Usuario(nomeUsuario);
+      setSenha(senha);
     }
   };
   const fechaModalEdi = () => {
@@ -410,8 +410,8 @@ const Usuarios = () => {
                           onClick={() =>
                             abrirModalEdi(
                               usuario.id,
-                              usuario.nome_usuario,
-                              usuario.senha
+                              usuario.senha,
+                              usuario.nome_usuario
                             )
                           }
                         />
@@ -456,6 +456,7 @@ const Usuarios = () => {
                                 onChange={(e) =>
                                   setNome_Usuario(e.target.value)
                                 }
+                                value={nome_usuario}
                               />
                             </Form1>
                             <Form1>
