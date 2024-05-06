@@ -1,11 +1,12 @@
 import styled, { createGlobalStyle } from "styled-components";
 import SideBar from "../components/SideBar";
-import agua from "../assets/img/agua.png";
 import imgFundo from "../assets/img/logo_sem_fundo.png";
 import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
-
+import { toast } from "react-toastify";
+import { IoIosAddCircle } from "react-icons/io";
+import SetaFechar from "../components/SetaFechar";
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -84,10 +85,6 @@ const Tabela = styled.table`
     width: 35%;
   }
 `;
-const TdImg = styled.td`
-  display: flex;
-  align-items: center;
-`;
 const ModalCadastroProduto = styled.div`
   background-color: #46295a;
   height: 40px;
@@ -155,14 +152,15 @@ const Estoque = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [codigo_produto, setCodigo_Produto] = useState("");
   const [preco_custo, setPreco_Custo] = useState("");
   const [quantidade, setQuantidade] = useState("");
-  const [img_produto, setImg_Produto] = useState("");
+  const [codigo_produto, setCodigo_Produto] = useState("");
   const [pesquisa, setPesquisa] = useState("");
   const [estoqueRed, setEstoqueRed] = useState("");
   const [estoqueYellow, setEstoqueYellow] = useState("");
   const [estoqueBlue, setEstoqueBlue] = useState("");
+  const [modalAdd, setMoldalAdd] = useState(false);
+
   useEffect(() => {
     const carregarEstoque = async () => {
       try {
@@ -213,7 +211,32 @@ const Estoque = () => {
     };
     carregandoBlue();
   }, []);
-
+  const valorModalAdd = (quantidade, codigo_produto) => {
+    console.log("teste", quantidade, codigo_produto);
+    setQuantidade(quantidade);
+    setCodigo_Produto(codigo_produto);
+    setMoldalAdd(true);
+  };
+  const adicionarEstoque = async (e) => {
+    e.preventDefault();
+    try {
+      const produtoEditado = {
+        codigo_produto,
+        quantidade,
+      };
+      const res = await apiAcai.put("/attestoque", produtoEditado);
+      if (res.status === 201) {
+        toast.success(res.data.message[0]);
+        fecharModalAdd();
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fecharModalAdd = () => {
+    setMoldalAdd(false);
+  };
   const Status = styled.div`
     border-radius: 50%;
     height: 20px;
@@ -250,11 +273,11 @@ const Estoque = () => {
         preco_custo,
         tipo: 1,
         quantidade,
-        img_produto,
       };
       const res = await apiAcai.post("/produto", produtosCadastro);
       if (res.status === 201) {
-        console.log(res);
+        toast.success(res.data.message[0]);
+        fecharModal();
       }
     } catch (error) {
       console.log("Erro", error);
@@ -287,12 +310,11 @@ const Estoque = () => {
             <Modal
               isOpen={modalAberto}
               onRequestClose={fecharModal}
-              contentLabel="Confirmar Pedido"
               style={{
                 content: {
                   borderRadius: "15px",
                   maxWidth: "55%",
-                  height: "55%",
+                  height: "40%",
                   margin: "auto",
                   padding: 0,
                   display: "flex",
@@ -302,7 +324,7 @@ const Estoque = () => {
               }}
             >
               <ModalCadastroProduto>
-                <h2 onClick={fecharModal}>X</h2>
+                <SetaFechar Click={fecharModal} />
                 <h2>Cadastro de produto</h2>
               </ModalCadastroProduto>
               <form onSubmit={(e) => cadastrarProduto(e)}>
@@ -317,12 +339,12 @@ const Estoque = () => {
                     />
                   </Form1>
                   <Form1>
-                    <label>Codigo</label>
+                    <label>Categoria</label>
                     <input
                       type="number"
                       placeholder="Codigo do produto"
-                      value={codigo_produto}
-                      onChange={(e) => setCodigo_Produto(e.target.value)}
+                      value={categoria}
+                      onChange={(e) => setCategoria(e.target.value)}
                     />
                   </Form1>
                 </Form>
@@ -337,33 +359,12 @@ const Estoque = () => {
                     />
                   </Form1>
                   <Form1>
-                    <label>Categoria</label>
-                    <input
-                      type="number"
-                      placeholder="Codigo do produto"
-                      value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                    />
-                  </Form1>
-                </Form>
-                <Form>
-                  <Form1>
                     <label>Quantidade</label>
-
                     <input
                       type="number"
                       placeholder="Quantidade de produto"
                       value={quantidade}
                       onChange={(e) => setQuantidade(e.target.value)}
-                    />
-                  </Form1>
-                  <Form1>
-                    <label>Imagem</label>
-                    <input
-                      type="text"
-                      placeholder="Imagem do produto"
-                      value={img_produto}
-                      onChange={(e) => setImg_Produto(e.target.value)}
                     />
                   </Form1>
                 </Form>
@@ -376,23 +377,27 @@ const Estoque = () => {
           <Tabela>
             <thead>
               <tr>
+                <th>Numero do Produto</th>
                 <th>Produto</th>
                 <th>Categoria</th>
                 <th>Status</th>
                 <th>Estoque</th>
                 <th>Preço</th>
+                <th>Adicionar Estoque</th>
               </tr>
             </thead>
             {!filteredEstoque || filteredEstoque.length === 0 ? (
               <p>Nenhum usuário encontrado</p>
             ) : (
               filteredEstoque.map((produto) => (
-                <tbody key={produto.no}>
+                <tbody key={produto.codigo_produto}>
                   <tr>
-                    <TdImg>
-                      <img src={agua} alt={produto.nome} />
+                    <td>
+                      <p>{produto.codigo_produto}</p>
+                    </td>
+                    <td>
                       <p>{produto.nome}</p>
-                    </TdImg>
+                    </td>
                     <td>Líquido</td>
                     <td>
                       <Status
@@ -406,6 +411,60 @@ const Estoque = () => {
                       <p>{produto.quantidade}</p>
                     </td>
                     <td>R$ {produto.preco_custo}</td>
+                    <td>
+                      <IoIosAddCircle
+                        onClick={() =>
+                          valorModalAdd(
+                            produto.quantidade,
+                            produto.codigo_produto
+                          )
+                        }
+                        color="#46295a"
+                        size={30}
+                        style={{ cursor: "pointer" }}
+                      />
+                      <Modal
+                        isOpen={modalAdd}
+                        onRequestClose={fecharModalAdd}
+                        style={{
+                          content: {
+                            width: "50%",
+                            height: "12%",
+                            margin: "auto",
+                            padding: 0,
+                          },
+                        }}
+                      >
+                        <div className="modal-mensagem">
+                          <SetaFechar Click={fecharModalAdd} />
+                          <h2>Adicionar Estoque</h2>
+                        </div>
+                        <div className="kg">
+                          <label>Codigo</label>
+                          <input
+                            type="number"
+                            onChange={(e) => {
+                              setCodigo_Produto(e.target.value);
+                            }}
+                            value={codigo_produto}
+                            disabled
+                          />
+                          <label>Quantidade adicionar</label>
+                          <input
+                            type="number"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                adicionarEstoque(e);
+                              }
+                            }}
+                            onChange={(e) => {
+                              setQuantidade(e.target.value);
+                            }}
+                            value={quantidade}
+                          />
+                        </div>
+                      </Modal>
+                    </td>
                   </tr>
                 </tbody>
               ))

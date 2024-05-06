@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Camera } from "react-camera-pro";
 import SetaVoltar from "../components/SetaVoltar";
+import SetaFechar from "../components/SetaFechar";
 const PDV = () => {
   const [produto, setProduto] = useState("");
   const [unino, setUnino] = useState("");
@@ -74,13 +75,15 @@ const PDV = () => {
   const abrirModalCancelamento = () => {
     setModalCancelamento(true);
   };
-
+  const fecharModalKgAcai = () => {
+    setInsersaoManual(false);
+  };
   const adicionarProduto = () => {
     if (produto && unino) {
       const novoProduto = {
         id: produtos.length + 1,
-        nome: `Codigo do produto: ${produto}, Nome do produto: ${nome}`,
-        unino: parseInt(unino),
+        nome: nome,
+        unino: parseFloat(unino),
         precoUnitario: parseFloat(precoUnitario),
       };
 
@@ -94,17 +97,24 @@ const PDV = () => {
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
-      total += produto.precoUnitario * produto.unino;
+      if (produto.id === 1) {
+        total += produto.precoUnitario * 1;
+      } else {
+        total += produto.precoUnitario * produto.unino;
+      }
     });
     return total.toFixed(2);
   };
   const botaoCancelar = () => {
     setProdutos([]);
-    setModalConfirmacaoAberto(false);
+    fecharModalCancelamento();
+    setNome("");
+    setProduto("");
+    setUnino("");
+    setPrecoUnitario("");
   };
 
   const botaoEnvio = async (e) => {
-    console.log("Método botaoEnvio chamado");
     fecharModalConfirmacao();
     e.preventDefault();
     try {
@@ -206,7 +216,7 @@ const PDV = () => {
     if (parseInt(codigo) === 1) {
       setInsersaoManual(true);
       setNome("Açai");
-      setUnino(1);
+      setUnino(kgacai);
     }
   };
   const calculoKg = (evento) => {
@@ -215,7 +225,6 @@ const PDV = () => {
       totalAcai += kgacai * precoacai;
       setPrecoUnitario(totalAcai);
       setInsersaoManual(false);
-      setKgacai("0.000");
     }
   };
 
@@ -280,6 +289,7 @@ const PDV = () => {
                 }}
               >
                 <div className="modal-mensagem">
+                  <SetaFechar Click={fecharModalConfirmacao} />
                   <h2>Confirmação de pedido</h2>
                 </div>
                 <div className="container-modal">
@@ -320,6 +330,7 @@ const PDV = () => {
                 }}
               >
                 <div className="modal-mensagem">
+                  <SetaFechar Click={fecharModalCancelamento} />
                   <h2>Confirmação de cancelamento</h2>
                 </div>
                 <div className="container-modal">
@@ -357,7 +368,7 @@ const PDV = () => {
                 }}
               >
                 <div className="modal-mensagem">
-                  <h2 onClick={fecharModalPesquisa}>X</h2>
+                  <SetaFechar Click={fecharModalPesquisa} />
                   <h2>Digite o produto que deseja pesquisar</h2>
                 </div>
                 <div className="container-modal-produto">
@@ -408,7 +419,7 @@ const PDV = () => {
                 />
                 <Modal
                   isOpen={insersaoManual}
-                  onRequestClose={() => setInsersaoManual(false)}
+                  onRequestClose={fecharModalKgAcai}
                   contentLabel="Modal Produto Específico"
                   style={{
                     content: {
@@ -420,26 +431,27 @@ const PDV = () => {
                   }}
                 >
                   <div className="modal-mensagem">
+                    <SetaFechar Click={fecharModalKgAcai} />
                     <h2>Açai</h2>
-                    <div className="kg">
-                      <label>Kg do Açai</label>
-                      <input
-                        type="number"
-                        onChange={(e) => {
-                          setKgacai(e.target.value);
-                        }}
-                        onKeyPress={calculoKg}
-                        value={kgacai}
-                      />
-                      <input
-                        type="button"
-                        value="+ Kg da Balança"
-                        className="botao-add"
-                        onClick={() => {
-                          carregandoBalanca();
-                        }}
-                      />
-                    </div>
+                  </div>
+                  <div className="kg">
+                    <label>Kg do Açai</label>
+                    <input
+                      type="number"
+                      onChange={(e) => {
+                        setKgacai(e.target.value);
+                      }}
+                      onKeyPress={calculoKg}
+                      value={kgacai}
+                    />
+                    <input
+                      type="button"
+                      value="+ Kg da Balança"
+                      className="botao-add"
+                      onClick={() => {
+                        carregandoBalanca();
+                      }}
+                    />
                   </div>
                 </Modal>
               </div>
@@ -448,7 +460,7 @@ const PDV = () => {
                 <input
                   type="number"
                   onChange={(e) => setUnino(e.target.value)}
-                  value={unino}
+                  value={produto === "1" ? kgacai : unino}
                   required
                 />
               </div>
@@ -539,7 +551,7 @@ const PDV = () => {
         </div>
       </header>
 
-      <footer>Software Licensido pela Célebre </footer>
+      <footer>Software Licensiado pela Célebre </footer>
     </>
   );
 };
