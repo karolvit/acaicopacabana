@@ -280,14 +280,14 @@ const Usuarios = () => {
       })
     : usuarios.data;
 
-  const abrirModalEdi = (userId, senha, nomeUsuario) => {
+  const abrirModalEdi = (userId, nomeUsuario) => {
     if (userId === 1) {
       toast.error("Usuário ADM não é permitido alteração");
     } else {
       setModalEdit(true);
       setId(userId);
       setNome_Usuario(nomeUsuario);
-      setSenha(senha);
+      console.log(userId, nomeUsuario);
     }
   };
   const fechaModalEdi = () => {
@@ -408,11 +408,7 @@ const Usuarios = () => {
                         <IconeEditavel
                           color="#46295a"
                           onClick={() =>
-                            abrirModalEdi(
-                              usuario.id,
-                              usuario.senha,
-                              usuario.nome_usuario
-                            )
+                            abrirModalEdi(usuario.id, usuario.nome_usuario)
                           }
                         />
                       </p>
