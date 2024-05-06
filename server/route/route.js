@@ -497,19 +497,37 @@ router.get("/peso", (req, res) => {
   res.send({ peso: weightData });
 });
 
-router.put("/user", passport.authenticate("jwt", ({ session: false})), (req, res) => {
-            const query = `UPDATE usuario set usuario = ? AND senha = ? WHERE id = ? `;
-            const { nome_usuario, senha, id } = req.body;
-            const values = [ nome_usuario, senha, id];
+// Atualizar usuário com senha opcional
+router.put('/user', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const { nome_usuario, senha, id } = req.body;
 
-  pool.query(query, values, (err, results) => {
+  try {
+    let query = 'UPDATE usuario SET usuario = ?';
+    const values = [nome_usuario];
+
+    if (senha && senha.trim() !== '') { // Verifique se a senha está vazia ou em branco
+      const hashedPassword = await bcrypt.hash(senha, 10);
+      query += ', senha = ?'; // Atualizar a coluna senha
+      values.push(hashedPassword); // Adicionar o hash ao array de valores
+    }
+
+    query += ' WHERE id = ?';
+    values.push(id); // Adicionar ID ao array de valores
+
+    pool.query(query, values, (err, results) => {
       if (err) {
-        res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+        console.error('Erro ao atualizar o usuário:', err);
+        res.status(500).json({ success: false, error: ['Por favor, contate o administrador'] });
       } else {
-        res.status(201).json({ success: true, message: ['Usuário alterado com sucesso']})
+        res.status(200).json({ success: true, message: ['Usuário alterado com sucesso'] });
       }
-  })
-  })
+    });
+  } catch (error) {
+    console.error('Erro ao aplicar hash na senha:', error);
+    res.status(500).json({ success: false, error: ['Erro interno do servidor'] });
+  }
+});
+
   router.get("/produtoid", (req, res) => {
     const query = "SELECT * FROM produto WHERE codigo_produto = ?";
     const { codigo_produto } = req.body;
