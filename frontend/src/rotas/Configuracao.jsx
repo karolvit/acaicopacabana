@@ -109,8 +109,9 @@ const Configuracao = () => {
           <Tabela>
             <thead>
               <tr>
-                <th>Valor do peso</th>
-                <th>Editar peso</th>
+                <th>Valor</th>
+                <th>Editar</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             <tbody>
@@ -158,6 +159,7 @@ const Configuracao = () => {
                     </div>
                   </Modal>
                 </td>
+                <td>Edição do Preço do Açai</td>
               </tr>
             </tbody>
           </Tabela>
