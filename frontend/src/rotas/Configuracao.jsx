@@ -60,6 +60,10 @@ const Configuracao = () => {
   const [val, setVal] = useState("");
   const [modalPreco, setModalPreco] = useState(false);
   const [valor_peso, setValor_Peso] = useState("");
+  const [id, setId] = useState("");
+  const [estoqueRed, setEstoqueRed] = useState("");
+  const [estoqueYellow, setEstoqueYellow] = useState([]);
+  const [estoqueBlue, setEstoqueBlue] = useState("");
   const abrirModal = () => {
     setModalPreco(true);
   };
@@ -78,6 +82,60 @@ const Configuracao = () => {
       }
     };
     carregarPreco();
+  }, []);
+  const alterandoEstoqueMini = async (e) => {
+    e.preventDefault();
+    try {
+      const valoresAlterados = {
+        id,
+        val,
+      };
+      const res = await apiAcai.put("/params/estoque", valoresAlterados);
+
+      if (res.status === 200) {
+        console.log(res.data);
+        console.log("Cliq");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const carregandoRed = async () => {
+      try {
+        const res = await apiAcai.get("/red");
+        console.log("Sucesso", res.data[0].val);
+        setEstoqueRed(res.data[0].val);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoRed();
+  }, []);
+
+  useEffect(() => {
+    const carregandoYellow = async () => {
+      try {
+        const res = await apiAcai.get("/yellow");
+        console.log("Sucesso", res.data);
+        setEstoqueYellow(res.data);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoYellow();
+  }, []);
+  useEffect(() => {
+    const carregandoBlue = async () => {
+      try {
+        const res = await apiAcai.get("/blue");
+        console.log("Sucesso", res.data[0].val);
+        setEstoqueBlue(res.data[0].val);
+      } catch (error) {
+        console.log("Erro", error);
+      }
+    };
+    carregandoBlue();
   }, []);
 
   const botaoValorPeso = async () => {
@@ -109,14 +167,20 @@ const Configuracao = () => {
           <Tabela>
             <thead>
               <tr>
-                <th>Valor do peso</th>
-                <th>Editar peso</th>
+                <th>ID</th>
+                <th>Valor</th>
+                <th>Descrição</th>
+                <th>Edição</th>
               </tr>
             </thead>
             <tbody>
               <tr>
+                <td>1</td>
                 <td>
                   <p>{val}</p>
+                </td>
+                <td>
+                  <p>Alteração do preço do açai</p>
                 </td>
                 <td>
                   <p>
@@ -129,7 +193,7 @@ const Configuracao = () => {
                     style={{
                       content: {
                         width: "40%",
-                        height: "10%",
+                        height: "12%",
                         margin: "auto",
                         padding: 0,
                       },
@@ -159,6 +223,18 @@ const Configuracao = () => {
                   </Modal>
                 </td>
               </tr>
+              {estoqueYellow.map((yellow) => {
+                return (
+                  <tr key={yellow.id}>
+                    <td>{yellow.id}</td>
+                    <td>{yellow.val}</td>
+                    <td>Aleração do valor medio estoque</td>
+                    <td>
+                      <IconeEditavel color="#46295a" />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Tabela>
         </ContainerFlex>

@@ -19,6 +19,7 @@ const PDV = () => {
   const navigate = useNavigate();
   const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
   const [modalPesquisaAberto, setModalPesquisaAberto] = useState(false);
+  const [modalResumo, setModalResumo] = useState(false);
   const [cameraAberta, setCameraAberta] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [resultadoPesquisaProduto, setResultadoPesquisaProduto] = useState("");
@@ -77,6 +78,12 @@ const PDV = () => {
   };
   const fecharModalKgAcai = () => {
     setInsersaoManual(false);
+  };
+  const abrirModalRelatorio = () => {
+    setModalResumo(true);
+  };
+  const fecharModalRelatorio = () => {
+    setModalResumo(false);
   };
   const adicionarProduto = () => {
     if (produto && unino) {
@@ -245,6 +252,8 @@ const PDV = () => {
     setPrecoUnitario(totalAcaiBalaca);
     console.log(totalAcaiBalaca);
   };
+  const data = dataHora.toLocaleDateString();
+  const hora = dataHora.toLocaleTimeString();
   return (
     <>
       <nav>
@@ -307,7 +316,80 @@ const PDV = () => {
                   </div>
                 </div>
               </Modal>
-              <input type="button" value="RESUMO" />
+              <input
+                type="button"
+                value="RESUMO"
+                onClick={abrirModalRelatorio}
+              />
+              <Modal
+                isOpen={modalResumo}
+                onRequestClose={fecharModalRelatorio}
+                style={{
+                  content: {
+                    width: "50%",
+                    height: "95%",
+                    margin: "auto",
+                    padding: 0,
+                  },
+                }}
+              >
+                <div className="modal-mensagem">
+                  <SetaFechar Click={fecharModalRelatorio} />
+                  <h2>RESUMO</h2>
+                </div>
+                <div className="acai-flex">
+                  <div className="flex-dados-1">
+                    <p>AÇAI COPACABANA</p>
+                    <br />
+                    <p className="endereco">
+                      Rua Santa Rita - São Marcos - Casa nº 147 E
+                    </p>
+                    <br />
+                    <br />
+                    <h2>CNPJ: 89.455.000/003-00</h2>
+                    <h2>IE: 10.457.621-2</h2>
+                  </div>
+                  <div className="flex-dados-2">
+                    <h2>{data}</h2>
+                    <h2>{hora}</h2>
+                    <h2>PED: {proximoPedido.message}</h2>
+                  </div>
+                </div>
+                <hr style={{ border: "1px dashed #838383" }} />
+                <br />
+                <div className="flex-dados-1">
+                  <p>CUPOM FISCAL</p>
+                  <table className="tabela_resumo">
+                    <thead>
+                      <tr>
+                        <th className="thPDV">CÓD</th>
+                        <th className="thPDV">UNI</th>
+                        <th className="thPDV">DESC</th>
+                        <th className="thPDV">VALOR</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {produtos.map((produto) => (
+                        <tr key={produto.id}>
+                          <td className="tdPDV">{produto.id}</td>
+                          <td className="tdPDV">{produto.unino}</td>
+                          <td className="tdPDV">{produto.nome}</td>
+                          <td className="tdPDV">R$ {produto.precoUnitario}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <br />
+                </div>
+                <hr style={{ border: "1px dashed #838383" }} />
+                <div className="total">
+                  <p>TOTAL R$ {valorTotal()}</p>
+                </div>
+                <hr style={{ border: "1px dashed #838383" }} />
+                <div className="rodape">
+                  <p>ESSE CUPOM NÃO TEM VALOR FISCAL</p>
+                </div>
+              </Modal>
             </div>
             <div className="box-2">
               <input
