@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
 }
-
 
 body {
   min-width: 1200px;
@@ -227,19 +228,31 @@ footer {
   position: absolute;
 }
 
-.tabela_pdv {
+.tabela_pdv,
+.tabela_resumo {
   margin-top: 5%;
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
 }
 
+.tabela_resumo th {
+  border: none;
+  padding: 15px;
+  font-size: 20px;
+}
+
+.tabela_resumo td {
+  border: none;
+  font-size: 20px;
+}
+
 .thPDV,
 .tdPDV {
   color: #0a0808;
   border: 1px solid #0a080839;
-  padding: 25px;
-  text-align: left;
+  padding: 15px;
+  text-align: start;
 }
 
 .thPDV {
@@ -255,7 +268,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 25%;
+  gap: 39%;
 
 }
 
@@ -364,4 +377,48 @@ ul.produtos-pesquisa li {
 ul.produtos-pesquisa li:hover {
   background-color: #46295A;
   color: #fff;
+}
+
+.flex-dados-1,
+.flex-dados-2 {
+  margin: 25px;
+}
+
+.acai-flex {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between
+}
+
+.acai-flex,
+.flex-dados-1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #000000;
+}
+
+.acai-flex p,
+.flex-dados-1 p {
+  font-size: 40px;
+
+}
+
+.acai-flex .endereco {
+  font-size: 15px;
+}
+
+.total {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  font-size: 40px;
+  font-weight: 400;
+
+}
+
+.rodape {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
 }
