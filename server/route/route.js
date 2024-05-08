@@ -599,7 +599,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
 
     pool.query(query, values, (err, results) => {
       if (err) {
-        res.status(500).json({ success: false, error: ['Erro no sistema, contate o administrador']})
+        res.status(500).json({ success: false, error: ['Erro no sistema, contate o administrador', err]})
       } else {
         res.status(200).json(results);
       }
