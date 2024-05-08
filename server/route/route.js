@@ -530,7 +530,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
 
   router.get("/produtoid", (req, res) => {
     const query = "SELECT * FROM produto WHERE codigo_produto = ?";
-    const { codigo_produto } = req.body;
+    const { codigo_produto } = req.query;
     const values = [codigo_produto];
 
     pool.query(query, values, (err, results) => {
