@@ -560,7 +560,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
         pedno.pedido = ?
     `;
 
-    const { pedido } = req.body;
+    const { pedido } = req.query;
     const values = [ pedido ];
 
     pool.query(query, values, (err, results) => {
@@ -594,7 +594,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
     GROUP BY 
       (pedido)`;
 
-    const { data_inicial, data_final } = req.body;
+    const { data_inicial, data_final } = req.query;
     const values = [ data_inicial, data_final];
 
     pool.query(query, values, (err, results) => {
