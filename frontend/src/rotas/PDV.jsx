@@ -28,6 +28,7 @@ const PDV = () => {
   const [kgacai, setKgacai] = useState("0.00");
   const [precoacai, setPrecoAcai] = useState("");
   const [pesoBalanca, setPesoBalanca] = useState("");
+  const [codigo_produto, setCodigo_Produto] = useState("");
   const cameraRef = useRef();
   const [modalCancelamento, setModalCancelamento] = useState(false);
 
@@ -219,11 +220,13 @@ const PDV = () => {
     setModalPesquisaAberto(false);
     setPesquisaProduto("");
   };
-  const verificarCodigoProduto = (codigo) => {
+  const verificarCodigoProduto = async (codigo) => {
     if (parseInt(codigo) === 1) {
       setInsersaoManual(true);
       setNome("Açai");
       setUnino(kgacai);
+      setCodigo_Produto(codigo);
+      await carregandoEstoque(codigo);
     }
   };
   const calculoKg = (evento) => {
@@ -251,6 +254,22 @@ const PDV = () => {
     let totalAcaiBalaca = pesoBalanca * precoacai;
     setPrecoUnitario(totalAcaiBalaca);
     console.log(totalAcaiBalaca);
+  };
+
+  const carregandoEstoque = async (codigo_produto) => {
+    try {
+      console.log(codigo_produto);
+      const res = await apiAcai.get(
+        `/produtoid?codigo_produto=${codigo_produto}`
+      );
+      if (res.status === 200) {
+        const produdoEsto = res.data;
+        setNome(produdoEsto[0].nome);
+        setPrecoUnitario(produdoEsto[0].preco_custo);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const data = dataHora.toLocaleDateString();
   const hora = dataHora.toLocaleTimeString();
@@ -489,6 +508,7 @@ const PDV = () => {
                   onChange={(e) => {
                     setProduto(e.target.value);
                     verificarCodigoProduto(e.target.value);
+                    carregandoEstoque(e.target.value);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
