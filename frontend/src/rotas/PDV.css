@@ -251,7 +251,7 @@ footer {
 .tdPDV {
   color: #0a0808;
   border: 1px solid #0a080839;
-  padding: 15px;
+  padding: 25px;
   text-align: start;
 }
 
@@ -421,4 +421,8 @@ ul.produtos-pesquisa li:hover {
   display: flex;
   justify-content: center;
   padding-top: 20px;
+}
+
+input:disabled {
+  background-color: #f0f0f0;
 }
