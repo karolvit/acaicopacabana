@@ -578,7 +578,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
       pedno.pedido,
       SUM(pedno.valor_unit) as total,
       usuario.nome as operador,
-      DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda,
+      DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
     FROM
       pedno
     INNER JOIN
