@@ -584,7 +584,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
     INNER JOIN
       produto
     ON
-      pedno.produto = produto.codigo_produto
+      pedno.prodno = produto.codigo_produto
     INNER JOIN 
       usuario
     ON 
