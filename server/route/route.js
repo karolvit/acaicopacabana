@@ -244,7 +244,8 @@ router.post("/login", (req, res) => {
           expiration: expirationDate,
           nome: user.nome,
           cargo: user.cargo,
-          adm: user.adm
+          adm: user.adm,
+	  id: user.id
         });
       } else {
         res
