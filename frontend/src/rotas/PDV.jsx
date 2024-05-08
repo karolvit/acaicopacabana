@@ -13,6 +13,7 @@ const PDV = () => {
   const [unino, setUnino] = useState("");
   const [precoUnitario, setPrecoUnitario] = useState("");
   const [nome, setNome] = useState("");
+  const [quantidade, setQuantidade] = useState("");
   const [dataHora, setDataHora] = useState(new Date());
   const [produtos, setProdutos] = useState([]);
   const [proximoPedido, setProximoPedido] = useState("");
@@ -205,7 +206,6 @@ const PDV = () => {
         const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
 
         setResultadoPesquisaProduto(res.data.message);
-        console.log(res.data.message);
       } catch (error) {
         console.error("Erro ao encontrar produto:", error.message);
       }
@@ -217,6 +217,9 @@ const PDV = () => {
     setNome(produtoSelecionado.nome);
     setPrecoUnitario(produtoSelecionado.preco_custo);
     setProduto(produtoSelecionado.codigo_produto);
+    setQuantidade(produtoSelecionado.quantidade);
+    console.log(quantidade);
+
     setModalPesquisaAberto(false);
     setPesquisaProduto("");
   };
