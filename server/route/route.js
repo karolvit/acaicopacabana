@@ -590,6 +590,7 @@ router.put('/user', passport.authenticate('jwt', { session: false }), async (req
     const query = `
     SELECT
       pedno.pedido,
+      pedno.valor_unit,
       SUM(pedno.valor_unit) as total,
       usuario.nome as operador,
       DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
