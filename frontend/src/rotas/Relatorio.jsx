@@ -277,8 +277,8 @@ const Relatorio = () => {
             contentLabel="Modal Preço"
             style={{
               content: {
-                width: "20%",
-                height: "30%",
+                maxWidth: "30%",
+                maxHeight: "36%",
                 margin: "auto",
                 padding: 0,
               },
