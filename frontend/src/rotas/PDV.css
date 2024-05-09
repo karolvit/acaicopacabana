@@ -247,6 +247,8 @@ footer {
   font-size: 20px;
 }
 
+
+
 .thPDV,
 .tdPDV {
   color: #0a0808;
@@ -265,6 +267,7 @@ footer {
 .modal-mensagem {
   background-color: #46295A;
   height: 40px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -425,4 +428,20 @@ ul.produtos-pesquisa li:hover {
 
 input:disabled {
   background-color: #f0f0f0;
+}
+
+.flex-vendas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-vendas {
+  display: flex;
+  gap: 0;
+}
+
+.flex-config {
+  display: flex;
+  flex-direction: column;
 }
