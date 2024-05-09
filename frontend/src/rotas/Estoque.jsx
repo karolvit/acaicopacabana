@@ -250,7 +250,7 @@ const Estoque = () => {
         return "red";
       } else if (quantidade >= blue) {
         return "green";
-      } else if (quantidade > red && quantidade < blue) {
+      } else if (quantidade > red && quantidade < blue && quantidade === yellow) {
         return "yellow";
       }
     }};
