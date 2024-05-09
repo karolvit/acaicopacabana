@@ -61,26 +61,33 @@ const Configuracao = () => {
   const [modalPreco, setModalPreco] = useState(false);
   const [valor_peso, setValor_Peso] = useState("");
   const [id, setId] = useState("");
-  const [estoqueRed, setEstoqueRed] = useState("");
+  const [estoqueRed, setEstoqueRed] = useState([]);
   const [estoqueYellow, setEstoqueYellow] = useState([]);
-  const [estoqueBlue, setEstoqueBlue] = useState("");
+  const [estoqueBlue, setEstoqueBlue] = useState([]);
   const [modalRed, setModalRed] = useState("");
   const [modalYellow, setModalYellow] = useState("");
   const [modalBlue, setModalBlue] = useState("");
-  const abrirModal = () => {
+
+  const abrirModal = (id, val) => {
     setModalPreco(true);
+    setId(id);
+    setVal(val);
   };
   const fechaModal = () => {
     setModalPreco(false);
   };
-  const abrirModalRed = () => {
+  const abrirModalRed = (id, val) => {
     setModalRed(true);
+    setId(id);
+    setVal(val);
   };
   const fecharModalRed = () => {
     setModalRed(false);
   };
-  const abrirModalBlue = () => {
+  const abrirModalBlue = (id, val) => {
     setModalBlue(true);
+    setId(id);
+    setVal(val);
   };
   const fecharModalBlue = () => {
     setModalBlue(false);
@@ -113,11 +120,14 @@ const Configuracao = () => {
         id,
         val,
       };
-      const res = await apiAcai.put("/params/estoque", valoresAlterados);
+      const res = await apiAcai.put("/param/estoque", valoresAlterados);
 
       if (res.status === 200) {
         console.log(res.data);
-        console.log("Cliq");
+        fecharModalYellow();
+        fecharModalBlue();
+        fecharModalRed();
+        toast.success(res.data.message[0]);
       }
     } catch (error) {
       console.log(error);
@@ -127,8 +137,7 @@ const Configuracao = () => {
     const carregandoRed = async () => {
       try {
         const res = await apiAcai.get("/red");
-        console.log("Sucesso", res.data[0].val);
-        setEstoqueRed(res.data[0].val);
+        setEstoqueRed(res.data);
       } catch (error) {
         console.log("Erro", error);
       }
@@ -140,7 +149,6 @@ const Configuracao = () => {
     const carregandoYellow = async () => {
       try {
         const res = await apiAcai.get("/yellow");
-        console.log("Sucesso", res.data);
         setEstoqueYellow(res.data);
       } catch (error) {
         console.log("Erro", error);
@@ -152,8 +160,7 @@ const Configuracao = () => {
     const carregandoBlue = async () => {
       try {
         const res = await apiAcai.get("/blue");
-        console.log("Sucesso", res.data[0].val);
-        setEstoqueBlue(res.data[0].val);
+        setEstoqueBlue(res.data);
       } catch (error) {
         console.log("Erro", error);
       }
@@ -251,7 +258,7 @@ const Configuracao = () => {
                   <tr key={yellow.id}>
                     <td>{yellow.id}</td>
                     <td>{yellow.val}</td>
-                    <td>Aleração do valor medio estoque</td>
+                    <td>Aleração do valor medio estoque(amarelo)</td>
                     <td>
                       <p>
                         <IconeEditavel
@@ -286,7 +293,7 @@ const Configuracao = () => {
                               value={id || ""}
                               disabled
                             />
-                            <label>Quantidade do estoque medio(amarelo)</label>
+                            <label>Quantidade do estoque medio</label>
                             <input
                               type="text"
                               onChange={(e) => {
@@ -297,6 +304,128 @@ const Configuracao = () => {
                             <input
                               type="button"
                               value="Atualizar estoque medio"
+                              className="botao-add"
+                              onClick={(e) => {
+                                alterandoEstoqueMini(e);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </Modal>
+                    </td>
+                  </tr>
+                );
+              })}
+              {estoqueBlue.map((blue) => {
+                return (
+                  <tr key={blue.id}>
+                    <td>{blue.id}</td>
+                    <td>{blue.val}</td>
+                    <td>Aleração do valor max estoque(verde)</td>
+                    <td>
+                      <p>
+                        <IconeEditavel
+                          color="#46295a"
+                          onClick={() => abrirModalBlue(blue.id, blue.val)}
+                        />
+                      </p>
+                      <Modal
+                        isOpen={modalBlue}
+                        onRequestClose={fecharModalBlue}
+                        contentLabel="Modal Preço"
+                        style={{
+                          content: {
+                            width: "60%",
+                            height: "15%",
+                            margin: "auto",
+                            padding: 0,
+                          },
+                        }}
+                      >
+                        <div className="modal-mensagem flex-config">
+                          <h2>Açai</h2>
+                          <div className="kg">
+                            <label>ID</label>
+                            <input
+                              type="text"
+                              onChange={(e) => {
+                                setId(e.target.value);
+                              }}
+                              value={id || ""}
+                              disabled
+                            />
+                            <label>Quantidade do estoque max</label>
+                            <input
+                              type="text"
+                              onChange={(e) => {
+                                setVal(e.target.value);
+                              }}
+                              value={val || ""}
+                            />
+                            <input
+                              type="button"
+                              value="Atualizar estoque max"
+                              className="botao-add"
+                              onClick={(e) => {
+                                alterandoEstoqueMini(e);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </Modal>
+                    </td>
+                  </tr>
+                );
+              })}
+              {estoqueRed.map((red) => {
+                return (
+                  <tr key={red.id}>
+                    <td>{red.id}</td>
+                    <td>{red.val}</td>
+                    <td>Aleração do valor minimo estoque(vermelho)</td>
+                    <td>
+                      <p>
+                        <IconeEditavel
+                          color="#46295a"
+                          onClick={() => abrirModalRed(red.id, red.val)}
+                        />
+                      </p>
+                      <Modal
+                        isOpen={modalRed}
+                        onRequestClose={fecharModalRed}
+                        contentLabel="Modal Preço"
+                        style={{
+                          content: {
+                            width: "60%",
+                            height: "15%",
+                            margin: "auto",
+                            padding: 0,
+                          },
+                        }}
+                      >
+                        <div className="modal-mensagem flex-config">
+                          <h2>Açai</h2>
+                          <div className="kg">
+                            <label>ID</label>
+                            <input
+                              type="text"
+                              onChange={(e) => {
+                                setId(e.target.value);
+                              }}
+                              value={id || ""}
+                              disabled
+                            />
+                            <label>Quantidade do estoque minino</label>
+                            <input
+                              type="text"
+                              onChange={(e) => {
+                                setVal(e.target.value);
+                              }}
+                              value={val || ""}
+                            />
+                            <input
+                              type="button"
+                              value="Atualizar estoque minimo"
                               className="botao-add"
                               onClick={(e) => {
                                 alterandoEstoqueMini(e);
