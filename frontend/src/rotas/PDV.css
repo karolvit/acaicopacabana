@@ -440,3 +440,8 @@ input:disabled {
   display: flex;
   gap: 0;
 }
+
+.flex-config {
+  display: flex;
+  flex-direction: column;
+}
