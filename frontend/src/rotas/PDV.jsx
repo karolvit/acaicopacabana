@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Camera } from "react-camera-pro";
 import SetaVoltar from "../components/SetaVoltar";
 import SetaFechar from "../components/SetaFechar";
+
 const PDV = () => {
   const [produto, setProduto] = useState("");
   const [unino, setUnino] = useState("");
@@ -32,6 +33,8 @@ const PDV = () => {
   const [codigo_produto, setCodigo_Produto] = useState("");
   const cameraRef = useRef();
   const [modalCancelamento, setModalCancelamento] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const { user } = userData || {};
 
   const capturarImagem = async (e) => {
     e.preventDefault();
@@ -136,7 +139,7 @@ const PDV = () => {
             unino: item.unino,
             nome: item.nome,
             sta: 1,
-            userno: 20,
+            userno: user && user.nome,
           })),
         },
       };
