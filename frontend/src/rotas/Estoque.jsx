@@ -248,7 +248,7 @@ const Estoque = () => {
       const blue = parseInt(estoqueBlue);
       if (quantidade <= red) {
         return "red";
-      } else if (quantidade <= yellow) {
+      } else if (quantidade > red && quantidade < blue && quantidade === yellow) {
         return "yellow";
       } else if (quantidade >= blue) {
         return "green";
