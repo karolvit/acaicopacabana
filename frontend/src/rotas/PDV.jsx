@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Camera } from "react-camera-pro";
 import SetaVoltar from "../components/SetaVoltar";
 import SetaFechar from "../components/SetaFechar";
+import { IoIosCloseCircle } from "react-icons/io";
 
 const PDV = () => {
   const [produto, setProduto] = useState("");
@@ -33,7 +34,9 @@ const PDV = () => {
   const [codigo_produto, setCodigo_Produto] = useState("");
   const cameraRef = useRef();
   const [modalCancelamento, setModalCancelamento] = useState(false);
+
   const userData = JSON.parse(localStorage.getItem("user"));
+
   const { user } = userData || {};
 
   const capturarImagem = async (e) => {
@@ -284,6 +287,10 @@ const PDV = () => {
   };
   const data = dataHora.toLocaleDateString();
   const hora = dataHora.toLocaleTimeString();
+  const removerProduto = (id) => {
+    const novaListaProdutos = produtos.filter((produto) => produto.id !== id);
+    setProdutos(novaListaProdutos);
+  };
   return (
     <>
       <nav>
@@ -649,6 +656,7 @@ const PDV = () => {
                 <th className="thPDV">ITEM</th>
                 <th className="thPDV">QTD</th>
                 <th className="thPDV">VALOR</th>
+                <th className="thPDV">APAGAR</th>
               </tr>
             </thead>
             <tbody>
@@ -658,6 +666,13 @@ const PDV = () => {
                   <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV">
                     R$ {produto.precoUnitario * produto.unino}
+                  </td>
+                  <td className="tdPDV pdvFlex">
+                    <IoIosCloseCircle
+                      size={30}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => removerProduto(produto.id)}
+                    />
                   </td>
                 </tr>
               ))}
