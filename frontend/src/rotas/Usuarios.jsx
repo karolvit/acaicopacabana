@@ -192,9 +192,7 @@ const Usuarios = () => {
   const fecharModalConfirmacao = () => {
     setModalConfirmacao(false);
   };
-  const abrirModalConfirmacao = () => {
-    setModalConfirmacao(true);
-  };
+
   const editarUsuario = async (e) => {
     e.preventDefault();
 
@@ -288,6 +286,13 @@ const Usuarios = () => {
       setId(userId);
       setNome_Usuario(nomeUsuario);
       console.log(userId, nomeUsuario);
+    }
+  };
+  const abrirModalConfirmacao = (userId) => {
+    if (userId === 1) {
+      toast.error("Usuário ADM não é permitido alteração");
+    } else {
+      setModalConfirmacao(true);
     }
   };
   const fechaModalEdi = () => {
@@ -474,7 +479,7 @@ const Usuarios = () => {
                       <span style={{ cursor: "pointer" }}>
                         <MdDelete
                           color="#46295a"
-                          onClick={abrirModalConfirmacao}
+                          onClick={() => abrirModalConfirmacao(usuario.id)}
                         />
                       </span>
                       <Modal
