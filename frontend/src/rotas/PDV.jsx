@@ -27,7 +27,7 @@ const PDV = () => {
   const [resultadoPesquisaProduto, setResultadoPesquisaProduto] = useState("");
   const [pesquisaProduto, setPesquisaProduto] = useState("");
   const [insersaoManual, setInsersaoManual] = useState(false);
-  const [kgacai, setKgacai] = useState("0.00");
+  const [kgacai, setKgacai] = useState("");
   const [precoacai, setPrecoAcai] = useState("");
   const [pesoBalanca, setPesoBalanca] = useState("");
   const [codigo_produto, setCodigo_Produto] = useState("");
@@ -91,7 +91,7 @@ const PDV = () => {
     setModalResumo(false);
   };
   const adicionarProduto = () => {
-    if (produto && unino) {
+    if (produto && unino && precoUnitario) {
       const novoProduto = {
         id: produtos.length + 1,
         nome: nome,
@@ -109,11 +109,7 @@ const PDV = () => {
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
-      if (produto.id === 1) {
-        total += produto.precoUnitario * 1;
-      } else {
-        total += produto.precoUnitario * produto.unino;
-      }
+      total += produto.precoUnitario * produto.unino;
     });
     return total.toFixed(2);
   };
@@ -209,6 +205,7 @@ const PDV = () => {
         const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
 
         setResultadoPesquisaProduto(res.data.message);
+        console.log(res.data.message);
       } catch (error) {
         console.error("Erro ao encontrar produto:", error.message);
       }
@@ -216,12 +213,19 @@ const PDV = () => {
   };
 
   const handleProdutoSelecionado = (produtoSelecionado) => {
-    abrirModalPesquisa(false);
-    setNome(produtoSelecionado.nome);
-    setPrecoUnitario(produtoSelecionado.preco_custo);
-    setProduto(produtoSelecionado.codigo_produto);
-    setQuantidade(produtoSelecionado.quantidade);
-    console.log(quantidade);
+    if (produtoSelecionado.codigo_produto === 1) {
+      abrirModalPesquisa(false);
+      setInsersaoManual(true);
+      setUnino(kgacai);
+      setNome(produtoSelecionado.nome);
+      setProduto(produtoSelecionado.codigo_produto);
+    } else {
+      abrirModalPesquisa(false);
+      setNome(produtoSelecionado.nome);
+      setPrecoUnitario(produtoSelecionado.preco_custo);
+      setProduto(produtoSelecionado.codigo_produto);
+      setQuantidade(produtoSelecionado.quantidade);
+    }
 
     setModalPesquisaAberto(false);
     setPesquisaProduto("");
@@ -241,6 +245,7 @@ const PDV = () => {
       totalAcai += kgacai * precoacai;
       setPrecoUnitario(totalAcai);
       setInsersaoManual(false);
+      console.log(totalAcai);
     }
   };
 
@@ -651,7 +656,9 @@ const PDV = () => {
                 <tr key={produto.id}>
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
-                  <td className="tdPDV">R$ {produto.precoUnitario}</td>
+                  <td className="tdPDV">
+                    R$ {produto.precoUnitario * produto.unino}
+                  </td>
                 </tr>
               ))}
             </tbody>
