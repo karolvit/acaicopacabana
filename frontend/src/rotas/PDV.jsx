@@ -116,6 +116,7 @@ const PDV = () => {
     });
     return total.toFixed(2);
   };
+
   const botaoCancelar = () => {
     setProdutos([]);
     fecharModalCancelamento();
@@ -237,7 +238,6 @@ const PDV = () => {
     if (parseInt(codigo) === 1) {
       setInsersaoManual(true);
       setNome("Açai");
-      setUnino(kgacai);
       setCodigo_Produto(codigo);
       await carregandoEstoque(codigo);
     }
@@ -247,6 +247,7 @@ const PDV = () => {
       let totalAcai = 0;
       totalAcai += kgacai * precoacai;
       setPrecoUnitario(totalAcai);
+      setUnino(kgacai);
       setInsersaoManual(false);
       console.log(totalAcai);
     }
@@ -256,6 +257,7 @@ const PDV = () => {
     try {
       const res = await apiAcai.get("/peso");
       setPesoBalanca(res.data.peso);
+      setKgacai(res.data.peso);
       console.log(pesoBalanca);
 
       calculoBalanca();
@@ -664,11 +666,10 @@ const PDV = () => {
                 <tr key={produto.id}>
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
-                  <td className="tdPDV">
-                    R$ {produto.precoUnitario * produto.unino}
-                  </td>
+                  <td className="tdPDV">R${produto.precoUnitario}</td>
                   <td className="tdPDV pdvFlex">
                     <IoIosCloseCircle
+                      color="red"
                       size={30}
                       style={{ cursor: "pointer" }}
                       onClick={() => removerProduto(produto.id)}
