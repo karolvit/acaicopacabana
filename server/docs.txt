@@ -1,0 +1,4 @@
+Configuração Balança prix 3 - Toledo 
+
+  Gerenciador de dispositivos BAUD Rate 9600.
+  Comunicação servidor x balança BAUD RATE 4800
