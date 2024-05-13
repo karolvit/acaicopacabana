@@ -6,7 +6,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const pool = require("../database/connection/cxx");
-// const license = require('../system/verificarion');
+const { errorMiddleware } = require('../system/err');
 const { SerialPort } = require("serialport");
 //Teste rota de up
 const fs = require("fs").promises;
@@ -124,7 +124,7 @@ router.get("/nped", async (req, res) => {
   });
 });
 
-router.post("/produto", (req, res) => {
+router.post("/produto", (req, res, next) => {
   const {
     nome,
     categoria,
@@ -151,15 +151,17 @@ router.post("/produto", (req, res) => {
       res
         .status(400)
         .json({ success: false, error: ["Erro ao cadastrar produto", err] });
+        next(new Error('Erro ao cadastrar produto'));
     } else {
       res
         .status(201)
         .json({ success: true, message: ["Produto cadastrado com sucesso"] });
+        
     }
   });
 });
 
-router.get("/produto", (req, res) => {
+router.get("/produto", (req, res, next) => {
   const query = "SELECT * FROM estoque";
 
   pool.query(query, (err, results) => {
@@ -167,6 +169,7 @@ router.get("/produto", (req, res) => {
       res
         .status(500)
         .json({ success: false, error: ["Por favor contatar o suporte"] });
+        next(new Error('Erro ao cadastrar produto'));
     } else if (results.length === 0) {
       res
         .status(404)
@@ -713,4 +716,6 @@ router.put("/attestoque", (req, res) => {
   })
 })
 
-module.exports = router;
+router.use(errorMiddleware)
+
+module.exports = {router};

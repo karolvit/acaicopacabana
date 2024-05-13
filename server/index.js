@@ -4,14 +4,14 @@ const bodyparser = require('body-parser');
 const dotenv = require('dotenv').config
 
 const mysql = require('./database/connection/cxx');
-const route = require('./route/route');
+const routes = require('./route/crypt');
 
 const app = express();
 
 app.use(cors());
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({ extended: true }));
-app.use(route)
+app.use(routes)
 
 // Mudar variável para pegar do arquivo env 
 const port = 21176;
