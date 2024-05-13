@@ -62,10 +62,8 @@ const Configuracao = () => {
   const [valor_peso, setValor_Peso] = useState("");
   const [id, setId] = useState("");
   const [estoqueRed, setEstoqueRed] = useState([]);
-  const [estoqueYellow, setEstoqueYellow] = useState([]);
   const [estoqueBlue, setEstoqueBlue] = useState([]);
   const [modalRed, setModalRed] = useState("");
-  const [modalYellow, setModalYellow] = useState("");
   const [modalBlue, setModalBlue] = useState("");
 
   const abrirModal = (id, val) => {
@@ -92,11 +90,7 @@ const Configuracao = () => {
   const fecharModalBlue = () => {
     setModalBlue(false);
   };
-  const abrirModalYellow = (id, val) => {
-    setModalYellow(true);
-    setId(id);
-    setVal(val);
-  };
+
   const fecharModalYellow = () => {
     setModalYellow(false);
   };
@@ -253,69 +247,7 @@ const Configuracao = () => {
                   </Modal>
                 </td>
               </tr>
-              {estoqueYellow.map((yellow) => {
-                return (
-                  <tr key={yellow.id}>
-                    <td>{yellow.id}</td>
-                    <td>{yellow.val}</td>
-                    <td>Aleração do valor medio estoque(amarelo)</td>
-                    <td>
-                      <p>
-                        <IconeEditavel
-                          color="#46295a"
-                          onClick={() =>
-                            abrirModalYellow(yellow.id, yellow.val)
-                          }
-                        />
-                      </p>
-                      <Modal
-                        isOpen={modalYellow}
-                        onRequestClose={fecharModalYellow}
-                        contentLabel="Modal Preço"
-                        style={{
-                          content: {
-                            width: "60%",
-                            height: "15%",
-                            margin: "auto",
-                            padding: 0,
-                          },
-                        }}
-                      >
-                        <div className="modal-mensagem flex-config">
-                          <h2>Açai</h2>
-                          <div className="kg">
-                            <label>ID</label>
-                            <input
-                              type="text"
-                              onChange={(e) => {
-                                setId(e.target.value);
-                              }}
-                              value={id || ""}
-                              disabled
-                            />
-                            <label>Quantidade do estoque medio</label>
-                            <input
-                              type="text"
-                              onChange={(e) => {
-                                setVal(e.target.value);
-                              }}
-                              value={val || ""}
-                            />
-                            <input
-                              type="button"
-                              value="Atualizar estoque medio"
-                              className="botao-add"
-                              onClick={(e) => {
-                                alterandoEstoqueMini(e);
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </Modal>
-                    </td>
-                  </tr>
-                );
-              })}
+
               {estoqueBlue.map((blue) => {
                 return (
                   <tr key={blue.id}>
