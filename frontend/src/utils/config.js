@@ -1,4 +1,4 @@
-export const api = "http://localhost:21176";
+export const api = "http://celebreprojetos.com.br:21176";
 
 export const requestConfig = (method, data, token = null) => {
   let config;
