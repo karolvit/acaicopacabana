@@ -117,7 +117,7 @@ const TelaDeLogin = () => {
   };
 
   useEffect(() => {
-    if (error) {
+    if (error === 401) {
       console.log(error);
     }
   }, [error]);

@@ -7,7 +7,7 @@ import relatorio from "../assets/img/relatorio.png";
 import estoque from "../assets/img/estoque.png";
 import engrenagem from "../assets/img/engrenagem.png";
 import sair from "../assets/img/sair.png";
-import { logout, reset } from "../slices/authSlice";
+import { logout, reset } from "../slices/authSlice.js";
 import { useDispatch } from "react-redux";
 
 const GlobalStyle = createGlobalStyle`
