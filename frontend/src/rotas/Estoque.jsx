@@ -313,8 +313,8 @@ const Estoque = () => {
               style={{
                 content: {
                   borderRadius: "15px",
-                  maxWidth: "55%",
-                  height: "40%",
+                  width: "70%",
+                  height: "120px",
                   margin: "auto",
                   padding: 0,
                   display: "flex",
@@ -428,8 +428,8 @@ const Estoque = () => {
                         onRequestClose={fecharModalAdd}
                         style={{
                           content: {
-                            width: "50%",
-                            height: "12%",
+                            width: "70%",
+                            height: "120px",
                             margin: "auto",
                             padding: 0,
                           },

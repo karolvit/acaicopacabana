@@ -112,7 +112,11 @@ const PDV = () => {
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
-      total += produto.precoUnitario * produto.unino;
+      if (produto.id === 1) {
+        total += produto.precoUnitario;
+      } else {
+        total += produto.precoUnitario * produto.unino;
+      }
     });
     return total.toFixed(2);
   };
@@ -545,8 +549,8 @@ const PDV = () => {
                   contentLabel="Modal Produto Específico"
                   style={{
                     content: {
-                      width: "40%",
-                      height: "12%",
+                      width: "50%",
+                      height: "120px",
                       margin: "auto",
                       padding: 0,
                     },
@@ -658,7 +662,6 @@ const PDV = () => {
                 <th className="thPDV">ITEM</th>
                 <th className="thPDV">QTD</th>
                 <th className="thPDV">VALOR</th>
-                <th className="thPDV">APAGAR</th>
               </tr>
             </thead>
             <tbody>
@@ -666,8 +669,11 @@ const PDV = () => {
                 <tr key={produto.id}>
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
-                  <td className="tdPDV">R${produto.precoUnitario}</td>
                   <td className="tdPDV pdvFlex">
+                    R$
+                    {produto.id === 1
+                      ? `${produto.precoUnitario}`
+                      : `${produto.precoUnitario * produto.unino}`}
                     <IoIosCloseCircle
                       color="red"
                       size={30}

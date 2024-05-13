@@ -254,11 +254,11 @@ footer {
   color: #0a0808;
   border: 1px solid #0a080839;
   padding: 25px;
-  text-align: start;
+  text-align: center;
 }
 
 .thPDV {
-  text-align: start;
+  text-align: center;
   background-color: #ffffff;
   font-size: 20px;
   color: #0a0808be;
@@ -450,4 +450,5 @@ input:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-content: space-evenly;
 }

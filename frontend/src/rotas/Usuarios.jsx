@@ -320,7 +320,7 @@ const Usuarios = () => {
               style={{
                 content: {
                   borderRadius: "15px",
-                  maxWidth: "55%",
+                  maxWidth: "70%",
                   height: "40%",
                   margin: "auto",
                   padding: 0,
@@ -424,7 +424,7 @@ const Usuarios = () => {
                         style={{
                           content: {
                             borderRadius: "15px",
-                            maxWidth: "55%",
+                            maxWidth: "70%",
                             height: "40%",
                             margin: "auto",
                             padding: 0,
@@ -488,7 +488,7 @@ const Usuarios = () => {
                         contentLabel="Confirmar Pedido"
                         style={{
                           content: {
-                            width: "50%",
+                            width: "70%",
                             height: "120px",
                             margin: "auto",
                             padding: 0,
