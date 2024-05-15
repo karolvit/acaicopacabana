@@ -18,8 +18,8 @@ async function loginUser(usuario, senha) {
       FROM usuario
       WHERE usuario = ?
     `;
-    
-    const [results] = await pool.query(query, [usuario]);
+    const values = [usuario, senha]
+    const [results] = await pool.query(query, values);
     
     if (results.length === 1) {
       const user = results[0];
