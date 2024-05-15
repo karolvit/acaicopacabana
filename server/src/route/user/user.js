@@ -16,10 +16,12 @@ passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
 }));
 
 // Initialize Passport
-app.use(passport.initialize());
+
 const { errorMiddleware } = require('../../utils/intTelegram')
 
 const usr = express.Router();
+
+usr.use(passport.initialize());
 
 usr.get(
   "/user",
