@@ -5,7 +5,7 @@ const keepAlive = require('./database/keepalive');
 
 const main = express();
 
-main.use(cors)
+main.use(cors())
 main.use(crypt)
 main.use(express.json)
 
