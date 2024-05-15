@@ -4,20 +4,26 @@ const login = async (data) => {
   const config = requestConfig("POST", data);
 
   try {
-    const res = await fetch(api + "/login", config)
-      .then((res) => res.json())
-      .catch((err) => err);
+    const res = await fetch(api + "/login", config);
+    const jsonRes = await res.json();
 
-    if (res && res.success) {
+    if (!res.ok) {
+      throw new Error(jsonRes.message || "Erro ao fazer login");
+    }
+
+    const { success, expiration, token } = jsonRes;
+
+    if (success) {
       const loginTime = new Date().getTime();
-      const expiration = new Date(res.expiration);
-      const userData = { user: res, loginTime, expiration };
-      console.log(userData);
+      const expirationDate = new Date(expiration);
+      const userData = { token, loginTime, expiration: expirationDate };
       localStorage.setItem("user", JSON.stringify(userData));
     }
-    return res;
+
+    return jsonRes;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 const logout = () => {

@@ -1,8 +1,10 @@
-import styled, { createGlobalStyle } from "styled-components";
 import logo from "../assets/img/logo.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { login } from "../slices/authSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styled, { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Josefin Sans', serif;
@@ -97,6 +99,15 @@ const Button = styled.input`
     border-radius: 50px;
   }
 `;
+const StyledToastContainer = styled(ToastContainer)`
+  .Toastify__toast--error {
+    font-size: 18px;
+    text-align: center;
+    width: 400px;
+    margin: auto;
+    height: 90px;
+  }
+`;
 
 const TelaDeLogin = () => {
   //states login
@@ -117,8 +128,8 @@ const TelaDeLogin = () => {
   };
 
   useEffect(() => {
-    if (error === 401) {
-      console.log(error);
+    if (error) {
+      toast.error(error);
     }
   }, [error]);
 
@@ -155,6 +166,7 @@ const TelaDeLogin = () => {
           </LoginForm>
         </LoginContainer>
       </Container>
+      <StyledToastContainer position="top-center" autoClose={5000} />
     </>
   );
 };
