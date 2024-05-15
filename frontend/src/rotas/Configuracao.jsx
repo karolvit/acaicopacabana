@@ -91,10 +91,6 @@ const Configuracao = () => {
     setModalBlue(false);
   };
 
-  const fecharModalYellow = () => {
-    setModalYellow(false);
-  };
-
   useEffect(() => {
     const carregarPreco = async () => {
       try {
@@ -118,7 +114,7 @@ const Configuracao = () => {
 
       if (res.status === 200) {
         console.log(res.data);
-        fecharModalYellow();
+
         fecharModalBlue();
         fecharModalRed();
         toast.success(res.data.message[0]);
@@ -137,18 +133,6 @@ const Configuracao = () => {
       }
     };
     carregandoRed();
-  }, []);
-
-  useEffect(() => {
-    const carregandoYellow = async () => {
-      try {
-        const res = await apiAcai.get("/yellow");
-        setEstoqueYellow(res.data);
-      } catch (error) {
-        console.log("Erro", error);
-      }
-    };
-    carregandoYellow();
   }, []);
   useEffect(() => {
     const carregandoBlue = async () => {
