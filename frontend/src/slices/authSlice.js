@@ -24,7 +24,6 @@ export const register = createAsyncThunk(
   "auth/register",
   async (user, thunkApi) => {
     const data = await authService.register(user);
-
     if (data.errors) {
       return thunkApi.rejectWithValue(data.errors[0]);
     }
@@ -39,6 +38,7 @@ export const login = createAsyncThunk("/login", async (user, thunkApi) => {
     return thunkApi.rejectWithValue(data.errors[0]);
   }
   localStorage.setItem("token", data.token);
+
   return data;
 });
 
