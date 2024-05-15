@@ -8,7 +8,6 @@ const params = require('./params/params');
 const report = require('./report/report');
 const stock = require('./stock/stock');
 const usr= require('./user/user');
-const crypt = require('./crypt/crypt');
 
 
 router.use(auth)
@@ -18,6 +17,5 @@ router.use(params)
 router.use(report)
 router.use(stock)
 router.use(usr)
-router.use(crypt)
 
 module.exports = router
