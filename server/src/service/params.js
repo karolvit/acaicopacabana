@@ -23,7 +23,19 @@ async function getConfigById(id) {
   }
 }
 
+async function valueAcai() {
+  try {
+    const query = "SELECT * FROM sys WHERE id = 1";
+    const [results] = await pool.query(query, [id]);
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('Erro ao buscar configuração por ID:', error);
+    return { success: false, error: 'Por favor contate o administrador', details: error };
+  }
+}
+
 module.exports = {
   updateAcaiPrice,
-  getConfigById
+  getConfigById,
+  valueAcai
 };
