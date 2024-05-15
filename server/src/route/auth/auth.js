@@ -8,7 +8,7 @@ const auth = express.Router();
 auth.post("/login", async (req, res, next) => {
   try {
     const { usuario, senha } = req.body;
-    const values = [usuario, senha];
+   
     const result = await loginUser(usuario, senha);
     if (result.success) {
       res.status(200).json(result);
