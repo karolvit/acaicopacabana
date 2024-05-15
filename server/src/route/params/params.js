@@ -2,7 +2,7 @@ const express = require("express");
 
 const params = express.Router();
 
-const { updateAcaiPrice, getConfigById } = require('../../service/params');
+const { updateAcaiPrice, getConfigById, valueAcai } = require('../../service/params');
 const { errorMiddleware } = require('../../utils/intTelegram')
 const passport = require('passport');
 
@@ -68,6 +68,22 @@ params.get("/blue", async (req, res, next) => {
     res.status(500).json({ success: false, error: 'Erro interno do servidor' });
     const err = error;
     next(new Error(`Erro ao buscar configuração de status, ${err}`))
+  }
+});
+
+params.get("/blue", async (req, res, next) => {
+  try {
+    const result = await valueAcai();
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar configuração "blue":', error);
+    res.status(500).json({ success: false, error: 'Erro interno do servidor' });
+    const err = error;
+    next(new Error(`Erro ao buscar valor do açaí, ${err}`))
   }
 });
 
