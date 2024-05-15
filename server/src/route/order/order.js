@@ -3,7 +3,7 @@ const express = require("express");
 const order = express.Router();
 
 const { errorMiddleware } = require('../../utils/intTelegram');
-const { nextOrder, createOrder, infoNextOrder } = require('../../service/order');
+const { nextOrder, createOrder, infoNextOrder, findProductById } = require('../../service/order');
 
 order.get("/nped", async (req, res, next) => {
   try {
