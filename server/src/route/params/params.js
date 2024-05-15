@@ -71,7 +71,7 @@ params.get("/blue", async (req, res, next) => {
   }
 });
 
-params.get("/blue", async (req, res, next) => {
+params.get("/acai", async (req, res, next) => {
   try {
     const result = await valueAcai();
     if (result.success) {
