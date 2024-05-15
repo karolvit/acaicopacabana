@@ -7,8 +7,8 @@ const keepAlive = require('./database/keepalive');
 
 const main = express();
 
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({ extended: true }));
+main.use(bodyParser.json()); 
+main.use(bodyParser.urlencoded({ extended: true }));
 main.use(cors())
 main.use(crypt)
 main.use(express.json())
