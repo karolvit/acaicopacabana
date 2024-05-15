@@ -25,7 +25,7 @@ async function getConfigById(id) {
 
 async function valueAcai(id) {
   try {
-    const query = "SELECT * FROM sys WHERE id = ?";
+    const query = "SELECT id, name_conf, val FROM sys WHERE id = ?";
     const [results] = await pool.query(query, [id]);
     return { success: true, data: results };
   } catch (error) {
