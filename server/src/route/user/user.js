@@ -1,5 +1,4 @@
-const express = require("express");
-const passport = require("passport");
+const express = require("express")
 const { user, allUsers, updateUser } = require('../../service/user');
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
