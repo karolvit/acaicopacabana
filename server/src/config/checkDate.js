@@ -15,10 +15,7 @@ async function checkDate() {
         const [rows, fields] = await pool.execute(`SELECT DATE_FORMAT(bitl1, '%Y-%m-%d') as bitl1 FROM sys WHERE id = 5`);
 
         const license = rows[0].bitl1;
-
-        console.log('Licença do banco de dados:', license);
-        console.log('Data local:', date);
-
+        
         if (license >= date) {
             console.log('Importando rotas de router');
             return router;
