@@ -1,6 +1,6 @@
 const express = require('express')
 
-const crypt = require('./route/crypt.js')
+const crypt = require('./route/crypt/crypt')
 const keepAlive = require('./database/keepalive');
 
 const main = express();
