@@ -7,6 +7,6 @@ const main = express();
 
 main.use(cors())
 main.use(crypt)
-main.use(express.json)
+main.use(express.json())
 
 module.exports = main
