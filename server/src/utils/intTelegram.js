@@ -12,15 +12,11 @@ const sendErrorMessage = (errorMessage) => {
 };
 
 const errorMiddleware = (err, req, res, next) => {
-  console.error(err); // Log do erro no console para depuração
   
-  // Defina a mensagem de erro
   const errorMessage = `Erro na rota ${req.path}: ${err.message}`;
 
-  // Envie a mensagem de erro para o bot do Telegram
   sendErrorMessage(errorMessage);
 
-  // Envie uma resposta de erro ao cliente
   res.status(500).json({ message: 'Ocorreu um erro interno. Estamos trabalhando nisso.' });
 };
 
