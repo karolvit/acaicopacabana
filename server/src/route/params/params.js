@@ -23,6 +23,54 @@ params.put("/acai", passport.authenticate("jwt", { session: false }), async (req
   }
 });
 
+params.get("/red", async (req, res, next) => {
+  try {
+    const result = await getConfigById(2);
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar configuração "red":', error);
+    res.status(500).json({ success: false, error: 'Erro interno do servidor' });
+    const err = error;
+    next(new Error(`Erro ao buscar configuração de status, ${err}`))
+  }
+});
+
+params.get("/yellow", async (req, res, next) => {
+  try {
+    const result = await getConfigById(3);
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar configuração "yellow":', error);
+    res.status(500).json({ success: false, error: 'Erro interno do servidor' });
+    const err = error;
+    next(new Error(`Erro ao buscar configuração de status, ${err}`))
+  }
+});
+
+params.get("/blue", async (req, res, next) => {
+  try {
+    const result = await getConfigById(4);
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: result.error });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar configuração "blue":', error);
+    res.status(500).json({ success: false, error: 'Erro interno do servidor' });
+    const err = error;
+    next(new Error(`Erro ao buscar configuração de status, ${err}`))
+  }
+});
+
 params.use(errorMiddleware);
 
 module.exports = params;
