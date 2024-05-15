@@ -25,10 +25,10 @@ usr.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
-      const user = req.user;
-      const usuario = user.usuario;
+      const loggedInUser = req.user;
+      const usuario = loggedInUser.usuario;
 
-      const result = await user(usuario);
+      const result = await user(usuario); // Aqui você está chamando a função `user`
       if (result.success) {
         res.status(200).json(result);
       } else {
