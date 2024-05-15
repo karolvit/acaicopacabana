@@ -73,7 +73,7 @@ params.get("/blue", async (req, res, next) => {
 
 params.get("/acai", async (req, res, next) => {
   try {
-    const result = await valueAcai();
+    const result = await valueAcai(1);
     if (result.success) {
       res.status(200).json(result.data);
     } else {
