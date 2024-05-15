@@ -23,7 +23,7 @@ const usr = express.Router();
 usr.get(
   "/user",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const user = req.user;
       const usuario = user.usuario;
