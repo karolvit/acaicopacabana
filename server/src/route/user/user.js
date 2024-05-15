@@ -3,25 +3,22 @@ const { user, allUsers, updateUser } = require('../../service/user');
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
+const jwtSecret = "token";
 
-// Configure the JWT strategy
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: "token", 
+  secretOrKey: jwtSecret,
 };
 
-passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
-  // Here you would typically validate the JWT payload and find the corresponding user
-  // Example: User.findById(jwtPayload.userId, (err, user) => { ... });
-}));
-
-// Initialize Passport
+passport.use(
+  new JwtStrategy(jwtOptions, (payload, done) => {
+    done(null, payload);
+  })
+);
 
 const { errorMiddleware } = require('../../utils/intTelegram')
 
 const usr = express.Router();
-
-usr.use(passport.initialize());
 
 usr.get(
   "/user",
