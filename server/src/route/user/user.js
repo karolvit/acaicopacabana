@@ -7,7 +7,7 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 // Configure the JWT strategy
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: "your_jwt_secret", // replace with your JWT secret key
+  secretOrKey: "token", // replace with your JWT secret key
 };
 
 passport.use(new JwtStrategy(jwtOptions, (jwtPayload, done) => {
