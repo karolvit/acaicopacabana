@@ -2,7 +2,7 @@ const express = require("express");
 
 const params = express.Router();
 
-const { updateAcaiPrice } = require('../../service/params');
+const { updateAcaiPrice, getConfigById } = require('../../service/params');
 const { errorMiddleware } = require('../../utils/intTelegram')
 const passport = require('passport');
 
