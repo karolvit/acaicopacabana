@@ -1,7 +1,7 @@
 const pool = require('../database/connection');
 const express = require('express')
 const router  = require('../routes/router');
-const { crypt } = require('../route/crypt/licenseExpired');
+const { crypt } = require('../routes/crypt/licenseExpired');
 
 async function checkDate() {
     const today = new Date();
