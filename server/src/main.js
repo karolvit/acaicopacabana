@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const crypt = require('./route/crypt/crypt')
+const crypt = require('./routes/crypt/crypt')
 const keepAlive = require('./database/keepalive');
 
 const main = express();
