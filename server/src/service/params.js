@@ -34,8 +34,20 @@ async function valueAcai(id) {
   }
 }
 
+async function taxCoupon(id) {
+  try {
+    const query = "SELECT * FROM empresa WHERE id = ?";
+    const [results] = await pool.query(query, [id]);
+    return { success: true, data: results};
+  } catch (error) {
+    console.error('Erro ao buscar configurações do cupom', error);
+    return { success: false, error: 'Por favor contate o administrador', details: error}
+  }
+}
+
 module.exports = {
   updateAcaiPrice,
   getConfigById,
-  valueAcai
+  valueAcai,
+  taxCoupon
 };

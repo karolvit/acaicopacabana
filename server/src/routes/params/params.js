@@ -2,7 +2,7 @@ const express = require("express");
 
 const params = express.Router();
 
-const { updateAcaiPrice, getConfigById, valueAcai } = require('../../service/params');
+const { updateAcaiPrice, getConfigById, valueAcai, taxCoupon } = require('../../service/params');
 const { errorMiddleware } = require('../../utils/intTelegram')
 const passport = require('passport');
 
@@ -86,6 +86,21 @@ params.get("/acai", async (req, res, next) => {
     next(new Error(`Erro ao buscar valor do açaí, ${err}`))
   }
 });
+
+params.get("/empresa", async (req, res, next) => {
+  try {
+    const results = await taxCoupon(1);
+    if (results.success) {
+      res.status(200).json(results.data)
+    } else {
+      res.status(500).json({ success: false, error: "Erro ao buscar parâmetros da empresa"});
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: ['Por favor contate o administrador']})
+    const err = error;
+    next(new Error(`Erro ao puxar informações da empresa, ${err}`))
+  }
+})
 
 params.use(errorMiddleware);
 
