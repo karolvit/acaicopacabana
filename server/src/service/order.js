@@ -12,8 +12,8 @@ async function nextOrder() {
 
 async function createOrder(order) {
   try {
-    const connection = await pool.getConnection();
-    await connection.beginTransaction();
+    const pool = await pool.getConnection();
+    await pool.beginTransaction();
 
     for (const produto of pedido.produtos) {
       const sql = `
@@ -32,13 +32,13 @@ async function createOrder(order) {
       await pool.query(sql, values);
     }
 
-    await connection.commit();
-    connection.release();
+    await pool.commit();
+    pool.release();
     return { success: true, message: "Pedido enviado com sucesso!" };
   } catch (error) {
-    if (connection) {
-      await connection.rollback();
-      connection.release();
+    if (pool) {
+      await pool.rollback();
+      pool.release();
     }
     return { success: false, error: "Erro ao enviar pedido", details: error };
   }
