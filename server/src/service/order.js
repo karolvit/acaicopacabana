@@ -11,11 +11,12 @@ async function nextOrder() {
 }
 
 async function createOrder(order) {
+  let connection;
   try {
-    const connection = await pool.getConnection();
-    await pool.beginTransaction();
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
 
-    for (const produto of pedido.produtos) {
+    for (const produto of order.produtos) {
       const sql = `
         INSERT INTO pedno (pedido, prodno, valor_unit, unino, data_fechamento, sta, userno) 
         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)
@@ -28,21 +29,22 @@ async function createOrder(order) {
         produto.sta,
         produto.userno,
       ];
-      
-      await pool.query(sql, values);
+
+      await connection.query(sql, values);
     }
 
-    await pool.commit();
-    pool.release();
+    await connection.commit();
+    connection.release();
     return { success: true, message: "Pedido enviado com sucesso!" };
   } catch (error) {
-    if (pool) {
+    if (connection) {
       await connection.rollback();
-      pool.release();
+      connection.release();
     }
-    return { success: false, error: "Erro ao enviar pedido", details: error };
+    return { success: false, error: "Erro ao enviar pedido", details: error.message };
   }
 }
+
 
 async function infoNextOrder() {
   try {
