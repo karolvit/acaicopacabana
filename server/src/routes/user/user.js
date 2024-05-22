@@ -1,5 +1,5 @@
 const express = require("express")
-const { user, allUsers, updateUser } = require('../../service/user');
+const { user, allUsers, updateUser, registerUser } = require('../../service/user');
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -64,7 +64,7 @@ usr.get(
 usr.post("/user", async (req, res, next) => {
   try {
     const userData = req.body;
-    const result = await cadastrarUsuario(userData);
+    const result = await registerUser(userData);
     if (result.success) {
       res.status(201).json(result);
     } else {
