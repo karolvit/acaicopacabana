@@ -29,7 +29,7 @@ async function createOrder(order) {
         produto.userno,
       ];
       
-      await connection.query(sql, values);
+      await pool.query(sql, values);
     }
 
     await connection.commit();
