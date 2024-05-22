@@ -37,7 +37,7 @@ async function createOrder(order) {
     return { success: true, message: "Pedido enviado com sucesso!" };
   } catch (error) {
     if (pool) {
-      await pool.rollback();
+      await connection.rollback();
       pool.release();
     }
     return { success: false, error: "Erro ao enviar pedido", details: error };
