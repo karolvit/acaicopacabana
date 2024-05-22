@@ -1,5 +1,5 @@
 const  pool  = require('../database/connection'); 
-const connection = pool;
+
 async function nextOrder() {
   try {
     const query = "SELECT MAX(pedido) + 1 as proximoNumero FROM pedidos";
@@ -12,7 +12,7 @@ async function nextOrder() {
 
 async function createOrder(order) {
   try {
-    const pool = await pool.getConnection();
+    const connection = await pool.getConnection();
     await pool.beginTransaction();
 
     for (const produto of pedido.produtos) {
