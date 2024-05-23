@@ -144,7 +144,7 @@ const SideBar = () => {
                   <NavLink to="/relatorio">
                     <SmallImage src={relatorio} alt="" />
                   </NavLink>
-                  <Paragraph>Relatorios</Paragraph>
+                  <Paragraph>Relatórios</Paragraph>
                 </Box>
                 <Box>
                   <NavLink to="/usuarios">
