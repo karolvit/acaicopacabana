@@ -95,8 +95,8 @@ const Configuracao = () => {
     const carregarPreco = async () => {
       try {
         const res = await apiAcai.get("/acai");
-        console.log(res.data.message[0].val);
-        setVal(res.data.message[0].val);
+        console.log(res.data[0].val);
+        setVal(res.data[0].val);
       } catch (error) {
         console.log(error);
       }
@@ -159,7 +159,7 @@ const Configuracao = () => {
       });
 
       if (res.status === 201) {
-        toast.success(res.data.message[0]);
+        toast.success(res.data[0].val);
         fechaModal();
       }
     } catch (error) {

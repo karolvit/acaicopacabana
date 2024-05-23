@@ -387,9 +387,9 @@ const Usuarios = () => {
                 <th>ID</th>
                 <th>Nome</th>
                 <th>Cargo</th>
-                <th>Uusario</th>
-                <th>Editar usuario</th>
-                <th>Deletar usuario</th>
+                <th>Usuário</th>
+                <th>Editar usuário</th>
+                <th>Deletar usuário</th>
               </tr>
             </thead>
             {!filtroUsuarios || filtroUsuarios.length === 0 ? (
@@ -436,7 +436,7 @@ const Usuarios = () => {
                       >
                         <ModalCadastroProduto>
                           <SetaFechar Click={fechaModalEdi} />
-                          <h2>Editação de usuario</h2>
+                          <h2>Edição de usuário</h2>
                         </ModalCadastroProduto>
                         <form onSubmit={(e) => editarUsuario(e)}>
                           <Form>
@@ -450,7 +450,7 @@ const Usuarios = () => {
                               />
                             </Form1>
                             <Form1>
-                              <label>Usuario</label>
+                              <label>Usuário</label>
                               <input
                                 type="text"
                                 placeholder="Nova senha de usuario"

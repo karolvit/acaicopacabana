@@ -95,11 +95,17 @@ const PDV = () => {
   };
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
+      let precoFinal = parseFloat(precoUnitario);
+      if (produtos.length === 0) {
+        precoFinal = parseFloat(precoUnitario);
+      } else {
+        precoFinal = parseFloat(precoUnitario) * parseFloat(unino);
+      }
       const novoProduto = {
         id: produtos.length + 1,
         nome: nome,
         unino: parseFloat(unino),
-        precoUnitario: parseFloat(precoUnitario),
+        precoUnitario: precoFinal,
       };
 
       setProdutos([...produtos, novoProduto]);
@@ -213,7 +219,7 @@ const PDV = () => {
         const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
 
         setResultadoPesquisaProduto(res.data.message);
-        console.log(res.data.message);
+        console.log(res.data);
       } catch (error) {
         console.error("Erro ao encontrar produto:", error.message);
       }
@@ -284,6 +290,7 @@ const PDV = () => {
       );
       if (res.status === 200) {
         const produdoEsto = res.data;
+
         setNome(produdoEsto[0].nome);
         setPrecoUnitario(produdoEsto[0].preco_custo);
       }
@@ -670,10 +677,7 @@ const PDV = () => {
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV pdvFlex">
-                    R$
-                    {produto.id === 1
-                      ? `${produto.precoUnitario}`
-                      : `${produto.precoUnitario * produto.unino}`}
+                    R${produto.precoUnitario}
                     <IoIosCloseCircle
                       color="red"
                       size={30}
