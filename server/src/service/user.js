@@ -68,9 +68,23 @@ async function updateUser({ nome_usuario, senha, id }) {
   }
 }
 
+async function deleteUser(id) {
+  try {
+    const query = 'DELETE FROM usuario WHERE id = ?';
+
+    const [results] = await pool.query(query, [id]);
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('Erro ao buscar vendas por pedido:', error);
+    return { success: false, error: 'Entre em contato com administrador' };
+
+  }
+}
+
 module.exports = {
   user,
   allUsers,
   registerUser,
-  updateUser
+  updateUser,
+  deleteUser
 };

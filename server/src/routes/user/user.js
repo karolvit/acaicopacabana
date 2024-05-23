@@ -1,5 +1,5 @@
 const express = require("express")
-const { user, allUsers, updateUser, registerUser } = require('../../service/user');
+const { user, allUsers, updateUser, registerUser, deleteUser } = require('../../service/user');
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -91,6 +91,22 @@ usr.put('/user', passport.authenticate('jwt', { session: false }), async (req, r
     res.status(500).json({ success: false, error: ['Erro interno do servidor'] });
   }
 });
+
+usr.delete('/usuario', async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    const result = await deleteUser(id);
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: ['Erro interno do servidor'] });
+    next(new Error(`Erro ao deletar usuário, ${error}`))
+  }
+})
 
 usr.use(errorMiddleware);
 
