@@ -86,7 +86,7 @@ async function allProducts() {
       if (results.length === 0) {
         return { success: true, message: "Não foi encontrado nenhum produto com esse nome" };
       } else {
-        return { success: true, data: results };
+        return { success: true, message: results };
       }
     } catch (error) {
       return { success: false, error: "Erro no servidor, por favor contatar o administrador", details: error };
