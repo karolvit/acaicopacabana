@@ -219,7 +219,7 @@ const PDV = () => {
         const res = await apiAcai.get(`/busca?nome=${encodedPesquisaProduto}`);
 
         setResultadoPesquisaProduto(res.data.message);
-        console.log(res.data);
+        console.log(res.data.message);
       } catch (error) {
         console.error("Erro ao encontrar produto:", error.message);
       }
