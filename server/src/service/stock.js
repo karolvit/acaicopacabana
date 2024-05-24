@@ -93,9 +93,37 @@ async function allProducts() {
     }
   }
 
+  async function inactive(id, bit) {
+    try {
+      
+    const query = `UPDATE set bit = ? WHERE id = ?`;
+    const values = [id, bit];
+
+    const [results] = await pool.query(query, values);
+
+    if (results.length === 0) {
+      return {
+        success: true,
+        error: ["Erro ao inativar produto, por favor contate o administrador"]
+      }
+    } else {
+      return {
+        success: true,
+        message: results
+      }
+    }
+    } catch (error) {
+      return {
+        success: false,
+        error: ['Erro no servidor, por favor entrar em contato com o administrador']
+      }
+    }
+  }
+
 module.exports = {
   stockList,
   registerProduct,
   allProducts,
-  serachProductByName
+  serachProductByName,
+  inactive
 };
