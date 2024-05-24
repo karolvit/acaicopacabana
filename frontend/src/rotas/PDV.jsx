@@ -96,7 +96,7 @@ const PDV = () => {
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
       const novoProduto = {
-        id: produtos.length + 1,
+        id: codigo_produto,
         nome: nome,
         unino: parseFloat(unino),
         precoUnitario: parseFloat(precoUnitario),
@@ -107,8 +107,10 @@ const PDV = () => {
       setProduto("");
       setUnino("");
       setPrecoUnitario("");
+      setCodigo_Produto("");
     }
   };
+
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
@@ -128,6 +130,7 @@ const PDV = () => {
     setProduto("");
     setUnino("");
     setPrecoUnitario("");
+    setCodigo_Produto("");
   };
 
   const botaoEnvio = async (e) => {
@@ -671,7 +674,7 @@ const PDV = () => {
                   <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV pdvFlex">
                     R$
-                    {produto.id === 1
+                    {parseInt(produto.id) === 1
                       ? `${produto.precoUnitario}`
                       : `${produto.precoUnitario * produto.unino}`}
                     <IoIosCloseCircle
