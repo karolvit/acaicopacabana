@@ -57,6 +57,7 @@ async function infoNextOrder() {
       FROM pedidos
       INNER JOIN sys
       ON pedidos.bit1 = sys.id
+      WHERE sys.id = 1
     `;
     const [results] = await pool.query(innerJoinQuery);
     const valor = results[0].acai_valor;
