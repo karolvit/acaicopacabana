@@ -95,17 +95,11 @@ const PDV = () => {
   };
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
-      let precoFinal = parseFloat(precoUnitario);
-      if (produtos.length === 0) {
-        precoFinal = parseFloat(precoUnitario);
-      } else {
-        precoFinal = parseFloat(precoUnitario) * parseFloat(unino);
-      }
       const novoProduto = {
         id: produtos.length + 1,
         nome: nome,
         unino: parseFloat(unino),
-        precoUnitario: precoFinal,
+        precoUnitario: parseFloat(precoUnitario),
       };
 
       setProdutos([...produtos, novoProduto]);
@@ -290,7 +284,6 @@ const PDV = () => {
       );
       if (res.status === 200) {
         const produdoEsto = res.data;
-
         setNome(produdoEsto[0].nome);
         setPrecoUnitario(produdoEsto[0].preco_custo);
       }
