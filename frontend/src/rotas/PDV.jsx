@@ -114,7 +114,7 @@ const PDV = () => {
   const valorTotal = () => {
     let total = 0;
     produtos.forEach((produto) => {
-      if (produto.id === 1) {
+      if (parseInt(produto.id) === 1) {
         total += produto.precoUnitario;
       } else {
         total += produto.precoUnitario * produto.unino;
