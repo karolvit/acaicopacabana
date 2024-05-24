@@ -93,7 +93,7 @@ async function allProducts() {
     }
   }
 
-  async function inactive(id, bit) {
+  /*async function inactive(id, bit) {
     try {
       
     const query = `UPDATE set bit = ? WHERE id = ?`;
@@ -119,11 +119,11 @@ async function allProducts() {
       }
     }
   }
-
+*/
 module.exports = {
   stockList,
   registerProduct,
   allProducts,
   serachProductByName,
-  inactive
+  //inactive
 };
