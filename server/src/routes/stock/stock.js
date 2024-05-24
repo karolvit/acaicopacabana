@@ -83,7 +83,7 @@ stock.put("/attestoque", async (req, res, next) => {
   }
 });
 
-/*stock.put("/inactive", async (req, res, next) => {
+stock.put("/inactive", async (req, res, next) => {
   try {
     const {id, bit} = req.body;
     const results = await inactive(id, bit);
@@ -105,7 +105,7 @@ stock.put("/attestoque", async (req, res, next) => {
     })
     next(new Error(`Erro ao inativar produto, ${error}`))
   }
-})*/
+})
 
 stock.use(errorMiddleware)
 
