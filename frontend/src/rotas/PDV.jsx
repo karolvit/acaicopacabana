@@ -677,7 +677,10 @@ const PDV = () => {
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV pdvFlex">
-                    R${produto.precoUnitario}
+                    R$
+                    {produto.id === 1
+                      ? `${produto.precoUnitario}`
+                      : `${produto.precoUnitario * produto.unino}`}
                     <IoIosCloseCircle
                       color="red"
                       size={30}
