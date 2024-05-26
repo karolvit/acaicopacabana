@@ -29,26 +29,22 @@ async function findVendasByPedido(pedido) {
 async function findVendasPorIntervaloDatas(data_inicial, data_final) {
   try {
     const query = `
-      SELECT
-        pedno.pedido,
-        pedno.valor_unit,
-        SUM(pedno.valor_unit) as total,
-        userno as operador,
-        DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
-      FROM
-        pedno
-      INNER JOIN
-        produto
-      ON
-        pedno.prodno = produto.codigo_produto
-      INNER JOIN 
-        usuario
-      ON 
-        pedno.userno = usuario.id
-      WHERE
-        pedno.data_fechamento BETWEEN ? AND ?
-      GROUP BY 
-        (pedido)`;
+    SELECT
+      pedno.pedido,
+      pedno.valor_unit,
+      SUM(pedno.valor_unit) as total,
+      userno as operador,
+      DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
+    FROM
+      pedno
+    INNER JOIN
+      produto
+    ON
+      pedno.prodno = produto.codigo_produto
+    WHERE
+      pedno.data_fechamento BETWEEN '2024-05-24' AND '2024-05-24'
+    GROUP BY 
+      (pedido)`;
     const [results] = await pool.query(query, [data_inicial, data_final]);
     return { success: true, data: results };
   } catch (error) {
