@@ -33,7 +33,7 @@ async function findVendasPorIntervaloDatas(data_inicial, data_final) {
         pedno.pedido,
         pedno.valor_unit,
         SUM(pedno.valor_unit) as total,
-        usuario.nome as operador,
+        userno as operador,
         DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
       FROM
         pedno
