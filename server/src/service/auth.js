@@ -42,7 +42,7 @@ async function loginUser(usuario, senha) {
       } else {
         return { success: false, errors: ["Usuário ou senha incorretos"] };
       }
-    } else if (results.usuario === 0 ) {
+    } else {
       return { success: false, errors: ["Usuário não encontrado"] };
     }
   } catch (error) {
