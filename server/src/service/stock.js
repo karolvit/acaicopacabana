@@ -11,6 +11,7 @@ async function stockList() {
         preco_custo,
         tipo,
         SUM(quantidade) as quantidade,
+        bit,
         img_produto
       FROM
         produto
