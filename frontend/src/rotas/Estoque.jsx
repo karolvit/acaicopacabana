@@ -5,8 +5,9 @@ import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
-import { IoIosAddCircle } from "react-icons/io";
+import { HiOutlinePencilSquare } from "react-icons/hi2";
 import SetaFechar from "../components/SetaFechar";
+import Switch from "react-switch";
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -228,7 +229,6 @@ const Estoque = () => {
       if (res.status === 201) {
         toast.success(res.data.message[0]);
         fecharModalAdd();
-        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -293,6 +293,11 @@ const Estoque = () => {
       })
     : produtos.data;
 
+  const [isChecked, setIsChecked] = useState(false);
+  const handleSwitchChange = (checked) => {
+    setIsChecked(checked);
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -314,7 +319,7 @@ const Estoque = () => {
                 content: {
                   borderRadius: "15px",
                   width: "70%",
-                  height: "120px",
+                  height: "50%",
                   margin: "auto",
                   padding: 0,
                   display: "flex",
@@ -412,7 +417,7 @@ const Estoque = () => {
                     </td>
                     <td>R$ {produto.preco_custo}</td>
                     <td>
-                      <IoIosAddCircle
+                      <HiOutlinePencilSquare
                         onClick={() =>
                           valorModalAdd(
                             produto.quantidade,
@@ -461,6 +466,19 @@ const Estoque = () => {
                               setQuantidade(e.target.value);
                             }}
                             value={quantidade}
+                          />
+                          <Switch
+                            onChange={handleSwitchChange}
+                            checked={isChecked}
+                            onColor="#46295a"
+                            onHandleColor="#593471"
+                            handleDiameter={30}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                            height={20}
+                            width={48}
                           />
                         </div>
                       </Modal>

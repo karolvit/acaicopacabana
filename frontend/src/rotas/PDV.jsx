@@ -95,8 +95,9 @@ const PDV = () => {
   };
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
+      console.log(codigo_produto);
       const novoProduto = {
-        id: codigo_produto,
+        id: parseInt(produto),
         nome: nome,
         unino: parseFloat(unino),
         precoUnitario: parseFloat(precoUnitario),
@@ -300,6 +301,9 @@ const PDV = () => {
     const novaListaProdutos = produtos.filter((produto) => produto.id !== id);
     setProdutos(novaListaProdutos);
   };
+  useEffect(() => {
+    console.log("Produtos:", produtos);
+  }, [produtos]);
   return (
     <>
       <nav>
@@ -415,12 +419,17 @@ const PDV = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {produtos.map((produto) => (
-                        <tr key={produto.id}>
+                      {produtos.map((produto, index) => (
+                        <tr key={produto.id ? produto.id : index}>
                           <td className="tdPDV">{produto.id}</td>
                           <td className="tdPDV">{produto.unino}</td>
                           <td className="tdPDV">{produto.nome}</td>
-                          <td className="tdPDV">R$ {produto.precoUnitario}</td>
+                          <td>
+                            R$
+                            {parseInt(produto.id) === 1
+                              ? `${produto.precoUnitario}`
+                              : `${produto.precoUnitario * produto.unino}`}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -668,8 +677,8 @@ const PDV = () => {
               </tr>
             </thead>
             <tbody>
-              {produtos.map((produto) => (
-                <tr key={produto.id}>
+              {produtos.map((produto, index) => (
+                <tr key={index}>
                   <td className="tdPDV">{produto.nome}</td>
                   <td className="tdPDV">{produto.unino}</td>
                   <td className="tdPDV pdvFlex">
