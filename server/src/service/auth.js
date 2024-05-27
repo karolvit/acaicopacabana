@@ -40,7 +40,7 @@ async function loginUser(usuario, senha) {
           id: user.id
         };
       } else {
-        return { success: false, errors: ["Usuário ou senha incorretos"] };
+        return { success: false, errors: ["Senha incorreta"] };
       }
     } else {
       return { success: false, errors: ["Usuário não encontrado"] };
