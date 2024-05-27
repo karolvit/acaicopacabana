@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { stockList, registerProduct, allProducts, serachProductByName, inactive } = require('../../service/stock');
+const { stockList, registerProduct, allProducts, serachProductByName, productUpdate } = require('../../service/stock');
 const { errorMiddleware } = require('../../utils/intTelegram');
 
 const stock = express.Router();
@@ -69,8 +69,8 @@ stock.get("/busca", async (req, res) => {
 
 stock.put("/attestoque", async (req, res, next) => {
   try {
-    const { codigo_produto, quantidade } = req.body;
-    const result = await updateEstoque(codigo_produto, quantidade);
+    const { codigo_produto, quantidade, bit } = req.body;
+    const result = await productUpdate(codigo_produto, quantidade, bit);
     if (result.success) {
       res.status(201).json({ success: true, message: 'Estoque atualizado com sucesso' });
     } else {
@@ -82,30 +82,6 @@ stock.put("/attestoque", async (req, res, next) => {
     next(new Error(`Erro ao atualizar estoque, ${error}`))
   }
 });
-
-stock.put("/inactive", async (req, res, next) => {
-  try {
-    const {id, bit} = req.body;
-    const results = await inactive(id, bit);
-    if (results.success) {
-      res.status(201).json({
-        success: true,
-        message: ['Produto inativado com sucesso']
-      })
-    } else {
-      res.status(500).json({
-        success: false,
-        error: ['Erro ao inativar estoque']
-      })
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error:['Erro no servidor, por favor contate o administarador']
-    })
-    next(new Error(`Erro ao inativar produto, ${error}`))
-  }
-})
 
 stock.use(errorMiddleware)
 
