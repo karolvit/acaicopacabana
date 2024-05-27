@@ -349,7 +349,7 @@ const Relatorio = () => {
                   <th className="thPDV">Pedido</th>
                   <th className="thPDV">Valor Total</th>
                   <th className="thPDV">Data da Venda</th>
-                  <th className="thPDV">Operaodor</th>
+                  <th className="thPDV">Operador</th>
                 </tr>
               </thead>
               <tbody>
