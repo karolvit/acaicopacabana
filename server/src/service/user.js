@@ -75,7 +75,7 @@ async function deleteUser(id) {
     const [results] = await pool.query(query, [id]);
     return { success: true, data: results };
   } catch (error) {
-    console.error('Erro ao buscar vendas por pedido:', error);
+    console.error('Erro ao deletar usuário', error);
     return { success: false, error: 'Entre em contato com administrador' };
 
   }
