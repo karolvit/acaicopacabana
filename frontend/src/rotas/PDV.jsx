@@ -376,8 +376,8 @@ const PDV = () => {
                 onRequestClose={fecharModalRelatorio}
                 style={{
                   content: {
-                    width: "50%",
-                    height: "95%",
+                    maxWidth: "80%",
+                    minHeight: "95%",
                     margin: "auto",
                     padding: 0,
                   },

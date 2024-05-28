@@ -161,6 +161,8 @@ const Estoque = () => {
   const [estoqueYellow, setEstoqueYellow] = useState("");
   const [estoqueBlue, setEstoqueBlue] = useState("");
   const [modalAdd, setMoldalAdd] = useState(false);
+  const [bit, setBit] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     const carregarEstoque = async () => {
@@ -212,23 +214,33 @@ const Estoque = () => {
     };
     carregandoBlue();
   }, []);
-  const valorModalAdd = (quantidade, codigo_produto) => {
-    console.log("teste", quantidade, codigo_produto);
+  const valorModalAdd = (quantidade, codigo_produto, bit) => {
+    if (parseInt(bit) === 1) {
+      setIsChecked(true);
+    } else {
+      setIsChecked(false);
+    }
+    console.log("teste-bit", bit);
     setQuantidade(quantidade);
     setCodigo_Produto(codigo_produto);
+    setBit(bit);
     setMoldalAdd(true);
   };
+
   const adicionarEstoque = async (e) => {
+    console.log("clique");
     e.preventDefault();
     try {
       const produtoEditado = {
         codigo_produto,
         quantidade,
+        bit,
       };
       const res = await apiAcai.put("/attestoque", produtoEditado);
       if (res.status === 201) {
         toast.success(res.data.message[0]);
         fecharModalAdd();
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -293,9 +305,9 @@ const Estoque = () => {
       })
     : produtos.data;
 
-  const [isChecked, setIsChecked] = useState(false);
   const handleSwitchChange = (checked) => {
     setIsChecked(checked);
+    setBit(checked ? 1 : 0);
   };
 
   return (
@@ -421,7 +433,8 @@ const Estoque = () => {
                         onClick={() =>
                           valorModalAdd(
                             produto.quantidade,
-                            produto.codigo_produto
+                            produto.codigo_produto,
+                            produto.bit
                           )
                         }
                         color="#46295a"
@@ -444,7 +457,7 @@ const Estoque = () => {
                           <SetaFechar Click={fecharModalAdd} />
                           <h2>Adicionar Estoque</h2>
                         </div>
-                        <div className="kg">
+                        <div className="kg kg-estoque">
                           <label>Codigo</label>
                           <input
                             type="number"
@@ -454,7 +467,7 @@ const Estoque = () => {
                             value={codigo_produto}
                             disabled
                           />
-                          <label>Quantidade adicionar</label>
+                          <label>Adicionar</label>
                           <input
                             type="number"
                             onKeyDown={(e) => {
@@ -467,6 +480,7 @@ const Estoque = () => {
                             }}
                             value={quantidade}
                           />
+                          <label>Ativar/Inativar</label>
                           <Switch
                             onChange={handleSwitchChange}
                             checked={isChecked}
@@ -479,6 +493,14 @@ const Estoque = () => {
                             activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
                             height={20}
                             width={48}
+                          />
+                          <input
+                            type="button"
+                            value="Salvar"
+                            className="botao-add"
+                            onClick={(e) => {
+                              adicionarEstoque(e);
+                            }}
                           />
                         </div>
                       </Modal>
