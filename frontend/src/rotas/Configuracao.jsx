@@ -188,7 +188,7 @@ const Configuracao = () => {
                   <p>{val}</p>
                 </td>
                 <td>
-                  <p>Alteração do preço do açai</p>
+                  <p>Preço do kg - açai</p>
                 </td>
                 <td>
                   <p>
@@ -237,7 +237,7 @@ const Configuracao = () => {
                   <tr key={blue.id}>
                     <td>{blue.id}</td>
                     <td>{blue.val}</td>
-                    <td>Alteração do valor max estoque (verde)</td>
+                    <td>Valor max estoque (verde)</td>
                     <td>
                       <p>
                         <IconeEditavel
@@ -298,7 +298,7 @@ const Configuracao = () => {
                   <tr key={red.id}>
                     <td>{red.id}</td>
                     <td>{red.val}</td>
-                    <td>Alteração do valor minimo estoque (vermelho)</td>
+                    <td>Valor mínimo estoque (vermelho)</td>
                     <td>
                       <p>
                         <IconeEditavel
