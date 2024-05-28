@@ -57,35 +57,6 @@ const InputButao = styled.input`
   font-weight: 800;
   cursor: pointer;
 `;
-const Tabela = styled.table`
-  width: 95%;
-  border-collapse: collapse;
-  border: none;
-  table-layout: fixed;
-  margin: auto;
-  margin-top: 70px;
-
-  th,
-  td {
-    border: none;
-    padding: 8px;
-    text-align: center;
-  }
-  td {
-    border-bottom: 2px solid #9582a1;
-    color: #261136;
-    font-weight: 900;
-    font-size: 20px;
-  }
-  th {
-    background-color: #46295a;
-    color: #fff;
-  }
-  td img {
-    margin-top: 10px;
-    width: 35%;
-  }
-`;
 const ModalCadastroProduto = styled.div`
   background-color: #46295a;
   height: 40px;
@@ -226,6 +197,35 @@ const Estoque = () => {
     setBit(bit);
     setMoldalAdd(true);
   };
+  const Tabela = styled.table`
+    width: 95%;
+    border-collapse: collapse;
+    border: none;
+    table-layout: fixed;
+    margin: auto;
+    margin-top: 70px;
+
+    th,
+    td {
+      border: none;
+      padding: 8px;
+      text-align: center;
+    }
+    td {
+      border-bottom: 2px solid #9582a1;
+      color: #261136;
+      font-weight: 900;
+      font-size: 20px;
+    }
+    th {
+      background-color: #46295a;
+      color: #fff;
+    }
+    td img {
+      margin-top: 10px;
+      width: 35%;
+    }
+  `;
 
   const adicionarEstoque = async (e) => {
     console.log("clique");

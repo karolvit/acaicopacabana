@@ -188,6 +188,10 @@ const Usuarios = () => {
 
   const fecharModal = () => {
     setModalAberto(false);
+    setNome("");
+    setNome_Usuario("");
+    setCargo("");
+    setSenha("");
   };
   const fecharModalConfirmacao = () => {
     setModalConfirmacao(false);
@@ -230,13 +234,12 @@ const Usuarios = () => {
       };
       const res = await apiAcai.post("/user", usuarioCadastro);
       if (res.status === 201) {
-        console.log(res.data.data[0]);
-        toast.success(res.data.data[0]);
+        toast.success(res.data.message);
         fecharModal();
+        window.location.reload();
       }
     } catch (error) {
-      console.log("Erro", error);
-      toast.error("Erro");
+      toast.error(error.response.data.error);
     }
   };
   const botaoDeleteUsuario = async (userId) => {
@@ -255,15 +258,16 @@ const Usuarios = () => {
           },
         }
       );
-      if (res.status === 200) {
-        toast.success(res.data.message[0]);
-        console.log("Cliquei", res.data.message[0]);
+      if (res.status === 200 && res.data.success) {
+        toast.success("Usuário deletado com sucesso");
         setModalConfirmacao(false);
+        window.location.reload();
       }
     } catch (error) {
       toast.error("Por favor entrar em contato com admistrador do sistema");
     }
   };
+
   const handlePesquisaChange = (e) => {
     setPesquisa(e.target.value);
   };
