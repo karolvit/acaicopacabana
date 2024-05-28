@@ -191,8 +191,8 @@ const Relatorio = () => {
             contentLabel="Modal Preço"
             style={{
               content: {
-                width: "40%",
-                height: "12%",
+                maxWidth: "60%",
+                height: "15%",
                 margin: "auto",
                 padding: 0,
               },
@@ -225,8 +225,8 @@ const Relatorio = () => {
             onRequestClose={fecharModalRelPedido}
             style={{
               content: {
-                width: "70%",
-                height: "60%",
+                minWidth: "70%",
+                minHeight: "60%",
                 margin: "auto",
                 padding: 0,
               },
@@ -320,8 +320,8 @@ const Relatorio = () => {
             onRequestClose={fecharVendaLanRel}
             style={{
               content: {
-                width: "70%",
-                height: "60%",
+                minWidth: "70%",
+                minHeight: "60%",
                 margin: "auto",
                 padding: 0,
               },

@@ -321,7 +321,7 @@ const Usuarios = () => {
                 content: {
                   borderRadius: "15px",
                   maxWidth: "70%",
-                  height: "40%",
+                  height: "50%",
                   margin: "auto",
                   padding: 0,
                   display: "flex",
