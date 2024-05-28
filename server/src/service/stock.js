@@ -80,7 +80,7 @@ async function allProducts() {
   
   async function serachProductByName(nome) {
     try {
-      const query = `SELECT * FROM produto WHERE nome LIKE ?`;
+      const query = `SELECT * FROM produto WHERE nome LIKE ? and bit != 1`;
       const values = [`${nome}%`];
       const [results] = await pool.query(query, values);
   
