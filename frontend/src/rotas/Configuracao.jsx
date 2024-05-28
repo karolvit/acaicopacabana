@@ -6,6 +6,7 @@ import apiAcai from "../axios/config";
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
+import SetaFechar from "../components/SetaFechar";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -200,33 +201,34 @@ const Configuracao = () => {
                     contentLabel="Modal Preço"
                     style={{
                       content: {
-                        width: "40%",
-                        height: "12%",
+                        width: "50%",
+                        height: "15%",
                         margin: "auto",
                         padding: 0,
                       },
                     }}
                   >
-                    <div className="modal-mensagem flex-config">
+                    <div className="modal-mensagem">
+                      <SetaFechar Click={fechaModal} />
                       <h2>Açai</h2>
-                      <div className="kg">
-                        <label>Preço do Açai</label>
-                        <input
-                          type="text"
-                          onChange={(e) => {
-                            setValor_Peso(e.target.value);
-                          }}
-                          value={valor_peso || ""}
-                        />
-                        <input
-                          type="button"
-                          value="+ Preço do açai"
-                          className="botao-add"
-                          onClick={() => {
-                            botaoValorPeso();
-                          }}
-                        />
-                      </div>
+                    </div>
+                    <div className="kg">
+                      <label>Kg do Açai</label>
+                      <input
+                        type="text"
+                        onChange={(e) => {
+                          setValor_Peso(e.target.value);
+                        }}
+                        value={valor_peso || ""}
+                      />
+                      <input
+                        type="button"
+                        value="+ Preço do açai"
+                        className="botao-add"
+                        onClick={() => {
+                          botaoValorPeso();
+                        }}
+                      />
                     </div>
                   </Modal>
                 </td>
@@ -252,14 +254,14 @@ const Configuracao = () => {
                         style={{
                           content: {
                             width: "60%",
-                            height: "15%",
+                            height: "20%",
                             margin: "auto",
                             padding: 0,
                           },
                         }}
                       >
                         <div className="modal-mensagem flex-config">
-                          <h2>Açai</h2>
+                          <SetaFechar Click={fecharModalBlue} />
                           <div className="kg">
                             <label>ID</label>
                             <input
@@ -312,15 +314,15 @@ const Configuracao = () => {
                         contentLabel="Modal Preço"
                         style={{
                           content: {
-                            width: "60%",
-                            height: "15%",
+                            width: "62%",
+                            height: "17%",
                             margin: "auto",
                             padding: 0,
                           },
                         }}
                       >
                         <div className="modal-mensagem flex-config">
-                          <h2>Açai</h2>
+                          <SetaFechar Click={fecharModalRed} />
                           <div className="kg">
                             <label>ID</label>
                             <input
