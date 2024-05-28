@@ -69,7 +69,7 @@ async function infoNextOrder() {
 
 async function findProductById(codigo_produto) {
   try {
-    const query = "SELECT * FROM produto WHERE codigo_produto = ?";
+    const query = "SELECT * FROM produto WHERE codigo_produto = ? AND bit != 1";
     const [results] = await pool.query(query, [codigo_produto]);
     return { success: true, data: results };
   } catch (error) {
