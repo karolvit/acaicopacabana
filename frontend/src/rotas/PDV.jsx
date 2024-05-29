@@ -233,21 +233,48 @@ const PDV = () => {
       setProduto(produtoSelecionado.codigo_produto);
     } else {
       abrirModalPesquisa(false);
-      setNome(produtoSelecionado.nome);
-      setPrecoUnitario(produtoSelecionado.preco_custo);
-      setProduto(produtoSelecionado.codigo_produto);
-      setQuantidade(produtoSelecionado.quantidade);
+      if (parseFloat(produtoSelecionado.quantidade) > 0) {
+        setNome(produtoSelecionado.nome);
+        setPrecoUnitario(produtoSelecionado.preco_custo);
+        setProduto(produtoSelecionado.codigo_produto);
+        setQuantidade(produtoSelecionado.quantidade);
+      } else {
+        setNome("");
+        setPrecoUnitario("");
+        setProduto("");
+        toast.error("Produto sem estoque");
+      }
     }
 
     setModalPesquisaAberto(false);
     setPesquisaProduto("");
   };
   const verificarCodigoProduto = async (codigo) => {
-    if (parseInt(codigo) === 1) {
-      setInsersaoManual(true);
-      setNome("Açai");
-      setCodigo_Produto(codigo);
-      await carregandoEstoque(codigo);
+    try {
+      if (parseInt(codigo) === 1) {
+        setInsersaoManual(true);
+        setNome("Açai");
+        setCodigo_Produto(codigo);
+        await carregandoEstoque(codigo);
+      } else {
+        const res = await apiAcai.get(`/produtoid?codigo_produto=${codigo}`);
+        if (res.status === 200) {
+          const produto = res.data[0];
+          if (parseFloat(produto.quantidade) > 0) {
+            setNome(produto.nome);
+            setPrecoUnitario(produto.preco_custo);
+            setProduto(produto.codigo_produto);
+            setQuantidade(produto.quantidade);
+          } else {
+            setNome("");
+            setPrecoUnitario("");
+            setProduto("");
+            toast.error("Produto sem estoque");
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   const calculoKg = (evento) => {
@@ -286,10 +313,14 @@ const PDV = () => {
       const res = await apiAcai.get(
         `/produtoid?codigo_produto=${codigo_produto}`
       );
-      if (res.status === 200) {
+      if (res.status === 200 && parseFloat(produto.quantidade) > 0) {
         const produdoEsto = res.data;
         setNome(produdoEsto[0].nome);
         setPrecoUnitario(produdoEsto[0].preco_custo);
+      } else {
+        setNome("");
+        setPrecoUnitario("");
+        setProduto("");
       }
     } catch (error) {
       console.log(error);
@@ -376,7 +407,7 @@ const PDV = () => {
                 onRequestClose={fecharModalRelatorio}
                 style={{
                   content: {
-                    maxWidth: "80%",
+                    maxWidth: "0%",
                     minHeight: "95%",
                     margin: "auto",
                     padding: 0,
@@ -520,7 +551,7 @@ const PDV = () => {
                   />
                 </div>
                 <ul className="produtos-pesquisa">
-                  {resultadoPesquisaProduto &&
+                  {Array.isArray(resultadoPesquisaProduto) ? (
                     resultadoPesquisaProduto.map((produto) => (
                       <li
                         key={produto.id}
@@ -528,7 +559,10 @@ const PDV = () => {
                       >
                         {produto.nome}
                       </li>
-                    ))}
+                    ))
+                  ) : (
+                    <li>Nenhum resultado encontrado</li>
+                  )}
                 </ul>
               </Modal>
             </div>
@@ -540,6 +574,7 @@ const PDV = () => {
               <div className="box-flex">
                 <label>Produto</label>
                 <input
+                  required
                   type="number"
                   onChange={(e) => {
                     setProduto(e.target.value);
@@ -605,6 +640,7 @@ const PDV = () => {
               <div className="box-flex">
                 <label>Valor Unit.</label>
                 <input
+                  required
                   type="number"
                   value={precoUnitario}
                   onChange={(e) => setPrecoUnitario(e.target.value)}
@@ -617,13 +653,14 @@ const PDV = () => {
                 <label>Descrição</label>
                 <div className="flex-desc">
                   <input
+                    required
                     type="text"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     disabled
                   />
                   <input
-                    className="botao-add"
+                    className="botao-add btn-pdv"
                     type="button"
                     value="+   Adicionar Produto"
                     onClick={adicionarProduto}
@@ -631,7 +668,7 @@ const PDV = () => {
                   <input
                     type="button"
                     value="+   Abrir camera Foto"
-                    className="botao-add"
+                    className="botao-add btn-pdv "
                     onClick={abrirCamera}
                   />
                   {cameraAberta && (
