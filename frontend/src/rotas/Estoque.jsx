@@ -118,12 +118,29 @@ const ButaoEnvioProduto = styled.div`
     transition: 1s;
   }
 `;
+const SelectEstilizado = styled.select`
+  margin-left: 20px;
+  width: 280px;
+  height: 45px;
+  padding-left: 10px;
+  border-radius: 20px;
+  border: 1px solid #290d3c;
+  color: #46295a;
+  font-weight: 700;
+  font-size: 20px;
+`;
+
+const OptionEstilizado = styled.option`
+  color: #46295a;
+  font-weight: 700;
+  font-size: 20px;
+`;
 
 const Estoque = () => {
   const [produtos, setProdutos] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [nome, setNome] = useState("");
-  const [categoria, setCategoria] = useState("");
+  const [categoria, setCategoria] = useState(0);
   const [preco_custo, setPreco_Custo] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [codigo_produto, setCodigo_Produto] = useState("");
@@ -139,7 +156,6 @@ const Estoque = () => {
     const carregarEstoque = async () => {
       try {
         const res = await apiAcai.get("/estoque");
-        console.log("Secesso", res.data);
         setProdutos(res.data);
       } catch (error) {
         console.log("Erro", error);
@@ -152,7 +168,7 @@ const Estoque = () => {
     const carregandoRed = async () => {
       try {
         const res = await apiAcai.get("/red");
-        console.log("Sucesso", res.data[0].val);
+
         setEstoqueRed(res.data[0].val);
       } catch (error) {
         console.log("Erro", error);
@@ -165,7 +181,7 @@ const Estoque = () => {
     const carregandoYellow = async () => {
       try {
         const res = await apiAcai.get("/yellow");
-        console.log("Sucesso", res.data[0].val);
+
         setEstoqueYellow(res.data[0].val);
       } catch (error) {
         console.log("Erro", error);
@@ -288,7 +304,8 @@ const Estoque = () => {
       };
       const res = await apiAcai.post("/produto", produtosCadastro);
       if (res.status === 201) {
-        toast.success(res.data.message[0]);
+        toast.success(res.data.message);
+        window.location.reload();
         fecharModal();
       }
     } catch (error) {
@@ -353,26 +370,29 @@ const Estoque = () => {
                       placeholder="Nome do produto"
                       value={nome}
                       onChange={(e) => setNome(e.target.value)}
+                      required
                     />
                   </Form1>
                   <Form1>
                     <label>Categoria</label>
-                    <input
-                      type="number"
-                      placeholder="Codigo do produto"
+                    <SelectEstilizado
                       value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                    />
+                      onChange={(e) => setCategoria(parseInt(e.target.value))}
+                    >
+                      <OptionEstilizado value={0}>Kilo</OptionEstilizado>
+                      <OptionEstilizado value={1}>Quantidade</OptionEstilizado>
+                    </SelectEstilizado>
                   </Form1>
                 </Form>
                 <Form>
                   <Form1>
                     <label>Valor de Compra</label>
                     <input
-                      type="text"
+                      type="number"
                       placeholder="Nome do produto"
                       value={preco_custo}
                       onChange={(e) => setPreco_Custo(e.target.value)}
+                      required
                     />
                   </Form1>
                   <Form1>
@@ -382,6 +402,7 @@ const Estoque = () => {
                       placeholder="Quantidade de produto"
                       value={quantidade}
                       onChange={(e) => setQuantidade(e.target.value)}
+                      required
                     />
                   </Form1>
                 </Form>
@@ -401,6 +422,7 @@ const Estoque = () => {
                 <th>Estoque</th>
                 <th>Preço</th>
                 <th>Adicionar Estoque</th>
+                <th>Ativo/Inativo</th>
               </tr>
             </thead>
             {!filteredEstoque || filteredEstoque.length === 0 ? (
@@ -415,7 +437,9 @@ const Estoque = () => {
                     <td>
                       <p>{produto.nome}</p>
                     </td>
-                    <td>Líquido</td>
+                    <td>
+                      {Number(produto.categoria) === 0 ? "Kilo" : "Quantidade"}
+                    </td>
                     <td>
                       <Status
                         quantidade={produto.quantidade}
@@ -505,6 +529,7 @@ const Estoque = () => {
                         </div>
                       </Modal>
                     </td>
+                    <td>{produto.bit === 0 ? "Ativo" : "Inativo"}</td>
                   </tr>
                 </tbody>
               ))
