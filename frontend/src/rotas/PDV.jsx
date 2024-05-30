@@ -458,7 +458,7 @@ const PDV = () => {
                           <td className="tdPDV">{produto.id}</td>
                           <td className="tdPDV">{produto.unino}</td>
                           <td className="tdPDV">{produto.nome}</td>
-                          <td>
+                          <td className="tdPDV">
                             R$
                             {parseInt(produto.id) === 1
                               ? `${produto.precoUnitario}`
