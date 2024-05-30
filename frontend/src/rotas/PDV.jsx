@@ -313,14 +313,17 @@ const PDV = () => {
       const res = await apiAcai.get(
         `/produtoid?codigo_produto=${codigo_produto}`
       );
-      if (res.status === 200 && parseFloat(produto.quantidade) > 0) {
-        const produdoEsto = res.data;
-        setNome(produdoEsto[0].nome);
-        setPrecoUnitario(produdoEsto[0].preco_custo);
-      } else {
-        setNome("");
-        setPrecoUnitario("");
-        setProduto("");
+      if (res.status === 200) {
+        const produdoEsto = res.data[0];
+        if (parseFloat(produdoEsto.quantidade) > 0) {
+          setNome(produdoEsto.nome);
+          setPrecoUnitario(produdoEsto.preco_custo);
+        } else {
+          setNome("");
+          setPrecoUnitario("");
+          setProduto("");
+          toast.error("Produto sem estoque");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -407,7 +410,7 @@ const PDV = () => {
                 onRequestClose={fecharModalRelatorio}
                 style={{
                   content: {
-                    maxWidth: "0%",
+                    maxWidth: "70%",
                     minHeight: "95%",
                     margin: "auto",
                     padding: 0,
