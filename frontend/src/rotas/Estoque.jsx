@@ -426,7 +426,7 @@ const Estoque = () => {
               </tr>
             </thead>
             {!filteredEstoque || filteredEstoque.length === 0 ? (
-              <p>Nenhum usuário encontrado</p>
+              <p>Nenhum item cadastrado</p>
             ) : (
               filteredEstoque.map((produto) => (
                 <tbody key={produto.codigo_produto}>
