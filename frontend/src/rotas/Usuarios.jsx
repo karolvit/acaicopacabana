@@ -451,6 +451,7 @@ const Usuarios = () => {
                                 placeholder="ID do Usuário"
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
+                                disabled
                               />
                             </Form1>
                             <Form1>
