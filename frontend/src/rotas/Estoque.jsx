@@ -379,7 +379,7 @@ const Estoque = () => {
                       value={categoria}
                       onChange={(e) => setCategoria(parseInt(e.target.value))}
                     >
-                      <OptionEstilizado value={0}>Kilo</OptionEstilizado>
+                      <OptionEstilizado value={0}>Quilo</OptionEstilizado>
                       <OptionEstilizado value={1}>Quantidade</OptionEstilizado>
                     </SelectEstilizado>
                   </Form1>
