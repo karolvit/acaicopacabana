@@ -386,7 +386,7 @@ const Estoque = () => {
                 </Form>
                 <Form>
                   <Form1>
-                    <label>Valor de Compra</label>
+                    <label>Valor de Venda</label>
                     <input
                       type="number"
                       placeholder="Nome do produto"

@@ -16,7 +16,7 @@ async function stockList() {
       FROM
         produto
       GROUP BY 
-        nome
+        nome, categoria, codigo_produto, codigo_personalizado, preco_custo, tipo, quantidade, bit, img_produto
       ORDER BY 
         codigo_produto ASC
     `;

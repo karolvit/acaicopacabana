@@ -12,12 +12,12 @@ stock.get("/estoque", async (req, res, next) => {
       res.status(200).json(result);
     } else {
       res.status(404).json(result);
-      next(new Error(`Erro ao listar estoque`))
     }
   } catch (error) {
-    res.status(500).json({ success: false, error: "Erro interno do servidor", details: error });
     const err = error;
-    next(new Error(`Erro ao listar estoque. ${err}`))
+    res.status(500).json({ success: false, error: "Erro interno do servidor", details: err });
+    console.error(err);
+    // next(new Error(`Erro ao listar estoque. ${err}`))
   }
 });
 

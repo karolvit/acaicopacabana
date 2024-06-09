@@ -280,7 +280,7 @@ const PDV = () => {
   const calculoKg = (evento) => {
     if (evento.key == "Enter") {
       let totalAcai = 0;
-      totalAcai += kgacai * precoacai;
+      totalAcai += (kgacai / 1000) * precoacai;
       setPrecoUnitario(totalAcai);
       setUnino(kgacai);
       setInsersaoManual(false);
@@ -426,12 +426,12 @@ const PDV = () => {
                     <p>AÇAI COPACABANA</p>
                     <br />
                     <p className="endereco">
-                      Rua Santa Rita - São Marcos - Casa nº 147 E
+                      Rua direta do Uruguai, N° 218 - Uruguai 
                     </p>
                     <br />
                     <br />
                     <h2>CNPJ: 89.455.000/003-00</h2>
-                    <h2>IE: 10.457.621-2</h2>
+                    <h2>IE: </h2>
                   </div>
                   <div className="flex-dados-2">
                     <h2>{data}</h2>
@@ -478,6 +478,9 @@ const PDV = () => {
                 <div className="rodape">
                   <p>ESSE CUPOM NÃO TEM VALOR FISCAL</p>
                 </div>
+		<div className="rodape">
+			<p>Desenvolvido por www.celebreprojetos.com.br</p>
+		</div>
               </Modal>
             </div>
             <div className="box-2">
@@ -608,10 +611,10 @@ const PDV = () => {
                 >
                   <div className="modal-mensagem">
                     <SetaFechar Click={fecharModalKgAcai} />
-                    <h2>Açai</h2>
+                    <h2>Produto por peso</h2>
                   </div>
                   <div className="kg">
-                    <label>Kg do Açai</label>
+                    <label>Gramas da Balança</label>
                     <input
                       type="number"
                       onChange={(e) => {
@@ -622,7 +625,7 @@ const PDV = () => {
                     />
                     <input
                       type="button"
-                      value="+ Kg da Balança"
+                      value="Lançar peso"
                       className="botao-add"
                       onClick={() => {
                         carregandoBalanca();
