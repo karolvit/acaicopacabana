@@ -40,19 +40,17 @@ async function registerProduct(productDate) {
       categoria,
       codigo_personalizado,
       preco_custo,
-      preco_compra,
       tipo,
       quantidade,
       img_produto,
     } = productDate;
 
-    const query = `INSERT INTO produto (nome, categoria, codigo_personalizado, preco_custo, preco_compra, tipo, quantidade, img_produto, bit) VALUES (?, ?, ?, ?, ?, ?, ?,0)`;
+    const query = `INSERT INTO produto (nome, categoria, codigo_personalizado, preco_custo, tipo, quantidade, img_produto, bit) VALUES (?, ?, ?, ?, ?, ?, ?,0)`;
     const values = [
       nome,
       categoria,
       codigo_personalizado,
       preco_custo,
-      preco_compra,
       tipo,
       quantidade,
       img_produto,
