@@ -281,8 +281,8 @@ const PDV = () => {
     if (evento.key == "Enter") {
       let totalAcai = 0;
       totalAcai += (kgacai / 1000) * precoacai;
-      setPrecoUnitario(totalAcai * 1000);
-      setUnino(kgacai);
+      setPrecoUnitario(totalAcai);
+      setUnino(kgacai * 1000);
       setInsersaoManual(false);
       console.log(totalAcai);
     }
