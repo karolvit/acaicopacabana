@@ -57,8 +57,41 @@ GROUP BY
   }
 }
 
+async function findVendasPorIntervaloDatasCancelados (data_inicial, data_final) {
+  try {
+    const query = `
+    SELECT
+      pedno.pedido,
+      SUM(pedno.valor_unit) as total,
+      userno as operador,
+      DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda,
+    CASE
+      WHEN pedno.sta = 1 THEN 'Vendido'
+      WHEN pedno.sta = 0 THEN 'Cancelado'
+      ELSE 'cancelado'
+    END as status
+    FROM
+      pedno
+    INNER JOIN
+      produto
+    ON
+      pedno.prodno = produto.codigo_produto
+    WHERE
+      pedno.data_fechamento BETWEEN ? AND ?
+    AND pedno.sta = 0
+    GROUP BY 
+      (pedido)
+    `;
+    const [results] = await pool.query(query, [data_inicial, data_final]);
+    return { success: true, data: results};
+  } catch (error) {
+    console.error('Erro ao buscar pedidos cancelados', error);
+    return { success: false, error: ['Erro no sistema, contate o administrador']}
+  }
+}
 
 module.exports = {
   findVendasByPedido,
-  findVendasPorIntervaloDatas
+  findVendasPorIntervaloDatas,
+  findVendasPorIntervaloDatasCancelados
 };
