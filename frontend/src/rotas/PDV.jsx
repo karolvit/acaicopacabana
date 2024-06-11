@@ -280,9 +280,11 @@ const PDV = () => {
   const calculoKg = (evento) => {
     if (evento.key == "Enter") {
       let totalAcai = 0;
+      let totalUnino = 0;
       totalAcai += (kgacai / 1000) * precoacai;
+      totalUnino += kgacai / 1000;
       setPrecoUnitario(totalAcai);
-      setUnino(kgacai);
+      setUnino(totalUnino);
       setInsersaoManual(false);
       console.log(totalAcai);
     }
@@ -426,7 +428,7 @@ const PDV = () => {
                     <p>AÇAI COPACABANA</p>
                     <br />
                     <p className="endereco">
-                      Rua direta do Uruguai, N° 218 - Uruguai 
+                      Rua direta do Uruguai, N° 218 - Uruguai
                     </p>
                     <br />
                     <br />
@@ -478,9 +480,9 @@ const PDV = () => {
                 <div className="rodape">
                   <p>ESSE CUPOM NÃO TEM VALOR FISCAL</p>
                 </div>
-		<div className="rodape">
-			<p>Desenvolvido por www.celebreprojetos.com.br</p>
-		</div>
+                <div className="rodape">
+                  <p>Desenvolvido por www.celebreprojetos.com.br</p>
+                </div>
               </Modal>
             </div>
             <div className="box-2">
