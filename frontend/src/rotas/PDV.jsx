@@ -282,7 +282,7 @@ const PDV = () => {
       let totalAcai = 0;
       totalAcai += (kgacai / 1000) * precoacai;
       setPrecoUnitario(totalAcai);
-      setUnino(kgacai * 1000);
+      setUnino(kgacai);
       setInsersaoManual(false);
       console.log(totalAcai);
     }
