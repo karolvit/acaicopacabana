@@ -95,9 +95,10 @@ const PDV = () => {
     setModalResumo(false);
   };
   const adicionarProduto = () => {
+    let valorunino = unino / 1000;
     if (produto && unino && precoUnitario) {
       if (
-        (produto !== "1" && unino > parseFloat(quantidadeEstoque)) ||
+        (produto !== "1" && valorunino > parseFloat(quantidadeEstoque)) ||
         (produto === "1" && unino > parseFloat(quantidadeEstoque))
       ) {
         setNome("");
@@ -121,7 +122,6 @@ const PDV = () => {
       setUnino("");
       setPrecoUnitario("");
       setCodigo_Produto("");
-      console.log("testeeeeeeeeeeee", produto, unino, precoUnitario);
     }
   };
 
@@ -267,7 +267,7 @@ const PDV = () => {
       if (parseInt(codigo) === 1) {
         setInsersaoManual(true);
         setCodigo_Produto(codigo);
-        console.log("teste", produto.quantidade);
+
         await carregandoEstoque(codigo);
       } else {
         const res = await apiAcai.get(`/produtoid?codigo_produto=${codigo}`);
