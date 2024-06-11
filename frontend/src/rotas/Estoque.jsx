@@ -426,7 +426,7 @@ const Estoque = () => {
               </tr>
             </thead>
             {!filteredEstoque || filteredEstoque.length === 0 ? (
-              <p>Nenhum usuário encontrado</p>
+              <p>Nenhum produto cadastrado</p>
             ) : (
               filteredEstoque.map((produto) => (
                 <tbody key={produto.codigo_produto}>
@@ -438,7 +438,7 @@ const Estoque = () => {
                       <p>{produto.nome}</p>
                     </td>
                     <td>
-                      {Number(produto.categoria) === 0 ? "Kilo" : "Quantidade"}
+                      {Number(produto.categoria) === 0 ? "Quilo" : "Quantidade"}
                     </td>
                     <td>
                       <Status
