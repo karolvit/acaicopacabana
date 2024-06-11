@@ -42,7 +42,7 @@ async function findVendasPorIntervaloDatas(data_inicial, data_final) {
     ON
       pedno.prodno = produto.codigo_produto
     WHERE
-      pedno.data_fechamento BETWEEN '2024-05-24' AND '2024-05-24'
+      pedno.data_fechamento BETWEEN '?' AND '?'
     GROUP BY 
       (pedido)`;
     const [results] = await pool.query(query, [data_inicial, data_final]);
