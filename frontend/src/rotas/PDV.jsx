@@ -32,6 +32,7 @@ const PDV = () => {
   const [precoacai, setPrecoAcai] = useState("");
   const [pesoBalanca, setPesoBalanca] = useState("");
   const [codigo_produto, setCodigo_Produto] = useState("");
+  const [quantidadeEstoque, setQuantidadeEstoque] = useState(0);
   const cameraRef = useRef();
   const [modalCancelamento, setModalCancelamento] = useState(false);
 
@@ -95,7 +96,18 @@ const PDV = () => {
   };
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
-      console.log(codigo_produto);
+      if (
+        (produto !== "1" && unino > parseFloat(quantidadeEstoque)) ||
+        (produto === "1" && unino > parseFloat(quantidadeEstoque))
+      ) {
+        setNome("");
+        setProduto("");
+        setUnino("");
+        setPrecoUnitario("");
+        setCodigo_Produto("");
+        toast.error("Produto sem estoque");
+        return;
+      }
       const novoProduto = {
         id: parseInt(produto),
         nome: nome,
@@ -109,6 +121,7 @@ const PDV = () => {
       setUnino("");
       setPrecoUnitario("");
       setCodigo_Produto("");
+      console.log("testeeeeeeeeeeee", produto, unino, precoUnitario);
     }
   };
 
@@ -253,8 +266,8 @@ const PDV = () => {
     try {
       if (parseInt(codigo) === 1) {
         setInsersaoManual(true);
-        setNome("Açai");
         setCodigo_Produto(codigo);
+        console.log("teste", produto.quantidade);
         await carregandoEstoque(codigo);
       } else {
         const res = await apiAcai.get(`/produtoid?codigo_produto=${codigo}`);
@@ -265,10 +278,12 @@ const PDV = () => {
             setPrecoUnitario(produto.preco_custo);
             setProduto(produto.codigo_produto);
             setQuantidade(produto.quantidade);
+            setQuantidadeEstoque(produto.quantidade);
           } else {
             setNome("");
             setPrecoUnitario("");
             setProduto("");
+            setUnino("");
             toast.error("Produto sem estoque");
           }
         }
@@ -286,7 +301,7 @@ const PDV = () => {
       setPrecoUnitario(totalAcai);
       setUnino(totalUnino);
       setInsersaoManual(false);
-      console.log(totalAcai);
+      console.log(produto.quantidade);
     }
   };
 
@@ -340,6 +355,18 @@ const PDV = () => {
   useEffect(() => {
     console.log("Produtos:", produtos);
   }, [produtos]);
+
+  const verificarQuantidade = (quantidade) => {
+    if (produto === "1" && quantidade < kgacai) {
+      console.log("Quantidade excede o peso na balança");
+    } else if (produto !== "1" && quantidade > parseFloat(quantidadeEstoque)) {
+      console.log(
+        quantidadeEstoque,
+        quantidade,
+        "Quantidade excede a disponibilidade em estoque"
+      );
+    }
+  };
   return (
     <>
       <nav>
@@ -640,7 +667,9 @@ const PDV = () => {
                 <label>Quantidade</label>
                 <input
                   type="number"
-                  onChange={(e) => setUnino(e.target.value)}
+                  onChange={(e) => {
+                    setUnino(e.target.value);
+                  }}
                   value={produto === "1" ? kgacai : unino}
                   required
                 />

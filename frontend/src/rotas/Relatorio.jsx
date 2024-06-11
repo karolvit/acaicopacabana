@@ -350,15 +350,17 @@ const Relatorio = () => {
                   <th className="thPDV">Valor Total</th>
                   <th className="thPDV">Data da Venda</th>
                   <th className="thPDV">Operador</th>
+                  <th className="thPDV">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {vendasRel.map((venda) => (
                   <tr key={venda.pedido}>
                     <td className="tdPDV">{venda.pedido}</td>
-                    <td className="tdPDV">{venda.valor_unit}</td>
+                    <td className="tdPDV">{venda.total}</td>
                     <td className="tdPDV">{venda.data_venda}</td>
                     <td className="tdPDV">{venda.operador}</td>
+                    <td className="tdPDV">{venda.status}</td>
                   </tr>
                 ))}
               </tbody>
