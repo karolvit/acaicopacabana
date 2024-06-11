@@ -1,6 +1,6 @@
 const express = require("express");
 const report = express.Router();
-const { findVendasByPedido, findVendasPorIntervaloDatas } = require('../../service/report');
+const { findVendasByPedido, findVendasPorIntervaloDatas, findVendasPorIntervaloDatasCancelados } = require('../../service/report');
 const { errorMiddleware } = require('../../utils/intTelegram');
 
 report.get("/lvendas", async (req, res, next) => {
@@ -36,6 +36,21 @@ report.get("/rvendas", async (req, res) => {
     next(new Error(`Erro ao buscar relatório de vendas, ${err}`))
   }
 });
+
+report.get("/cvendas", async (req, res) => {
+  try {
+    const {data_inicial, data_final} = req.query;
+    const result = await findVendasPorIntervaloDatasCancelados(data_inicial, data_final);
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: ['Erro ao buscar pedidos cancelados']})
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: ['Erro ao buscar pedidos cancelados']});
+    next(new Error(`Erro ao buscar pedidos cancelados, ${error}`))
+  }
+})
 
 report.use(errorMiddleware)
 
