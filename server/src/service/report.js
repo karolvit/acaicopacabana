@@ -31,7 +31,6 @@ async function findVendasPorIntervaloDatas(data_inicial, data_final) {
     const query = `
     SELECT
 	pedno.pedido,
-	pedno.valor_unit,
 	SUM(pedno.valor_unit) as total,
 	userno as operador,
 	DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda,
