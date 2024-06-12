@@ -28,9 +28,20 @@ async function createOrder(order) {
         produto.unino,
         produto.sta,
         produto.userno,
+      
       ];
 
       await connection.query(sql, values);
+
+      const sqlpay = `INSERT INTO pay (pedido, tipo, valor_recebido) VALUES (?,?,?)`;
+
+      const values2 = [
+        produto.pedido,
+        produto.tipo,
+        produto.valor_recebido
+      ];
+
+      await connection.query(sqlpay, values2);
     }
 
     await connection.commit();
