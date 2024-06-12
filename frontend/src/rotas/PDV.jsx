@@ -32,6 +32,7 @@ const PDV = () => {
   const [quantidadeEstoque, setQuantidadeEstoque] = useState(0);
   const [sta, setSta] = useState("");
   const [modalCancelamento, setModalCancelamento] = useState(false);
+  const [modalPagamento, setModalPagamento] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -66,6 +67,13 @@ const PDV = () => {
   };
   const fecharModalRelatorio = () => {
     setModalResumo(false);
+  };
+  const abrirModalPagamento = () => {
+    setModalPagamento(true);
+    setModalConfirmacaoAberto(false);
+  };
+  const fecharMosalPagamento = () => {
+    setModalPagamento(false);
   };
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
@@ -132,7 +140,7 @@ const PDV = () => {
             pedido: proximoPedido.message,
             prodno: item.id,
             valor_unit: item.precoUnitario,
-            unino: item.unino,
+            unino: 0,
             nome: item.nome,
             sta: 0,
             userno: user && user.nome,
@@ -394,7 +402,7 @@ const PDV = () => {
                 <div className="container-modal">
                   <h2>Deseja confirmar a finalização do pedido?</h2>
                   <div className="btn-modal">
-                    <button onClick={botaoEnvio} className="verde">
+                    <button onClick={abrirModalPagamento} className="verde">
                       Confirmar
                     </button>
                     <button
@@ -405,6 +413,50 @@ const PDV = () => {
                     </button>
                   </div>
                 </div>
+              </Modal>
+              <Modal
+                isOpen={modalPagamento}
+                onRequestClose={fecharMosalPagamento}
+                style={{
+                  content: {
+                    maxWidth: "60%",
+                    height: "60%",
+                    margin: "auto",
+                    padding: 0,
+                    backgroundColor: "#f8f4f4",
+                  },
+                }}
+              >
+                <div className="modal-mensagem">
+                  <SetaFechar Click={fecharMosalPagamento} />
+                  <h2>Pagamento</h2>
+                </div>
+                <table className="tabela_resumo tabela_pagamento">
+                  <thead>
+                    <tr>
+                      <th className="thPDV">Código</th>
+                      <th className="thPDV">Desc</th>
+                      <th className="thPDV">Qtd</th>
+                      <th className="thPDV">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {produtos.map((produto, index) => (
+                      <tr key={produto.id ? produto.id : index}>
+                        <td className="tdPDV">{produto.id}</td>
+                        <td className="tdPDV">{produto.nome}</td>
+                        <td className="tdPDV">{produto.unino}</td>
+                        <td className="tdPDV">
+                          R$
+                          {parseInt(produto.id) === 1
+                            ? `${produto.precoUnitario}`
+                            : `${produto.precoUnitario * produto.unino}`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="box"></div>
               </Modal>
               <input
                 type="button"
