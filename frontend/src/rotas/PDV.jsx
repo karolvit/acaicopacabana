@@ -1,11 +1,10 @@
 import "../rotas/PDV.css";
 import dinhero from "../assets/img/dinheiro.png";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Camera } from "react-camera-pro";
 import SetaVoltar from "../components/SetaVoltar";
 import SetaFechar from "../components/SetaFechar";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -23,8 +22,6 @@ const PDV = () => {
   const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
   const [modalPesquisaAberto, setModalPesquisaAberto] = useState(false);
   const [modalResumo, setModalResumo] = useState(false);
-  const [cameraAberta, setCameraAberta] = useState(false);
-  const [capturedImage, setCapturedImage] = useState(null);
   const [resultadoPesquisaProduto, setResultadoPesquisaProduto] = useState("");
   const [pesquisaProduto, setPesquisaProduto] = useState("");
   const [insersaoManual, setInsersaoManual] = useState(false);
@@ -33,37 +30,13 @@ const PDV = () => {
   const [pesoBalanca, setPesoBalanca] = useState("");
   const [codigo_produto, setCodigo_Produto] = useState("");
   const [quantidadeEstoque, setQuantidadeEstoque] = useState(0);
-  const cameraRef = useRef();
+  const [sta, setSta] = useState("");
   const [modalCancelamento, setModalCancelamento] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
   const { user } = userData || {};
 
-  const capturarImagem = async (e) => {
-    e.preventDefault();
-    if (cameraRef.current) {
-      try {
-        const fotoCapturada = await cameraRef.current.takePhoto();
-        const blob = dataURItoBlob(fotoCapturada);
-        const file = new File([blob], "foto.jpg", { type: "image/jpeg" });
-        setCapturedImage(file);
-      } catch (error) {
-        console.log("Erro ao capturar", error);
-      }
-    }
-  };
-  function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(",")[1]);
-    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    const blob = new Blob([ab], { type: mimeString });
-    return blob;
-  }
   const abrirModalConfirmacao = () => {
     setModalConfirmacaoAberto(true);
   };
@@ -106,7 +79,6 @@ const PDV = () => {
         setPrecoUnitario("");
         setCodigo_Produto("");
         toast.error("Produto sem estoque");
-        console.log("sem estoque", quantidadeEstoque, unino, produto);
         return;
       }
       const novoProduto = {
@@ -122,7 +94,6 @@ const PDV = () => {
       setUnino("");
       setPrecoUnitario("");
       setCodigo_Produto("");
-      console.log("com estoque", quantidadeEstoque, unino, produto);
     }
   };
 
@@ -138,9 +109,7 @@ const PDV = () => {
     return total.toFixed(2);
   };
 
-  const botaoCancelar = () => {
-    setProdutos([]);
-    fecharModalCancelamento();
+  const botaoLimpar = () => {
     setNome("");
     setProduto("");
     setUnino("");
@@ -148,9 +117,48 @@ const PDV = () => {
     setCodigo_Produto("");
   };
 
-  const botaoEnvio = async (e) => {
-    fecharModalConfirmacao();
+  const botaoCancelar = async (e) => {
     e.preventDefault();
+    if (produtos.length === 0) {
+      toast.error("Impossível cancelar o pedido, nenhum produto adicionado.");
+      fecharModalCancelamento();
+      return;
+    }
+
+    try {
+      const cancelarPedido = {
+        pedido: {
+          produtos: produtos.map((item) => ({
+            pedido: proximoPedido.message,
+            prodno: item.id,
+            valor_unit: item.precoUnitario,
+            unino: item.unino,
+            nome: item.nome,
+            sta: 0,
+            userno: user && user.nome,
+          })),
+        },
+      };
+      const res = await apiAcai.post("/ped", cancelarPedido);
+
+      if (res.status === 200) {
+        toast.success(res.data);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("Erro ao inserir produto no banco de dados");
+    }
+  };
+
+  const botaoEnvio = async (e) => {
+    e.preventDefault();
+    if (produtos.length === 0) {
+      toast.error("Impossível finalizar o pedido, nenhum produto adicionado.");
+      fecharModalConfirmacao();
+      return;
+    }
+    fecharModalConfirmacao();
+
     try {
       const inserirNovoPedido = {
         pedido: {
@@ -169,7 +177,6 @@ const PDV = () => {
       const res = await apiAcai.post("/ped", inserirNovoPedido);
 
       if (res.status === 200) {
-        console.log("Sucesso", res.data);
         toast.success(res.data);
         navigate("/");
       }
@@ -201,28 +208,6 @@ const PDV = () => {
     carregarProximoPedido();
   }, []);
 
-  const abrirCamera = () => {
-    setCameraAberta(true);
-  };
-  const enviarFoto = async (e) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("imagePath", capturedImage);
-
-      const res = await apiAcai.post("/up", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.status === 201) {
-        console.log("Imagem enviada com sucesso", res);
-        setCapturedImage(null);
-      }
-    } catch (error) {
-      console.log("Erro", error);
-    }
-  };
   const handlePesquisaProduto = async (e) => {
     if (e.key == "Enter") {
       e.preventDefault();
@@ -245,6 +230,7 @@ const PDV = () => {
       setUnino(kgacai);
       setNome(produtoSelecionado.nome);
       setProduto(produtoSelecionado.codigo_produto);
+      setQuantidadeEstoque(produto.quantidade);
     } else {
       abrirModalPesquisa(false);
       if (parseFloat(produtoSelecionado.quantidade) > 0) {
@@ -252,6 +238,7 @@ const PDV = () => {
         setPrecoUnitario(produtoSelecionado.preco_custo);
         setProduto(produtoSelecionado.codigo_produto);
         setQuantidade(produtoSelecionado.quantidade);
+        setQuantidadeEstoque(produto.quantidade);
       } else {
         setNome("");
         setPrecoUnitario("");
@@ -694,40 +681,10 @@ const PDV = () => {
                   />
                   <input
                     type="button"
-                    value="+   Abrir camera Foto"
+                    value="+   Limpar Produtos"
                     className="botao-add btn-pdv "
-                    onClick={abrirCamera}
+                    onClick={botaoLimpar}
                   />
-                  {cameraAberta && (
-                    <>
-                      <Camera ref={cameraRef} />
-                      <button
-                        className="button-fechar"
-                        onClick={capturarImagem}
-                      >
-                        Capturar Imagem
-                      </button>
-                      {capturedImage && (
-                        <div className="imagem-capturada">
-                          <img
-                            src={URL.createObjectURL(capturedImage)}
-                            alt="Imagem Capturada"
-                          />
-                        </div>
-                      )}
-                      {capturedImage && (
-                        <button className="button-enviar" onClick={enviarFoto}>
-                          Enviar Imagem
-                        </button>
-                      )}
-                      <button
-                        className="button-fechar"
-                        onClick={() => setCameraAberta(false)}
-                      >
-                        Fechar Câmera
-                      </button>
-                    </>
-                  )}
                 </div>
               </div>
             </form>
