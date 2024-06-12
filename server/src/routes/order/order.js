@@ -22,7 +22,7 @@ order.get("/nped", async (req, res, next) => {
 
 order.post("/ped", async (req, res, next) => {
   try {
-    if (!req.body || !req.body.pedido || !req.body.pedido.produtos) {
+    if (!req.body || !req.body.pedido || !req.body.pedido.produtos || !req.body.pedido.pagamento) {
       return res.status(400).send("Formato de pedido inválido");
     }
     

@@ -28,17 +28,17 @@ async function createOrder(order) {
         produto.unino,
         produto.sta,
         produto.userno,
-      
       ];
 
       await connection.query(sql, values);
+    }
 
+    for (const pagamento of order.pagamentos) {
       const sqlpay = `INSERT INTO pay (pedido, tipo, valor_recebido) VALUES (?,?,?)`;
-
       const values2 = [
-        produto.pedido,
-        produto.tipo,
-        produto.valor_recebido
+        pagamento.pedido,
+        pagamento.tipo,
+        pagamento.valor_recebido
       ];
 
       await connection.query(sqlpay, values2);
