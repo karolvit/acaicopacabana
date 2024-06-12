@@ -95,10 +95,9 @@ const PDV = () => {
     setModalResumo(false);
   };
   const adicionarProduto = () => {
-    let valorunino = unino / 1000;
     if (produto && unino && precoUnitario) {
       if (
-        (produto !== "1" && valorunino > parseFloat(quantidadeEstoque)) ||
+        (produto !== "1" && unino > parseFloat(quantidadeEstoque)) ||
         (produto === "1" && unino > parseFloat(quantidadeEstoque))
       ) {
         setNome("");
@@ -107,6 +106,7 @@ const PDV = () => {
         setPrecoUnitario("");
         setCodigo_Produto("");
         toast.error("Produto sem estoque");
+        console.log("sem estoque", quantidadeEstoque, unino, produto);
         return;
       }
       const novoProduto = {
@@ -122,6 +122,7 @@ const PDV = () => {
       setUnino("");
       setPrecoUnitario("");
       setCodigo_Produto("");
+      console.log("com estoque", quantidadeEstoque, unino, produto);
     }
   };
 
@@ -267,8 +268,8 @@ const PDV = () => {
       if (parseInt(codigo) === 1) {
         setInsersaoManual(true);
         setCodigo_Produto(codigo);
-
         await carregandoEstoque(codigo);
+        console.log("produto_certo", quantidadeEstoque);
       } else {
         const res = await apiAcai.get(`/produtoid?codigo_produto=${codigo}`);
         if (res.status === 200) {
@@ -301,7 +302,6 @@ const PDV = () => {
       setPrecoUnitario(totalAcai);
       setUnino(totalUnino);
       setInsersaoManual(false);
-      console.log(produto.quantidade);
     }
   };
 
@@ -310,7 +310,6 @@ const PDV = () => {
       const res = await apiAcai.get("/peso");
       setPesoBalanca(res.data.peso);
       setKgacai(res.data.peso);
-      console.log(pesoBalanca);
 
       calculoBalanca();
     } catch (error) {
@@ -321,20 +320,22 @@ const PDV = () => {
   const calculoBalanca = () => {
     let totalAcaiBalaca = pesoBalanca * precoacai;
     setPrecoUnitario(totalAcaiBalaca);
-    console.log(totalAcaiBalaca);
   };
 
   const carregandoEstoque = async (codigo_produto) => {
     try {
-      console.log(codigo_produto);
       const res = await apiAcai.get(
         `/produtoid?codigo_produto=${codigo_produto}`
       );
       if (res.status === 200) {
         const produdoEsto = res.data[0];
+
         if (parseFloat(produdoEsto.quantidade) > 0) {
           setNome(produdoEsto.nome);
           setPrecoUnitario(produdoEsto.preco_custo);
+          setQuantidadeEstoque(produdoEsto.quantidade);
+          setCodigo_Produto(produdoEsto.codigo_produto);
+          console.log("produto", codigo_produto);
         } else {
           setNome("");
           setPrecoUnitario("");
@@ -356,17 +357,6 @@ const PDV = () => {
     console.log("Produtos:", produtos);
   }, [produtos]);
 
-  const verificarQuantidade = (quantidade) => {
-    if (produto === "1" && quantidade < kgacai) {
-      console.log("Quantidade excede o peso na balança");
-    } else if (produto !== "1" && quantidade > parseFloat(quantidadeEstoque)) {
-      console.log(
-        quantidadeEstoque,
-        quantidade,
-        "Quantidade excede a disponibilidade em estoque"
-      );
-    }
-  };
   return (
     <>
       <nav>
