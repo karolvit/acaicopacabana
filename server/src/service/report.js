@@ -90,8 +90,40 @@ async function findVendasPorIntervaloDatasCancelados (data_inicial, data_final) 
   }
 }
 
+async function detailsPagamento (pedido) {
+  try {
+    const query = `
+  SELECT
+    pedidos.pedido as Pedido,
+    pay.valor_recebido as Recebido,
+  CASE
+    WHEN pay.tipo = 0 THEN 'Dinheiro'
+    WHEN pay.tipo = 1 THEN 'Pix'
+    WHEN pay.tipo = 2 THEN 'Crédito'
+    WHEN pay.tipo = 3 THEN 'Débito'
+    ELSE 'Desconhecido, entre contato com administrador'
+  END as Pagamento,
+    pedidos.userno as Operador
+  FROM 
+    pedidos
+  INNER JOIN
+    pay
+  ON
+    pedidos.pedido = pay.pedido
+  WHERE
+    pedidos.pedido = ?
+  `
+  const [results] = await pool.query(query, [pedido]);
+  return { success: true, data: results}
+  } catch (error) {
+    console.error('Erro ao buscar pedidos cancelados', error);
+    return { success: false, error: ['Erro no sistema, contate o administrador']};
+  }
+}
+
 module.exports = {
   findVendasByPedido,
   findVendasPorIntervaloDatas,
-  findVendasPorIntervaloDatasCancelados
+  findVendasPorIntervaloDatasCancelados,
+  detailsPagamento
 };

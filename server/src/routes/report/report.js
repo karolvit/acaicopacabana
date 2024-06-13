@@ -1,6 +1,6 @@
 const express = require("express");
 const report = express.Router();
-const { findVendasByPedido, findVendasPorIntervaloDatas, findVendasPorIntervaloDatasCancelados } = require('../../service/report');
+const { findVendasByPedido, findVendasPorIntervaloDatas, findVendasPorIntervaloDatasCancelados, detailsPagamento } = require('../../service/report');
 const { errorMiddleware } = require('../../utils/intTelegram');
 
 report.get("/lvendas", async (req, res, next) => {
@@ -49,6 +49,21 @@ report.get("/cvendas", async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: ['Erro ao buscar pedidos cancelados']});
     next(new Error(`Erro ao buscar pedidos cancelados, ${error}`))
+  }
+})
+
+report.get("/dvendas", async (req, res) => {
+  try {
+    const {pedido} = req.query;
+    const result = await detailsPagamento(pedido);
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json({ success: false, error: ['Erro ao buscar detalhes do pagamento do pedido']});
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: ['Erro ao buscar detalhes do pagamento']})
+    next(new Error(`Erro ao buscar detalhamento de pagamento ${error}`));
   }
 })
 
