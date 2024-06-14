@@ -104,7 +104,8 @@ async function detailsPagamento (pedido) {
     WHEN pay.tipo = 4 THEN 'Cancelado'
     ELSE 'Desconhecido, entre contato com administrador'
   END as Pagamento,
-    pedidos.userno as Operador
+    pedidos.userno as Operador,
+    pay.status
   FROM 
     pedidos
   INNER JOIN
