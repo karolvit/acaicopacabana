@@ -101,6 +101,7 @@ async function detailsPagamento (pedido) {
     WHEN pay.tipo = 1 THEN 'Pix'
     WHEN pay.tipo = 2 THEN 'Crédito'
     WHEN pay.tipo = 3 THEN 'Débito'
+    WHEN pay.tipo = 4 THEN 'Cancelado'
     ELSE 'Desconhecido, entre contato com administrador'
   END as Pagamento,
     pedidos.userno as Operador
