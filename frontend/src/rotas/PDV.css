@@ -259,7 +259,78 @@ footer {
   font-size: 20px;
 }
 
+.box {
+  width: 250px;
+  height: 130px;
+  background-color: #46295A;
+  margin: 2%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 25px;
+}
 
+.flex {
+  align-items: center;
+  display: flex;
+  gap: 10%;
+}
+
+.flex_pagamento {
+  display: flex;
+  gap: 150px;
+}
+
+.input-pagamento {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: flex-end;
+}
+
+.input-pagamento input {
+  height: 40px;
+  width: 400px;
+  border: 1px solid #46295A;
+}
+
+.input-pagamento label {
+  color: #46295A;
+  font-size: 40px;
+  margin-top: 50px;
+}
+
+.btn-cancelar-pagamento,
+.btn-finalizar {
+  margin-top: 25px;
+  cursor: pointer;
+  width: 192px;
+  height: 45px;
+  color: #fff;
+  font-size: 23px;
+  background-color: #46295A;
+  ;
+}
+
+.flex-btn {
+  display: flex;
+}
+
+.box img {
+  height: 50px;
+}
+
+.carta img {
+  height: 100px;
+}
+
+
+.container-box {
+  display: flex;
+  cursor: pointer;
+}
 
 .thPDV,
 .tdPDV {
@@ -274,6 +345,17 @@ footer {
   background-color: #ffffff;
   font-size: 20px;
   color: #0a0808be;
+}
+
+.tabela_pagamento {
+  border: 1px solid #46295A;
+  overflow-y: auto;
+  margin: 2%;
+  max-height: 30%;
+}
+
+.tabela_pag {
+  margin: 0;
 }
 
 .modal-mensagem {
@@ -300,6 +382,12 @@ footer {
   margin-bottom: 5px;
   font-size: 55px;
 
+}
+
+.btn-pagamento {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .modal-mensagem h2 {

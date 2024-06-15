@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import SetaVoltar from "../components/SetaVoltar";
 import SetaFechar from "../components/SetaFechar";
 import { IoIosCloseCircle } from "react-icons/io";
+import pix from "../assets/img/pix.png";
+import dinheiro_pag from "../assets/img/dinheiro_pag.png";
+import cartao from "../assets/img/cartao.png";
 
 const PDV = () => {
   const [produto, setProduto] = useState("");
@@ -33,6 +36,11 @@ const PDV = () => {
   const [sta, setSta] = useState("");
   const [modalCancelamento, setModalCancelamento] = useState(false);
   const [modalPagamento, setModalPagamento] = useState(false);
+  const [tipo, setTipo] = useState("");
+  const [valor_recebido, setValor_Recebido] = useState("");
+  const [status, setStatus] = useState("");
+  const [pagamentos, setPagamentos] = useState([]);
+  const [modalPreco_Recebido, setModalPreco_Recebido] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -75,6 +83,26 @@ const PDV = () => {
   const fecharMosalPagamento = () => {
     setModalPagamento(false);
   };
+  const abrirModalPreco_Recebido = (novoTipo) => {
+    setModalPreco_Recebido(true);
+    setTipo(novoTipo);
+  };
+  const fecharModalPreco_Recebido = () => {
+    setModalPreco_Recebido(false);
+    setTipo("");
+    setValor_Recebido("");
+  };
+  const adicionaPagamento = () => {
+    const novoPagamento = {
+      tipo: tipo,
+      valor_recebido: parseFloat(valor_recebido),
+    };
+    setPagamentos([...pagamentos, novoPagamento]);
+    fecharModalPreco_Recebido();
+    setTipo("");
+    setValor_Recebido("");
+  };
+
   const adicionarProduto = () => {
     if (produto && unino && precoUnitario) {
       if (
@@ -116,7 +144,20 @@ const PDV = () => {
     });
     return total.toFixed(2);
   };
+  const valorRecebidoPagamento = () => {
+    let total = 0;
+    pagamentos.forEach((pagameto) => {
+      total += pagameto.valor_recebido;
+    });
+    return total.toFixed(2);
+  };
+  const valorTroco = () => {
+    const totalValorTotal = parseFloat(valorTotal());
+    const totalValorRecebidoPagamento = parseFloat(valorRecebidoPagamento());
+    const troco = totalValorRecebidoPagamento - totalValorTotal;
 
+    return troco.toFixed(2);
+  };
   const botaoLimpar = () => {
     setNome("");
     setProduto("");
@@ -132,6 +173,11 @@ const PDV = () => {
       fecharModalCancelamento();
       return;
     }
+    if (pagamentos.length === 0) {
+      toast.error(
+        "Impossível cancelar o pedido, sem adicionar metodo de pagamento"
+      );
+    }
 
     try {
       const cancelarPedido = {
@@ -144,6 +190,12 @@ const PDV = () => {
             nome: item.nome,
             sta: 0,
             userno: user && user.nome,
+          })),
+          pagamentos: pagamentos.map((item) => ({
+            pedido: proximoPedido.message,
+            tipo: item.tipo,
+            status: 1,
+            valor_recebido: item.valor_recebido,
           })),
         },
       };
@@ -178,6 +230,12 @@ const PDV = () => {
             nome: item.nome,
             sta: 1,
             userno: user && user.nome,
+          })),
+          pagamentos: pagamentos.map((item) => ({
+            pedido: proximoPedido.message,
+            tipo: item.tipo,
+            status: 0,
+            valor_recebido: item.valor_recebido,
           })),
         },
       };
@@ -419,8 +477,8 @@ const PDV = () => {
                 onRequestClose={fecharMosalPagamento}
                 style={{
                   content: {
-                    maxWidth: "60%",
-                    height: "60%",
+                    maxWidth: "80%",
+                    maxHeight: "100%",
                     margin: "auto",
                     padding: 0,
                     backgroundColor: "#f8f4f4",
@@ -431,32 +489,128 @@ const PDV = () => {
                   <SetaFechar Click={fecharMosalPagamento} />
                   <h2>Pagamento</h2>
                 </div>
-                <table className="tabela_resumo tabela_pagamento">
-                  <thead>
-                    <tr>
-                      <th className="thPDV">Código</th>
-                      <th className="thPDV">Desc</th>
-                      <th className="thPDV">Qtd</th>
-                      <th className="thPDV">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {produtos.map((produto, index) => (
-                      <tr key={produto.id ? produto.id : index}>
-                        <td className="tdPDV">{produto.id}</td>
-                        <td className="tdPDV">{produto.nome}</td>
-                        <td className="tdPDV">{produto.unino}</td>
-                        <td className="tdPDV">
-                          R$
-                          {parseInt(produto.id) === 1
-                            ? `${produto.precoUnitario}`
-                            : `${produto.precoUnitario * produto.unino}`}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="box"></div>
+                <div className="flex_pagamento">
+                  <div>
+                    <div className="tabela_pagamento">
+                      <table className="tabela_resumo tabela_pag">
+                        <thead>
+                          <tr>
+                            <th className="thPDV">Código</th>
+                            <th className="thPDV">Desc</th>
+                            <th className="thPDV">Qtd</th>
+                            <th className="thPDV">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {produtos.map((produto, index) => (
+                            <tr key={produto.id ? produto.id : index}>
+                              <td className="tdPDV">{produto.id}</td>
+                              <td className="tdPDV">{produto.nome}</td>
+                              <td className="tdPDV">{produto.unino}</td>
+                              <td className="tdPDV">
+                                R$
+                                {parseInt(produto.id) === 1
+                                  ? `${produto.precoUnitario}`
+                                  : `${produto.precoUnitario * produto.unino}`}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <Modal
+                      isOpen={modalPreco_Recebido}
+                      onRequestClose={fecharModalPreco_Recebido}
+                      contentLabel="Modal Produto Específico"
+                      style={{
+                        content: {
+                          width: "50%",
+                          height: "120px",
+                          margin: "auto",
+                          padding: 0,
+                        },
+                      }}
+                    >
+                      <div className="modal-mensagem">
+                        <SetaFechar Click={fecharModalPreco_Recebido} />
+                        <h2>Valor recebido por cliente</h2>
+                      </div>
+                      <div className="kg">
+                        <label>Valor Recebido </label>
+                        <input
+                          type="number"
+                          onChange={(e) => {
+                            setValor_Recebido(e.target.value);
+                          }}
+                        />
+                        <input
+                          type="button"
+                          value="Lançar Adicionar Valor"
+                          className="botao-add"
+                          onClick={() => {
+                            adicionaPagamento();
+                          }}
+                        />
+                      </div>
+                    </Modal>
+                    <div className="container-box">
+                      <div className="box">
+                        <img
+                          src={pix}
+                          alt=""
+                          onClick={() => abrirModalPreco_Recebido(0)}
+                        />
+                        <p>PIX</p>
+                      </div>
+                      <div
+                        className="box"
+                        onClick={() => abrirModalPreco_Recebido(1)}
+                      >
+                        <img src={dinheiro_pag} alt="" />
+                        <p>DINHEIRO</p>
+                      </div>
+                    </div>
+                    <div
+                      className="container-box"
+                      onClick={() => abrirModalPreco_Recebido(2)}
+                    >
+                      <div className="box carta">
+                        <img src={cartao} alt="" />
+                        <p>
+                          CARTÃO DE <br /> CRÉDITO
+                        </p>
+                      </div>
+                      <div
+                        className="box carta"
+                        onClick={() => abrirModalPreco_Recebido(3)}
+                      >
+                        <img src={cartao} alt="" />
+                        <p>
+                          CARTÃO DE <br /> CRÉDITO
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="input-pagamento">
+                    <label>Valor Total</label>
+                    <input type="" value={valorTotal()} disabled />
+                    <label>Valor Recebido</label>
+                    <input type="" value={valorRecebidoPagamento()} disabled />
+                    <label>Valor Troco</label>
+                    <input type="" value={valorTroco()} disabled />
+                    <div className="btn-pagamento">
+                      <button className="btn-finalizar" onClick={botaoEnvio}>
+                        Finalizar
+                      </button>
+                      <button
+                        className="btn-cancelar-pagamento"
+                        onClick={botaoCancelar}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </Modal>
               <input
                 type="button"
