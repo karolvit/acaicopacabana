@@ -8,7 +8,8 @@ async function findVendasByPedido(pedido) {
         produto.nome,
         pedno.unino,
         pedno.valor_unit,
-        DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda
+        DATE_FORMAT(pedno.data_fechamento, "%d/%m/%Y") as data_venda,
+        pedno.userno as Operador
       FROM 
         pedno
       INNER JOIN
