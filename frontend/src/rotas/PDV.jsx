@@ -41,11 +41,20 @@ const PDV = () => {
   const [status, setStatus] = useState("");
   const [pagamentos, setPagamentos] = useState([]);
   const [modalPreco_Recebido, setModalPreco_Recebido] = useState(false);
+  const [modalSenha, setModalSenha] = useState(false);
+  const [senha, setSenha] = useState("");
+  const [disabled, setDisabled] = useState(true);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
   const { user } = userData || {};
 
+  const abrirModalSenha = () => {
+    setModalSenha(true);
+  };
+  const fecharModalSenha = () => {
+    setModalSenha(false);
+  };
   const abrirModalConfirmacao = () => {
     setModalConfirmacaoAberto(true);
   };
@@ -215,6 +224,27 @@ const PDV = () => {
       }
     } catch (error) {
       console.log("Erro ao inserir produto no banco de dados");
+    }
+  };
+  const liberarPedido = async (e) => {
+    e.preventDefault();
+
+    try {
+      const usuarioCadastro = {
+        operador_liberacao: user && user.id,
+        pedido: proximoPedido.message,
+        senha,
+      };
+      const res = await apiAcai.post("/liberacao", usuarioCadastro);
+      if (res.status === 200) {
+        setDisabled(false);
+        setSenha("");
+        toast.success("Pedido liberado para alteração");
+        setModalSenha(false);
+      }
+    } catch (error) {
+      setDisabled(true);
+      toast.error("Usuário não é administrador ou senha incorreta");
     }
   };
 
@@ -589,7 +619,7 @@ const PDV = () => {
                       >
                         <img src={cartao} alt="" />
                         <p>
-                          CARTÃO DE <br /> CRÉDITO
+                          CARTÃO DE <br /> DEBITO
                         </p>
                       </div>
                     </div>
@@ -821,7 +851,7 @@ const PDV = () => {
                   contentLabel="Modal Produto Específico"
                   style={{
                     content: {
-                      width: "50%",
+                      width: "60%",
                       height: "120px",
                       margin: "auto",
                       padding: 0,
@@ -841,6 +871,7 @@ const PDV = () => {
                       }}
                       onKeyPress={calculoKg}
                       value={kgacai}
+                      disabled={disabled}
                     />
                     <input
                       type="button"
@@ -848,6 +879,50 @@ const PDV = () => {
                       className="botao-add"
                       onClick={() => {
                         carregandoBalanca();
+                      }}
+                    />
+                    <input
+                      type="button"
+                      value="Lançar peso manual"
+                      className="botao-add"
+                      onClick={() => {
+                        abrirModalSenha();
+                      }}
+                    />
+                  </div>
+                </Modal>
+                <Modal
+                  isOpen={modalSenha}
+                  onRequestClose={fecharModalSenha}
+                  contentLabel="Modal Produto Específico"
+                  style={{
+                    content: {
+                      width: "60%",
+                      height: "120px",
+                      margin: "auto",
+                      padding: 0,
+                    },
+                  }}
+                >
+                  <div className="modal-mensagem">
+                    <SetaFechar Click={fecharModalSenha} />
+                    <h2>Liberação pedido manual</h2>
+                  </div>
+                  <div className="kg">
+                    <label>Inserir senha do ADM</label>
+                    <input
+                      type="password"
+                      onChange={(e) => {
+                        setSenha(e.target.value);
+                      }}
+                      value={senha}
+                    />
+                    <input
+                      type="button"
+                      value="Enviar"
+                      className="botao-add"
+                      onClick={(e) => {
+                        liberarPedido(e);
                       }}
                     />
                   </div>
