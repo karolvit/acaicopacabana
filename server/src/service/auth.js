@@ -56,8 +56,17 @@ async function authlib(senha, pedido, operador_liberacao) {
     connection = await pool.getConnection();
     await connection.beginTransaction();
 
-    const [rows] = await connection.query('SELECT senha FROM usuario WHERE senha = ? AND lib = 1', [senha]);
+    const [rows] = await connection.query('SELECT senha FROM usuario WHERE lib = 1');
     if (rows.length === 0) {
+      await connection.rollback();
+      connection.release();
+      return { success: false, message: "Autenticação falhou. Usuário não é administrador ou senha incorreta." };
+    }
+
+    const hashedPassword = rows[0].senha;
+    const passwordMatch = await bcrypt.compare(senha, hashedPassword);
+    
+    if (!passwordMatch) {
       await connection.rollback();
       connection.release();
       return { success: false, message: "Autenticação falhou. Usuário não é administrador ou senha incorreta." };
@@ -68,7 +77,7 @@ async function authlib(senha, pedido, operador_liberacao) {
 
     await connection.commit();
     connection.release();
-    return { success: true, message: "LIberado inserção manual" };
+    return { success: true, message: "Liberado inserção manual" };
   } catch (error) {
     if (connection) {
       await connection.rollback();
