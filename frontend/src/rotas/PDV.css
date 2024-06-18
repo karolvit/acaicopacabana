@@ -373,8 +373,10 @@ footer {
 .container-modal {
   display: flex;
   flex-direction: column;
+}
 
-
+.btn-finalizar:disabled {
+  background-color: #2d2b2b;
 }
 
 .container-modal h2 {

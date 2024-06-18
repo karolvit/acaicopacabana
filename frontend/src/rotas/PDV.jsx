@@ -165,6 +165,13 @@ const PDV = () => {
     setPrecoUnitario("");
     setCodigo_Produto("");
   };
+  const botaoInativdo = () => {
+    const valorRecebido = parseFloat(valorRecebidoPagamento());
+    const valorTrocoFalta = parseFloat(valorTotal());
+    const inativo = parseFloat(valorTrocoFalta) <= parseFloat(valorRecebido);
+    console.log(inativo);
+    return inativo;
+  };
 
   const botaoCancelar = async (e) => {
     e.preventDefault();
@@ -199,6 +206,7 @@ const PDV = () => {
           })),
         },
       };
+
       const res = await apiAcai.post("/ped", cancelarPedido);
 
       if (res.status === 200) {
@@ -322,7 +330,6 @@ const PDV = () => {
         setInsersaoManual(true);
         setCodigo_Produto(codigo);
         await carregandoEstoque(codigo);
-        console.log("produto_certo", quantidadeEstoque);
       } else {
         const res = await apiAcai.get(`/produtoid?codigo_produto=${codigo}`);
         if (res.status === 200) {
@@ -388,7 +395,6 @@ const PDV = () => {
           setPrecoUnitario(produdoEsto.preco_custo);
           setQuantidadeEstoque(produdoEsto.quantidade);
           setCodigo_Produto(produdoEsto.codigo_produto);
-          console.log("produto", codigo_produto);
         } else {
           setNome("");
           setPrecoUnitario("");
@@ -406,9 +412,7 @@ const PDV = () => {
     const novaListaProdutos = produtos.filter((produto) => produto.id !== id);
     setProdutos(novaListaProdutos);
   };
-  useEffect(() => {
-    console.log("Produtos:", produtos);
-  }, [produtos]);
+  useEffect(() => {}, [produtos]);
 
   return (
     <>
@@ -554,12 +558,11 @@ const PDV = () => {
                       </div>
                     </Modal>
                     <div className="container-box">
-                      <div className="box">
-                        <img
-                          src={pix}
-                          alt=""
-                          onClick={() => abrirModalPreco_Recebido(0)}
-                        />
+                      <div
+                        className="box"
+                        onClick={() => abrirModalPreco_Recebido(0)}
+                      >
+                        <img src={pix} alt="" />
                         <p>PIX</p>
                       </div>
                       <div
@@ -599,7 +602,11 @@ const PDV = () => {
                     <label>Valor Troco</label>
                     <input type="" value={valorTroco()} disabled />
                     <div className="btn-pagamento">
-                      <button className="btn-finalizar" onClick={botaoEnvio}>
+                      <button
+                        className="btn-finalizar"
+                        onClick={botaoEnvio}
+                        disabled={!botaoInativdo()}
+                      >
                         Finalizar
                       </button>
                       <button
