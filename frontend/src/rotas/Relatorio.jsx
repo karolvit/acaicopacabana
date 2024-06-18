@@ -255,7 +255,7 @@ const Relatorio = () => {
                   <p>04</p>
                 </td>
                 <td>
-                  <p>DETALHAMENTOS DO PAGAMENTO POR PEDIDO</p>
+                  <p>DETALHAMENTO DO PAGAMENTO POR PEDIDO</p>
                 </td>
               </tr>
             </tbody>
