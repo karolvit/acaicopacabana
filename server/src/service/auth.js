@@ -50,6 +50,35 @@ async function loginUser(usuario, senha) {
   }
 }
 
+async function authlib(senha, pedido, operador_liberacao) {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    const [rows] = await connection.query('SELECT senha FROM usuario WHERE senha = ? AND lib = 1', [senha]);
+    if (rows.length === 0) {
+      await connection.rollback();
+      connection.release();
+      return { success: false, message: "Autenticação falhou. Usuário não é administrador ou senha incorreta." };
+    }
+
+    const logSql = 'INSERT INTO log_lib (pedido, operador_liberacao) VALUES (?, ?)';
+    await connection.query(logSql, [pedido, operador_liberacao]);
+
+    await connection.commit();
+    connection.release();
+    return { success: true, message: "LIberado inserção manual" };
+  } catch (error) {
+    if (connection) {
+      await connection.rollback();
+      connection.release();
+    }
+    return { success: false, error: "Erro ao liberar inserção manual", details: error.message };
+  }
+}
+
 module.exports = {
-  loginUser
+  loginUser,
+  authlib
 };
