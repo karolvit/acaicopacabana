@@ -1,5 +1,6 @@
 import "../rotas/PDV.css";
 import dinhero from "../assets/img/dinheiro.png";
+import agua from "../assets/img/agua.png";
 import { useState, useEffect } from "react";
 import apiAcai from "../axios/config";
 import Modal from "react-modal";
@@ -44,10 +45,47 @@ const PDV = () => {
   const [modalSenha, setModalSenha] = useState(false);
   const [senha, setSenha] = useState("");
   const [disabled, setDisabled] = useState(true);
+  const [modalInserirProdto, setModalInserirProduto] = useState(false);
+  const [modalAdicionarProdudoCel, setModalAdicionarProdudoCel] =
+    useState(false);
+  const [tabAtiva, setTabAtiva] = useState("produto");
+  const [modalFinalizarPedidoCel, setModalFinalizarPedidoCel] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
   const { user } = userData || {};
+  const abrirFinalizarPedidoCel = () => {
+    setModalFinalizarPedidoCel(true);
+  };
+
+  const fecharFinalizarPedidoCel = () => {
+    setModalFinalizarPedidoCel(false);
+  };
+  const abrirAdicionarProdudoCel = () => {
+    setModalAdicionarProdudoCel(true);
+  };
+
+  const fecharAdicionarProdudoCel = () => {
+    setTabAtiva("produto");
+    setModalAdicionarProdudoCel(false);
+  };
+
+  const abrirModalInserirProduto = () => {
+    setTabAtiva("produto");
+    setModalInserirProduto(true);
+    console.log("isso");
+  };
+
+  const abrirResumo = () => {
+    setTabAtiva("resumo");
+    setModalInserirProduto(false);
+    console.log("foi");
+  };
+
+  const fecharModalInserirProduto = () => {
+    setTabAtiva("resumo");
+    setModalInserirProduto(false);
+  };
 
   const abrirModalSenha = () => {
     setModalSenha(true);
@@ -1008,6 +1046,296 @@ const PDV = () => {
           </table>
         </div>
       </header>
+      <div className="celular-tab">
+        <h1
+          onClick={abrirModalInserirProduto}
+          className={tabAtiva === "produto" ? "tab-ativa" : ""}
+        >
+          Produto
+        </h1>
+        <h1
+          onClick={abrirResumo}
+          className={tabAtiva === "resumo" ? "tab-ativa" : ""}
+        >
+          Resumo
+        </h1>
+      </div>
+
+      <div className="conteudo-tabs">
+        {tabAtiva === "produto" && (
+          <div className="inserir-produto-celular">
+            <Modal
+              isOpen={modalInserirProdto}
+              onRequestClose={fecharModalInserirProduto}
+              contentLabel="Modal Produto Específico"
+              style={{
+                content: {
+                  width: "80%",
+                  height: "150px",
+                  margin: "auto",
+                  padding: 0,
+                  border: "1px solid #46295A",
+                },
+              }}
+            >
+              <div className="nav-modal-cel">
+                <p>INSERIR PRODUTO</p>
+                <IoIosCloseCircle
+                  size={25}
+                  nav-modal-cel
+                  style={{
+                    color: "red",
+                  }}
+                  onClick={() => {
+                    fecharModalInserirProduto();
+                  }}
+                />
+              </div>
+              <div className="body-modal-cel">
+                <label>Código</label>
+                <input
+                  type="number"
+                  value={produto}
+                  className="codigo-produto-cel"
+                  onChange={(e) => {
+                    setProduto(e.target.value);
+                    verificarCodigoProduto(e.target.value);
+                    carregandoEstoque(e.target.value);
+                    // fecharModalInserirProduto(e);
+                    fecharModalKgAcai(e);
+                    abrirAdicionarProdudoCel(e);
+                  }}
+                />
+                <input
+                  type="button"
+                  value="Procurar por nome"
+                  className="botao-add-cel"
+                />
+              </div>
+            </Modal>
+            <Modal
+              isOpen={modalAdicionarProdudoCel}
+              onRequestClose={fecharAdicionarProdudoCel}
+              contentLabel="Modal Produto Específico"
+              style={{
+                content: {
+                  width: "80%",
+                  height: "400px",
+                  margin: "auto",
+                  padding: 0,
+                  border: "1px solid #46295A",
+                },
+              }}
+            >
+              <div className="container-add-produto-cel">
+                <div className="modal-adicionar-produto">
+                  <img src={agua} />
+                  <div className="borde-produto">
+                    <p>{nome}</p>
+                  </div>
+                </div>
+                <div className="input-cel-add">
+                  <div className="box-cel">
+                    <label>Quantidade</label>
+                    <input
+                      type="number"
+                      value={unino}
+                      className="codigo-produto-add-cel"
+                      onChange={(e) => {
+                        setUnino(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="box-cel">
+                    <label>Valor total</label>
+                    <input
+                      required
+                      type="number"
+                      className="codigo-produto-add-cel"
+                      value={precoUnitario}
+                      onChange={(e) => setPrecoUnitario(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <input
+                    type="button"
+                    value="Adicionar"
+                    className="botao-add-lista-cel"
+                    onClick={() => {
+                      adicionarProduto();
+                      fecharModalInserirProduto();
+                      fecharAdicionarProdudoCel();
+                    }}
+                  />
+                </div>
+              </div>
+            </Modal>
+          </div>
+        )}
+
+        {tabAtiva === "resumo" && (
+          <div className="resumo-celular">
+            <table className="tabela-cel-resumo">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Quantidade</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {produtos.map((produto, index) => (
+                  <tr key={index}>
+                    <td>{produto.nome}</td>
+                    <td>{produto.unino}</td>
+                    <td>
+                      R$
+                      {parseInt(produto.id) === 1
+                        ? `${produto.precoUnitario}`
+                        : `${produto.precoUnitario * produto.unino}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <div className="total-pedido-cel">
+          <p>TOTAL</p>
+          <p>R$ {valorTotal()}</p>
+        </div>
+        <div className="container-cel">
+          <input
+            type="button"
+            value="FINALIZAR PEDIDO"
+            className="botao-finalizar-cel"
+            onClick={abrirFinalizarPedidoCel}
+          />
+        </div>
+        <Modal
+          isOpen={modalFinalizarPedidoCel}
+          onRequestClose={fecharAdicionarProdudoCel}
+          style={{
+            content: {
+              width: "80%",
+              height: "100%",
+              padding: 0,
+              margin: 0,
+              backgroundColor: "#f8f4f4",
+            },
+          }}
+        >
+          <div className="modal-mensagem">
+            <SetaFechar Click={fecharMosalPagamento} />
+            <h2>Pagamento</h2>
+          </div>
+          <div className="flex_pagamento_cel">
+            <div>
+              <Modal
+                isOpen={modalPreco_Recebido}
+                onRequestClose={fecharModalPreco_Recebido}
+                contentLabel="Modal Produto Específico"
+                style={{
+                  content: {
+                    width: "50%",
+                    height: "120px",
+                    margin: "auto",
+                    padding: 0,
+                  },
+                }}
+              >
+                <div className="modal-mensagem">
+                  <SetaFechar Click={fecharModalPreco_Recebido} />
+                  <h2>Valor recebido por cliente</h2>
+                </div>
+                <div className="kg">
+                  <label>Valor Recebido </label>
+                  <input
+                    type="number"
+                    onChange={(e) => {
+                      setValor_Recebido(e.target.value);
+                    }}
+                  />
+                  <input
+                    type="button"
+                    value="Lançar Adicionar Valor"
+                    className="botao-add"
+                    onClick={() => {
+                      adicionaPagamento();
+                    }}
+                  />
+                </div>
+              </Modal>
+
+              <div className="container-box">
+                <div
+                  className="box-cel-p"
+                  onClick={() => abrirModalPreco_Recebido(0)}
+                >
+                  <img src={pix} alt="" />
+                  <p>PIX</p>
+                </div>
+                <div
+                  className="box-cel-p"
+                  onClick={() => abrirModalPreco_Recebido(1)}
+                >
+                  <img src={dinheiro_pag} alt="" />
+                  <p>DINHEIRO</p>
+                </div>
+              </div>
+              <div
+                className="container-box"
+                onClick={() => abrirModalPreco_Recebido(2)}
+              >
+                <div className="box-cel-p carta-cel">
+                  <img src={cartao} alt="" />
+                  <p>
+                    CARTÃO DE <br /> CRÉDITO
+                  </p>
+                </div>
+                <div
+                  className="box-cel-p carta-cel"
+                  onClick={() => abrirModalPreco_Recebido(3)}
+                >
+                  <img src={cartao} alt="" />
+                  <p>
+                    CARTÃO DE <br /> DEBITO
+                  </p>
+                </div>
+              </div>
+              <div className="btn-pagamento">
+                <button
+                  className="btn-finalizar"
+                  onClick={botaoEnvio}
+                  disabled={!botaoInativdo()}
+                >
+                  Finalizar
+                </button>
+                <button
+                  className="btn-cancelar-pagamento"
+                  onClick={botaoCancelar}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+            <div className="input-pagamento-cel">
+              <div className="box-cel-pag">
+                <label>Valor Total</label>
+                <input type="" value={valorTotal()} disabled />
+              </div>
+              <div className="box-cel-pag">
+                <label>Valor Pago</label>
+                <input type="" value={valorRecebidoPagamento()} disabled />
+              </div>
+              <div className="box-cel-pag">
+                <label>Valor Troco</label>
+                <input type="" value={valorTroco()} disabled />
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </div>
 
       <footer>Software Licensiado pela Célebre </footer>
     </>
