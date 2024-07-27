@@ -50,10 +50,45 @@ const PDV = () => {
     useState(false);
   const [tabAtiva, setTabAtiva] = useState("produto");
   const [modalFinalizarPedidoCel, setModalFinalizarPedidoCel] = useState(false);
+  const [modalKgAcaiCel, setModalKgAcaiCel] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const customStyles = {
+    content: {
+      width: windowSize.width <= 900 ? "85%" : "80%",
+      height: windowSize.width <= 900 ? "20%" : "80%",
+      margin: "auto",
+      padding: 0,
+      border: "1px solid #46295A",
+    },
+  };
+
   const { user } = userData || {};
+  const abrirModalKgAcaiCel = () => {
+    setModalKgAcaiCel(true);
+  };
+
+  const fecharModalKgAcaiCel = () => {
+    setModalKgAcaiCel(false);
+  };
   const abrirFinalizarPedidoCel = () => {
     setModalFinalizarPedidoCel(true);
   };
@@ -177,6 +212,7 @@ const PDV = () => {
       setUnino("");
       setPrecoUnitario("");
       setCodigo_Produto("");
+      setKgacai("");
     }
   };
 
@@ -191,6 +227,7 @@ const PDV = () => {
     });
     return total.toFixed(2);
   };
+  const valorTotalCel = valorTotal();
   const valorRecebidoPagamento = () => {
     let total = 0;
     pagamentos.forEach((pagameto) => {
@@ -281,7 +318,7 @@ const PDV = () => {
         setModalSenha(false);
       }
     } catch (error) {
-      setDisabled(true);
+      setDisabled(false);
       toast.error("Usuário não é administrador ou senha incorreta");
     }
   };
@@ -396,6 +433,9 @@ const PDV = () => {
     try {
       if (parseInt(codigo) === 1) {
         setInsersaoManual(true);
+        //setModalKgAcaiCel(true);
+        setModalInserirProduto(false);
+        setModalAdicionarProdudoCel(false);
         setCodigo_Produto(codigo);
         await carregandoEstoque(codigo);
       } else {
@@ -408,6 +448,7 @@ const PDV = () => {
             setProduto(produto.codigo_produto);
             setQuantidade(produto.quantidade);
             setQuantidadeEstoque(produto.quantidade);
+            setModalAdicionarProdudoCel(true);
           } else {
             setNome("");
             setPrecoUnitario("");
@@ -430,6 +471,8 @@ const PDV = () => {
       setPrecoUnitario(totalAcai);
       setUnino(totalUnino);
       setInsersaoManual(false);
+      setModalKgAcaiCel(false);
+      setModalAdicionarProdudoCel(true);
     }
   };
 
@@ -582,7 +625,7 @@ const PDV = () => {
                               <td className="tdPDV">
                                 R$
                                 {parseInt(produto.id) === 1
-                                  ? `${produto.precoUnitario}`
+                                  ? `$${produto.precoUnitario}`
                                   : `${produto.precoUnitario * produto.unino}`}
                               </td>
                             </tr>
@@ -887,21 +930,14 @@ const PDV = () => {
                   isOpen={insersaoManual}
                   onRequestClose={fecharModalKgAcai}
                   contentLabel="Modal Produto Específico"
-                  style={{
-                    content: {
-                      width: "60%",
-                      height: "120px",
-                      margin: "auto",
-                      padding: 0,
-                    },
-                  }}
+                  style={customStyles}
                 >
                   <div className="modal-mensagem">
                     <SetaFechar Click={fecharModalKgAcai} />
                     <h2>Produto por peso</h2>
                   </div>
                   <div className="kg">
-                    <label>Gramas da Balança</label>
+                    <label>Lançar grama</label>
                     <input
                       type="number"
                       onChange={(e) => {
@@ -909,7 +945,6 @@ const PDV = () => {
                       }}
                       onKeyPress={calculoKg}
                       value={kgacai}
-                      disabled={disabled}
                     />
                     <input
                       type="button"
@@ -1101,15 +1136,52 @@ const PDV = () => {
                     setProduto(e.target.value);
                     verificarCodigoProduto(e.target.value);
                     carregandoEstoque(e.target.value);
-                    // fecharModalInserirProduto(e);
-                    fecharModalKgAcai(e);
-                    abrirAdicionarProdudoCel(e);
+                    //fecharModalInserirProduto(e);
+                    //fecharModalKgAcai(e);
                   }}
                 />
                 <input
                   type="button"
                   value="Procurar por nome"
                   className="botao-add-cel"
+                />
+              </div>
+            </Modal>
+            <Modal
+              isOpen={modalKgAcaiCel}
+              onRequestClose={fecharModalKgAcaiCel}
+              contentLabel="Modal Produto Específico"
+              style={{
+                content: {
+                  width: "80%",
+                  height: "150px",
+                  margin: "auto",
+                  padding: 0,
+                  border: "1px solid #46295A",
+                },
+              }}
+            >
+              <div className="nav-modal-cel">
+                <p>Produto por peso</p>
+                <IoIosCloseCircle
+                  size={25}
+                  nav-modal-cel
+                  style={{
+                    color: "red",
+                  }}
+                  onClick={() => {
+                    fecharModalKgAcaiCel();
+                  }}
+                />
+              </div>
+              <div className="body-modal-cel">
+                <label>Digite a grama</label>
+                <input
+                  type="number"
+                  onChange={(e) => {
+                    setKgacai(e.target.value);
+                  }}
+                  onKeyPress={calculoKg}
                 />
               </div>
             </Modal>
@@ -1129,7 +1201,6 @@ const PDV = () => {
             >
               <div className="container-add-produto-cel">
                 <div className="modal-adicionar-produto">
-                  <img src={agua} />
                   <div className="borde-produto">
                     <p>{nome}</p>
                   </div>
@@ -1139,7 +1210,7 @@ const PDV = () => {
                     <label>Quantidade</label>
                     <input
                       type="number"
-                      value={unino}
+                      value={produto === "1" ? kgacai : unino}
                       className="codigo-produto-add-cel"
                       onChange={(e) => {
                         setUnino(e.target.value);
@@ -1147,7 +1218,7 @@ const PDV = () => {
                     />
                   </div>
                   <div className="box-cel">
-                    <label>Valor total</label>
+                    <label>Valor unitario</label>
                     <input
                       required
                       type="number"
@@ -1230,19 +1301,26 @@ const PDV = () => {
             <h2>Pagamento</h2>
           </div>
           <div className="flex_pagamento_cel">
+            <div className="input-pagamento-cel">
+              <div className="box-cel-pag">
+                <label>Valor Total</label>
+                <input type="" value={valorTotal()} disabled />
+              </div>
+              <div className="box-cel-pag">
+                <label>Valor Pago</label>
+                <input type="" value={valorRecebidoPagamento()} disabled />
+              </div>
+              <div className="box-cel-pag">
+                <label>Valor Troco</label>
+                <input type="" value={valorTroco()} disabled />
+              </div>
+            </div>
             <div>
               <Modal
                 isOpen={modalPreco_Recebido}
                 onRequestClose={fecharModalPreco_Recebido}
                 contentLabel="Modal Produto Específico"
-                style={{
-                  content: {
-                    width: "50%",
-                    height: "120px",
-                    margin: "auto",
-                    padding: 0,
-                  },
-                }}
+                style={customStyles}
               >
                 <div className="modal-mensagem">
                   <SetaFechar Click={fecharModalPreco_Recebido} />
@@ -1258,8 +1336,8 @@ const PDV = () => {
                   />
                   <input
                     type="button"
-                    value="Lançar Adicionar Valor"
-                    className="botao-add"
+                    value="Adicionar"
+                    className="botao-add-cel"
                     onClick={() => {
                       adicionaPagamento();
                     }}
@@ -1317,20 +1395,6 @@ const PDV = () => {
                 >
                   Cancelar
                 </button>
-              </div>
-            </div>
-            <div className="input-pagamento-cel">
-              <div className="box-cel-pag">
-                <label>Valor Total</label>
-                <input type="" value={valorTotal()} disabled />
-              </div>
-              <div className="box-cel-pag">
-                <label>Valor Pago</label>
-                <input type="" value={valorRecebidoPagamento()} disabled />
-              </div>
-              <div className="box-cel-pag">
-                <label>Valor Troco</label>
-                <input type="" value={valorTroco()} disabled />
               </div>
             </div>
           </div>

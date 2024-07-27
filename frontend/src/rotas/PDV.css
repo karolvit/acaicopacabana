@@ -152,6 +152,10 @@ footer {
   border: none;
   height: 29px;
   width: 170px;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 }
 
 .btn-pdv {
@@ -202,13 +206,19 @@ nav {
   flex-direction: column;
   height: 600px;
   justify-content: space-around;
+
+  @media (min-width: 900px) {
+    display: none;
+  }
 }
+
 
 .total-pedido-cel {
   background-color: #46295a;
   color: #fff;
   padding: 10px;
   font-size: 20px;
+  margin: 0 5px;
 }
 
 .resumo-celular tr {
@@ -231,9 +241,18 @@ nav {
 .celular-tab {
   display: flex;
   justify-content: space-evenly;
-  font-size: 15px;
-  font-weight:
-    400;
+  font-size: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+
+  @media (min-width: 900px) {
+    display: none;
+  }
+}
+
+.tab-ativa {
+  border-bottom: 2px solid #46295A;
+  ;
 }
 
 .nav-modal-cel {
@@ -324,7 +343,7 @@ nav {
 
 .flex_pagamento_cel {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .input-pagamento-cel {
@@ -343,14 +362,11 @@ nav {
   text-align: center;
 }
 
-.input-pagamento-cel .botao-add-lista-cel {
-  background-color: #46295a;
+.input-pagamento-cel,
+.botao-add-lista-cel {
   cursor: pointer;
-  color: #fff;
+  color: #000000;
   border: none;
-  height: 25px;
-  width: 120px;
-  width: 70%;
   margin-top: 10px;
   border-radius: 5px;
 }
@@ -429,7 +445,12 @@ nav {
   font-size: 20px;
   color: #46295A;
   font-weight: 800;
+
+  @media (max-width: 900px) {
+    font-size: 15px;
+  }
 }
+
 
 .kg-estoque {
   display: flex;
@@ -444,6 +465,11 @@ nav {
   border-radius: 20px;
   margin-left: 10px;
   margin-right: 10px;
+
+  @media (max-width: 900px) {
+    width: 80px;
+    height: 20px;
+  }
 
 }
 
@@ -615,6 +641,9 @@ nav {
   justify-content: space-between;
   gap: 30%;
 
+  @media (max-width: 900px) {
+    font-size: 10px;
+  }
 
 }
 
@@ -646,6 +675,10 @@ nav {
   text-align: center;
   font-weight: 500;
   margin-left: 20px;
+
+  @media (max-width: 900px) {
+    font-size: 20px;
+  }
 }
 
 .btn-modal {

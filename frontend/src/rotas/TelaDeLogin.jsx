@@ -1,4 +1,5 @@
 import logo from "../assets/img/logo.jpg";
+
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { login } from "../slices/authSlice";
@@ -12,6 +13,9 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: rgb(2, 0, 36);
     background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(70, 41, 80, 1) 0%, rgba(31, 4, 65, 1) 100%, rgba(0, 0, 0, 1) 100%);
+    @media screen and (max-width: 900px) {
+    background: #fff;
+  }
   }
 `;
 const Container = styled.div`
@@ -19,6 +23,11 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  @media screen and (max-width: 900px) {
+    height: 1px;
+    width: 50vw;
+    margin: auto;
+  }
 `;
 
 const LoginContainer = styled.div`
@@ -47,7 +56,19 @@ const LoginForm = styled.div`
   justify-content: center;
 
   @media screen and (max-width: 900px) {
-    padding: 50px;
+    padding: 40px;
+    position: relative;
+  }
+`;
+const CelularImagem = styled.img`
+  display: none;
+  width: 50%;
+  height: 40%;
+  margin-top: 20px;
+  border-radius: 50%;
+
+  @media screen and (max-width: 900px) {
+    display: block;
   }
 `;
 
@@ -60,6 +81,7 @@ const Title = styled.h2`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const Label = styled.label`
@@ -162,6 +184,7 @@ const TelaDeLogin = () => {
               />
               {!loading && <Button type="submit" value="Entrar" />}
               {loading && <Button type="submit" value="Aguarde..." disabled />}
+              <CelularImagem src={logo} alt="Imagem para mobile" />
             </Form>
           </LoginForm>
         </LoginContainer>

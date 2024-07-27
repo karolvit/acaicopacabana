@@ -94,6 +94,9 @@ const Form = styled.div`
     border-radius: 20px;
     border: 1px solid #290d3c;
   }
+  .img-produto {
+    width: 600px;
+  }
 `;
 const Form1 = styled.div`
   display: flex;
@@ -153,6 +156,7 @@ const Estoque = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [modalQuantidade, setModalQuantidade] = useState("");
   const quantidadeRef = useRef(null);
+  const [img_produto, setImg_produto] = useState(null);
 
   useEffect(() => {
     const carregarEstoque = async () => {
@@ -296,16 +300,21 @@ const Estoque = () => {
   };
   const cadastrarProduto = async (e) => {
     e.preventDefault();
+    //console.log("Imagem:", img_produto);
+    const formData = new FormData();
+    formData.append("nome", nome);
+    formData.append("categoria", categoria);
+    formData.append("preco_custo", preco_custo);
+    formData.append("quantidade", quantidade);
+    //formData.append("img_produto", img_produto);
+    formData.append("tipo", 1);
 
     try {
-      const produtosCadastro = {
-        nome,
-        categoria,
-        preco_custo,
-        tipo: 1,
-        quantidade,
-      };
-      const res = await apiAcai.post("/produto", produtosCadastro);
+      const res = await apiAcai.post("/produto", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (res.status === 201) {
         toast.success(res.data.message);
         window.location.reload();
@@ -351,7 +360,7 @@ const Estoque = () => {
                 content: {
                   borderRadius: "15px",
                   width: "70%",
-                  height: "50%",
+                  height: "65%",
                   margin: "auto",
                   padding: 0,
                   display: "flex",
@@ -405,6 +414,18 @@ const Estoque = () => {
                       placeholder="Quantidade de produto"
                       value={quantidade}
                       onChange={(e) => setQuantidade(e.target.value)}
+                      required
+                    />
+                  </Form1>
+                </Form>
+                <Form>
+                  <Form1>
+                    <label>Imagem do Produto</label>
+                    <input
+                      className="img-produto"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImg_produto(e.target.files[0])}
                       required
                     />
                   </Form1>
