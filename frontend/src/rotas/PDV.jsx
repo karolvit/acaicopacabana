@@ -73,8 +73,8 @@ const PDV = () => {
 
   const customStyles = {
     content: {
-      width: windowSize.width <= 900 ? "85%" : "80%",
-      height: windowSize.width <= 900 ? "20%" : "80%",
+      width: windowSize.width <= 900 ? "75%" : "80%",
+      height: windowSize.width <= 900 ? "20%" : "20%",
       margin: "auto",
       padding: 0,
       border: "1px solid #46295A",
@@ -472,7 +472,7 @@ const PDV = () => {
       setUnino(totalUnino);
       setInsersaoManual(false);
       setModalKgAcaiCel(false);
-      setModalAdicionarProdudoCel(true);
+      //setModalAdicionarProdudoCel(true);
     }
   };
 
