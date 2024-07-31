@@ -47,7 +47,9 @@ WHERE
   
       const query = `INSERT INTO cxlog (s0, sd, date, time) VALUES (? ,?, CURRENT_DATE(), CURRENT_TIME())`;
       const values = [ s0, sd ];
-  
+        
+      console.log(query)
+      console.log(values)
       await pool.query(query, values);
       return { success: true, message: "Caixa aberto" };
     } catch (error) {
