@@ -53,9 +53,9 @@ WHERE
       ];
   
       await pool.query(query, values);
-      return { success: true, message: "Produto cadastrado com sucesso" };
+      return { success: true, message: "Caixa aberto" };
     } catch (error) {
-      return { success: false, error: "Erro ao cadastrar produto", details: error };
+      return { success: false, error: "Erro ao abrir caixa", details: error };
     }
   }
 
