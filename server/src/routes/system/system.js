@@ -33,7 +33,7 @@ system.get("/sd", async (req, res) => {
     }
 });
   
-system.get("/opc", async (req, res) => {
+system.post("/opc", async (req, res) => {
     try {
       const result = await abrirCaixa();
       
