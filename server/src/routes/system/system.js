@@ -35,6 +35,7 @@ system.get("/sd", async (req, res) => {
   
 system.post("/opc", async (req, res) => {
     try {
+      const {s0, sd} = req.body
       const result = await abrirCaixa();
       
       if (result.success) {
