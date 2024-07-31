@@ -48,20 +48,28 @@ async function abrirCaixa(s0, sd) {
 
 async function fechamento() {
     try {
-        const query = `
-        SET @saldo_fechamento := (
-  (SELECT COALESCE(SUM(sd), 0) FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE - INTERVAL 1 DAY) +
-    (SELECT COALESCE(SUM(valor_unit), 0) FROM pedno WHERE data_fechamento = CURRENT_DATE())
-);
+       const saldoQuery = `
+       SELECT 
+           COALESCE(
+               (SELECT SUM(sd) FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE - INTERVAL 1 DAY), 0
+           ) +
+           COALESCE(
+               (SELECT SUM(valor_unit) FROM pedno WHERE data_fechamento = CURRENT_DATE()), 0
+           ) AS saldo_fechamento
+   `;
 
-INSERT INTO cxlog (s0, sd, date, time)
-VALUES (
-    0, 
-    @saldo_fechamento,
-    CURRENT_DATE, 
-    CURRENT_TIME
-);`;
+   const [saldoResult] = await pool.query(saldoQuery);
+   const saldo_fechamento = saldoResult[0].saldo_fechamento;
 
+   const insertQuery = `
+       INSERT INTO cxlog (s0, sd, date, time)
+       VALUES (
+           0, 
+           ?,
+           CURRENT_DATE, 
+           CURRENT_TIME
+       )
+   `;
         await pool.query(query);
 
         return { success: true, message: ['Caixa Fechado com Sucesso'] }
