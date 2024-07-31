@@ -35,7 +35,7 @@ system.get("/sd", async (req, res) => {
   
 system.get("/opc", async (req, res) => {
     try {
-      const result = await abrirCaixaReu();
+      const result = await abrirCaixa();
       
       if (result.success) {
         res.status(200).json(result);
