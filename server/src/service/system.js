@@ -66,7 +66,7 @@ VALUES (
 
         return { success: true, message: ['Caixa Fechado com Sucesso'] }
     } catch (error) { 
-        return {success: false, message: ['Erro ao fechar caixa']}
+        return {success: false, message: ['Erro ao fechar caixa', error]}
     }
 }
 
