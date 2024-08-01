@@ -46,19 +46,34 @@ async function abrirCaixa(s0, sd, userno) {
     }
 }
 
-async function fechamento(userno) {
+async function fechamento(usuarioId) {
     try {
+        const buscaUsuarioQuery = `
+            SELECT pedno.userno
+            FROM usuario
+            INNER JOIN pedno
+            ON pedno.userno = usuario.nome
+            WHERE usuario.id = ? 
+        `;
+
+        const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [usuarioId]);
+        if (buscaUsuarioResult.length === 0) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        const userno = buscaUsuarioResult[0].userno;
+
         const saldoQuery = `
             SELECT 
                 COALESCE(
                     (SELECT SUM(sd) FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE - INTERVAL 1 DAY), 0
                 ) +
                 COALESCE(
-                    (SELECT SUM(valor_unit) FROM pedno WHERE data_fechamento = CURRENT_DATE()), 0
+                    (SELECT SUM(valor_unit) FROM pedno WHERE data_fechamento = CURRENT_DATE() AND userno = ?), 0
                 ) AS saldo_fechamento
         `;
 
-        const [saldoResult] = await pool.query(saldoQuery);
+        const [saldoResult] = await pool.query(saldoQuery, [userno]);
         const saldo_fechamento = saldoResult[0].saldo_fechamento;
 
         const insertQuery = `
@@ -73,9 +88,10 @@ async function fechamento(userno) {
         `;
 
         await pool.query(insertQuery, [saldo_fechamento, userno]);
+
         return { success: true, message: ['Caixa Fechado com Sucesso'] };
     } catch (error) {
-        return { success: false, message: ['Erro ao fechar caixa', error] };
+        return { success: false, message: ['Erro ao fechar caixa', error.message] };
     }
 }
 
