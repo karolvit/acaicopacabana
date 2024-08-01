@@ -7,7 +7,8 @@ const system = express.Router();
 
 system.get("/gcx", async (req, res) => {
     try {
-      const result = await getcaixa();
+    const { userno }= req.query
+    const result = await getcaixa(userno);
       
       if (result.success) {
         res.status(200).json(result);

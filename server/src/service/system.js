@@ -1,10 +1,10 @@
 const pool = require('../database/connection');
 
-async function getcaixa() {
+async function getcaixa(userno) {
     try {
-        const query = `select s0 from cxlog where s0 = 0 and date = current_date() - interval 1 day`;
-
-        const [results] = await pool.query(query);
+        const query = `select s0 from cxlog where s0 = 0 and date = current_date() - interval 1 day and userno = ?`;
+        const values = [userno]
+        const [results] = await pool.query(query, values);
 
         if (results.length === 0) {
             return { success: true, message: "Não foi encontrado nenhum produto com esse nome" };
