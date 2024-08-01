@@ -988,7 +988,9 @@ const PDV = () => {
                       type="button"
                       value="Lançar Grama"
                       className="botao-add"
-                      onClick={calculoKg}
+                      onClick={() => {
+                        calculoKg();
+                      }}
                     />
                   </div>
                 </Modal>
@@ -1209,7 +1211,7 @@ const PDV = () => {
                   onChange={(e) => {
                     setKgacai(e.target.value);
                   }}
-                  onKeyPress={calculoKg}
+                  onClick={calculoKg}
                 />
               </div>
             </Modal>
