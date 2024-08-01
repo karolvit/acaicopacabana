@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
 import apiAcai from "../axios/config.js";
+import { toast } from "react-toastify";
+import SetaFechar from "../components/SetaFechar";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -127,6 +129,14 @@ const SideBar = () => {
   const [fechamentoCredito, setFechamentoCredito] = useState("");
   const [fechamentoDebito, setFechamentoDebito] = useState("");
   const [totalVendas, setTotalVendas] = useState("");
+  const [modalCancelamento, setModalCancelamento] = useState(false);
+
+  const abrirModalCancelamento = () => {
+    setModalCancelamento(true);
+  };
+  const fecharModalCancelamento = () => {
+    setModalCancelamento(false);
+  };
 
   const abrirModalFechamentoCaixa = () => {
     setModalFechamentoCaixa(true);
@@ -157,6 +167,21 @@ const SideBar = () => {
     };
     carregarFechamentoCaixa();
   }, []);
+
+  const fechamentoCaixa = async (e) => {
+    e.preventDefault(e);
+
+    try {
+      const res = await apiAcai.post("/fechamento");
+      if (res.status === 200) {
+        fecharModalCancelamento();
+        fecharModalFechamentoCaixa();
+        toast.success("Fecahmento do caixa realizada");
+      }
+    } catch (error) {
+      console.log("Erro", error);
+    }
+  };
   return (
     <>
       <GlobalStyle />
@@ -284,7 +309,38 @@ const SideBar = () => {
               <p>(+) SALDO EM CAIXA</p>
             </div>
             <div className="modal-coluna-col btn-col">
-              <button>FECHAMENTO DO DIA</button>
+              <button onClick={abrirModalCancelamento}>
+                FECHAMENTO DO DIA
+              </button>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={modalCancelamento}
+            onRequestClose={fecharModalCancelamento}
+            contentLabel="Confirmar Pedido"
+            style={{
+              content: {
+                width: "50%",
+                height: "120px",
+                margin: "auto",
+                padding: 0,
+              },
+            }}
+          >
+            <div className="modal-mensagem">
+              <SetaFechar Click={fecharModalCancelamento} />
+              <h2>Confirmação de fechamento</h2>
+            </div>
+            <div className="container-modal">
+              <h2>Deseja confirmar o fechamento do caixa?</h2>
+              <div className="btn-modal">
+                <button onClick={fechamentoCaixa} className="verde">
+                  Confirmar
+                </button>
+                <button onClick={fecharModalCancelamento} className="vermelho">
+                  Cancelar
+                </button>
+              </div>
             </div>
           </Modal>
           <Footer>

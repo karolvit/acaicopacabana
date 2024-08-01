@@ -63,7 +63,7 @@ const Home = () => {
   }, []);
 
   const confirmarAberturaCaixa = async (e) => {
-    e.preventDefault();
+    e.preventDefault(e);
 
     try {
       const usuarioCadastro = {
