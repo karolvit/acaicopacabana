@@ -46,17 +46,17 @@ async function abrirCaixa(s0, sd, userno) {
     }
 }
 
-async function fechamento(userno) {
+async function fechamento(usuarioId) {
     try {
         const buscaUsuarioQuery = `
-            SELECT pedno.userno
+            SELECT pedno.userno, usuario.id
             FROM usuario
             INNER JOIN pedno
             ON pedno.userno = usuario.nome
             WHERE usuario.id = ? 
         `;
 
-        const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [userno]);
+        const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [usuarioId]);
         if (buscaUsuarioResult.length === 0) {
             throw new Error('Usuário não encontrado');
         }
@@ -87,13 +87,14 @@ async function fechamento(userno) {
             )
         `;
 
-        await pool.query(insertQuery, [saldo_fechamento, userno]);
+        await pool.query(insertQuery, [saldo_fechamento, usuarioId]);
 
         return { success: true, message: ['Caixa Fechado com Sucesso'] };
     } catch (error) {
         return { success: false, message: ['Erro ao fechar caixa', error.message] };
     }
 }
+
 
 module.exports = {
     getcaixa,
