@@ -37,8 +37,8 @@ system.get("/sd", async (req, res) => {
 
 system.post("/opc", async (req, res) => {
     try {
-        const { s0, sd } = req.body
-        const result = await abrirCaixa(s0, sd);
+        const { s0, sd, userno } = req.body
+        const result = await abrirCaixa(s0, sd, userno);
 
         if (result.success) {
             res.status(200).json(result);
@@ -52,7 +52,8 @@ system.post("/opc", async (req, res) => {
 
 system.post("/fechamento", async (req, res) => {
     try {
-        const result = await fechamento();
+        const { fechamento } = req.body
+        const result = await fechamento(userno);
 
         if (result.success) {
             res.status(200).json(result);
