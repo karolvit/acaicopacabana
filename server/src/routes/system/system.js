@@ -52,7 +52,7 @@ system.post("/opc", async (req, res) => {
 
 system.post("/fechamento", async (req, res) => {
     try {
-        const { fechamento } = req.body
+        const { userno } = req.body
         const result = await fechamento(userno);
 
         if (result.success) {
