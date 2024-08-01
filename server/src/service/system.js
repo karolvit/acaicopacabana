@@ -16,12 +16,12 @@ async function getcaixa(userno) {
     }
 }
 
-async function saldo() {
+async function saldo(userno) {
     try {
         const query = `
-SELECT sd FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE() - INTERVAL 1 DAY `;
-
-        const [results] = await pool.query(query);
+SELECT sd FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE() - INTERVAL 1 DAY where userno = ? `;
+        const values = [userno]
+        const [results] = await pool.query(query, values);
 
         if (results.length === 0) {
             return { success: true, message: "Não foi encontrado nenhum produto com esse nome" };
@@ -33,11 +33,11 @@ SELECT sd FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE() - INTERVAL 1 DAY `;
     }
 }
 
-async function abrirCaixa(s0, sd) {
+async function abrirCaixa(s0, sd, userno) {
     try {
 
-        const query = `INSERT INTO cxlog (s0, sd, date, time) VALUES (? ,?, CURRENT_DATE(), CURRENT_TIME())`;
-        const values = [s0, sd];
+        const query = `INSERT INTO cxlog (s0, sd, date, time, userno) VALUES (? ,?, CURRENT_DATE(), CURRENT_TIME(), ?)`;
+        const values = [s0, sd, userno];
 
         await pool.query(query, values);
         return { success: true, message: "Caixa aberto" };
@@ -46,34 +46,36 @@ async function abrirCaixa(s0, sd) {
     }
 }
 
-async function fechamento() {
+async function fechamento(userno) {
     try {
         const saldoQuery = `
-       SELECT 
-           COALESCE(
-               (SELECT SUM(sd) FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE - INTERVAL 1 DAY), 0
-           ) +
-           COALESCE(
-               (SELECT SUM(valor_unit) FROM pedno WHERE data_fechamento = CURRENT_DATE()), 0
-           ) AS saldo_fechamento
-   `;
+            SELECT 
+                COALESCE(
+                    (SELECT SUM(sd) FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE - INTERVAL 1 DAY), 0
+                ) +
+                COALESCE(
+                    (SELECT SUM(valor_unit) FROM pedno WHERE data_fechamento = CURRENT_DATE()), 0
+                ) AS saldo_fechamento
+        `;
 
         const [saldoResult] = await pool.query(saldoQuery);
         const saldo_fechamento = saldoResult[0].saldo_fechamento;
 
         const insertQuery = `
-       INSERT INTO cxlog (s0, sd, date, time)
-       VALUES (
-           0, 
-           ?,
-           CURRENT_DATE, 
-           CURRENT_TIME
-       )
-   `;
-        await pool.query(insertQuery, [saldo_fechamento]);
-        return { success: true, message: ['Caixa Fechado com Sucesso'] }
+            INSERT INTO cxlog (s0, sd, date, time, userno)
+            VALUES (
+                0, 
+                ?,
+                CURRENT_DATE, 
+                CURRENT_TIME,
+                ?
+            )
+        `;
+
+        await pool.query(insertQuery, [saldo_fechamento, userno]);
+        return { success: true, message: ['Caixa Fechado com Sucesso'] };
     } catch (error) {
-        return { success: false, message: ['Erro ao fechar caixa', error] }
+        return { success: false, message: ['Erro ao fechar caixa', error] };
     }
 }
 
