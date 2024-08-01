@@ -46,7 +46,7 @@ async function abrirCaixa(s0, sd, userno) {
     }
 }
 
-async function fechamento(usuarioId) {
+async function fechamento(userno) {
     try {
         const buscaUsuarioQuery = `
             SELECT pedno.userno
@@ -56,7 +56,7 @@ async function fechamento(usuarioId) {
             WHERE usuario.id = ? 
         `;
 
-        const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [usuarioId]);
+        const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [userno]);
         if (buscaUsuarioResult.length === 0) {
             throw new Error('Usuário não encontrado');
         }
