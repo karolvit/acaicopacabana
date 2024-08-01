@@ -55,6 +55,7 @@ const Home = () => {
     const valorEmCaixa = async () => {
       try {
         const res = await apiAcai.get(`/sd?userno=${user.id}`);
+
         const dados = res.data.message[0].sd;
         setSaldoCaixa(dados);
       } catch (error) {
