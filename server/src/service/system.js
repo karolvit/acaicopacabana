@@ -19,7 +19,7 @@ async function getcaixa(userno) {
 async function saldo(userno) {
     try {
         const query = `
-SELECT sd FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE() - INTERVAL 1 DAY where userno = ? `;
+SELECT sd FROM cxlog WHERE s0 = 0 AND date = CURRENT_DATE() - INTERVAL 1 DAY and userno = ? `;
         const values = [userno]
         const [results] = await pool.query(query, values);
 
