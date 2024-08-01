@@ -171,8 +171,12 @@ const SideBar = () => {
   const fechamentoCaixa = async (e) => {
     e.preventDefault(e);
 
+    const usuarioFechamento = {
+      userno: user && user.id,
+    };
+
     try {
-      const res = await apiAcai.post("/fechamento");
+      const res = await apiAcai.post("/fechamento", usuarioFechamento);
       if (res.status === 200) {
         fecharModalCancelamento();
         fecharModalFechamentoCaixa();

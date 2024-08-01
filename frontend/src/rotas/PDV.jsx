@@ -687,7 +687,7 @@ const PDV = () => {
                         className="box"
                         onClick={() => abrirModalPreco_Recebido(2)}
                       >
-                        <img src={pix} alt="" />
+                        <img src={cartao} alt="" />
                         <p>
                           CARTÃO DE <br /> CRÉDITO
                         </p>
@@ -696,7 +696,7 @@ const PDV = () => {
                         className="box"
                         onClick={() => abrirModalPreco_Recebido(3)}
                       >
-                        <img src={dinheiro_pag} alt="" />
+                        <img src={cartao} alt="" />
                         <p>
                           CARTÃO DE <br /> DEBITO
                         </p>
@@ -1394,7 +1394,7 @@ const PDV = () => {
                   className="box-cel-p"
                   onClick={() => abrirModalPreco_Recebido(2)}
                 >
-                  <img src={pix} alt="" />
+                  <img src={cartao} alt="" />
                   <p>
                     CARTÃO DE <br /> CRÉDITO
                   </p>
@@ -1403,7 +1403,7 @@ const PDV = () => {
                   className="box-cel-p"
                   onClick={() => abrirModalPreco_Recebido(3)}
                 >
-                  <img src={dinheiro_pag} alt="" />
+                  <img src={cartao} alt="" />
                   <p>
                     CARTÃO DE <br /> DEBITO
                   </p>

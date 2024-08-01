@@ -27,6 +27,8 @@ const Home = () => {
   const [modalDadoCaixa, setModalDadosCaixa] = useState(false);
   const [saldoCaixa, setSaldoCaixa] = useState(null);
 
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const { user } = userData || {};
   const fecharModalDadosCaixa = () => {
     setModalDadosCaixa(false);
   };
@@ -69,6 +71,7 @@ const Home = () => {
       const usuarioCadastro = {
         s0: 1,
         sd: saldoCaixa,
+        userno: user && user.id,
       };
       const res = await apiAcai.post("/opc", usuarioCadastro);
       if (res.status === 200) {

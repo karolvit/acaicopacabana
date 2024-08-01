@@ -157,6 +157,8 @@ const Estoque = () => {
   const [modalQuantidade, setModalQuantidade] = useState("");
   const quantidadeRef = useRef(null);
   const [img_produto, setImg_produto] = useState(null);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  const { user } = userData || {};
 
   useEffect(() => {
     const carregarEstoque = async () => {
@@ -258,6 +260,7 @@ const Estoque = () => {
         codigo_produto,
         quantidade: modalQuantidade,
         bit,
+        userno: user && user.id,
       };
       const res = await apiAcai.put("/attestoque", produtoEditado);
       if (res.status === 201) {
