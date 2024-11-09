@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { stockList, registerProduct, allProducts, serachProductByName, productUpdate } = require('../../service/stock');
+const { stockList, registerProduct, allProducts, serachProductByName, productUpdate, deleteProduto } = require('../../service/stock');
 const { errorMiddleware } = require('../../utils/intTelegram');
 
 const stock = express.Router();
@@ -12,12 +12,12 @@ stock.get("/estoque", async (req, res, next) => {
       res.status(200).json(result);
     } else {
       res.status(404).json(result);
-      next(new Error(`Erro ao listar estoque`))
     }
   } catch (error) {
-    res.status(500).json({ success: false, error: "Erro interno do servidor", details: error });
     const err = error;
-    next(new Error(`Erro ao listar estoque. ${err}`))
+    res.status(500).json({ success: false, error: "Erro interno do servidor", details: err });
+    console.error(err);
+    // next(new Error(`Erro ao listar estoque. ${err}`))
   }
 });
 
@@ -69,8 +69,8 @@ stock.get("/busca", async (req, res) => {
 
 stock.put("/attestoque", async (req, res, next) => {
   try {
-    const { codigo_produto, quantidade, bit } = req.body;
-    const result = await productUpdate({codigo_produto, quantidade, bit});
+    const { codigo_produto, quantidade, bit, categoria, nome, preco_custo } = req.body;
+    const result = await productUpdate({codigo_produto, quantidade, bit, categoria, nome, preco_custo});
     if (result.success) {
       res.status(201).json({ success: true, message: 'Estoque atualizado com sucesso', details: result});
     } else {
@@ -82,6 +82,25 @@ stock.put("/attestoque", async (req, res, next) => {
     next(new Error(`Erro ao atualizar estoque, ${error}`))
   }
 });
+
+stock.delete("/dell", async (req, res, next) => {
+  try {
+
+    const { id } = req.body;
+    const result = await deleteProduto(id);
+
+    if (result.success) {
+      res.status(200).json({ success: true, message: 'Estoque deletado com sucesso'})
+    } else {
+      res.status(500).json({ success: false, error: [' Erro ao deleter produto']})
+    }
+  } catch (erro) {
+    return {
+      success: false,
+      error: "Erro interno do servidor"
+    }
+  }
+})
 
 stock.use(errorMiddleware)
 

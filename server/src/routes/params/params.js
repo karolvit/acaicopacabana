@@ -2,7 +2,7 @@ const express = require("express");
 
 const params = express.Router();
 
-const { updateAcaiPrice, getConfigById, valueAcai, taxCoupon } = require('../../service/params');
+const { updateAcaiPrice, getConfigById, valueAcai, taxCoupon, lock, unlock, getlogo, getImp, insertImp, delImp } = require('../../service/params');
 const { errorMiddleware } = require('../../utils/intTelegram')
 const passport = require('passport');
 
@@ -101,6 +101,70 @@ params.get("/empresa", async (req, res, next) => {
     next(new Error(`Erro ao puxar informações da empresa, ${err}`))
   }
 })
+
+params.get("/lock", async (req, res) => {
+	const result = await lock();
+
+	if (result.success){
+		res.status(200).json(result)
+	} else {
+		res.status(500).json(result)
+	  }
+})
+
+params.put("/lock", async (req, res) => {
+	const {pp} = req.body;
+	const result = await unlock(pp)
+
+	if (result.success) {
+	  res.status(200).json(result)
+	} else {
+	  res.status(500).json(result)
+	}
+})
+
+params.get("/logo", passport.authenticate("jwt", { session: false }),async (req, res) => {
+  const result = await getlogo();
+
+  if (result.success) {
+    res.status(200).json(result)
+  } else {
+    res.status(500).json(result)
+  }
+})
+
+params.get("/imp", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  const result = await getImp();
+
+  if (result.success === true) {
+    res.status(200).json(result)
+  } else {
+    res.status(500).json(result)
+  }
+})
+
+params.post("/imp",passport.authenticate("jwt", { session: false }), async (req, res) => {
+  const {label, ip} = req.body;
+  const result = await insertImp(label, ip)
+
+  if (result.success) {
+    res.status(200).json(result)
+  } else {
+    res.status(500).json(result)
+  }
+})
+
+params.delete("/imp/:id", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  const { id } = req.params; // Extraí o ID da URL
+  const result = await delImp(id); // Chama a função delImp com o ID
+
+  if (result.success) {
+    res.status(200).json(result); // Retorna sucesso
+  } else {
+    res.status(500).json(result); // Retorna erro
+  }
+});
+
 
 params.use(errorMiddleware);
 
