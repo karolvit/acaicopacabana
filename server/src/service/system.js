@@ -1,4 +1,10 @@
 const pool = require('../database/connection');
+const { exec } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+const { Client } = require("ssh2");
+const axios = require('axios');
+const dotenv = require('dotenv').config();
 
 async function getcaixa(userno) {
   try {
@@ -16,7 +22,7 @@ async function getcaixa(userno) {
     const [results] = await pool.query(query, values);
 
     if (results.length === 0) {
-      return { success: true, message: "Não foi encontrado nenhum produto com esse nome" };
+      return { success: true, message: "Não foi possível localizar se esse usuário abriu o caixa" };
     } else {
       return { success: true, message: results };
     }
@@ -59,24 +65,18 @@ async function abrirCaixa(s0, sd, userno) {
 
 async function fechamento(userno) {
   try {
-    // Consulta para obter as informações do usuário
     const buscaUsuarioQuery = `
-            SELECT pedno.userno, usuario.id
+            SELECT usuario.nome
             FROM usuario
-            INNER JOIN pedno
-            ON pedno.userno = usuario.nome
             WHERE usuario.id = ? 
         `;
-
     const [buscaUsuarioResult] = await pool.query(buscaUsuarioQuery, [userno]);
     if (buscaUsuarioResult.length === 0) {
       throw new Error('Usuário não encontrado');
     }
 
-    // Extrai o userno do resultado
     const usernoFromDB = buscaUsuarioResult[0].userno;
 
-    // Consulta para calcular o saldo de fechamento
     const saldoQuery = `
             SELECT 
                 COALESCE(
@@ -102,7 +102,6 @@ async function fechamento(userno) {
     const [saldoResult] = await pool.query(saldoQuery, [userno, usernoFromDB]);
     const saldo_fechamento = saldoResult[0].saldo_fechamento;
 
-    // Consulta para inserir o saldo de fechamento na tabela cxlog
     const insertQuery = `
             INSERT INTO cxlog (s0, sd, date, time, userno)
             VALUES (
@@ -113,8 +112,92 @@ async function fechamento(userno) {
                 ?
             )
         `;
-
     await pool.query(insertQuery, [saldo_fechamento, userno]);
+
+    const query = "SELECT LOWER(REPLACE(nome, ' ', '')) as empresa, LOWER(bairro) as bairro FROM empresa;";
+    const [result] = await pool.query(query);
+    const bairro = result[0].bairro;
+    const empresa = result[0].empresa;
+
+
+    const dbConfig = {
+      user: process.env.user,
+      password: process.env.password,
+    };
+
+    const date = new Date().toISOString().split("T")[0];
+    const backupFile = path.join(__dirname, `all_databases_backup_${date}.sql`);
+    const backupCommand = `mysqldump -u ${dbConfig.user} -p${dbConfig.password} --all-databases > ${backupFile}`;
+
+    await new Promise((resolve, reject) => {
+      exec(backupCommand, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Erro ao fazer backup: ${error.message}`);
+          reject(error);
+        } else {
+          console.log("Backup de todas as databases criado com sucesso!");
+          resolve();
+        }
+      });
+    });
+
+    const sshConfig = {
+      host: process.env.rhost,
+      port: process.env.rport,
+      username: process.env.ruser,
+      password: process.env.rpassword,
+    };
+
+    const sshClient = new Client();
+    await new Promise((resolve, reject) => {
+      sshClient.on("ready", () => {
+        const backuppath = process.env.backuppath;
+        const remotePath = `${backuppath}/${empresa}/${bairro}/${path.basename(backupFile)}`;
+        sshClient.sftp((err, sftp) => {
+          if (err) {
+            console.error(`Erro ao abrir SFTP: ${err.message}`);
+            reject(err);
+            sshClient.end();
+            return;
+          }
+
+          sftp.fastPut(backupFile, remotePath, (uploadError) => {
+            if (uploadError) {
+              console.error(`Erro ao enviar arquivo via SFTP: ${uploadError.message}`);
+              reject(uploadError);
+            } else {
+              console.log("Backup enviado com sucesso via SSH!");
+              resolve();
+            }
+
+            // Remover o arquivo local de backup após o envio
+            fs.unlink(backupFile, (unlinkError) => {
+              if (unlinkError) {
+                console.error(`Erro ao remover o arquivo local: ${unlinkError.message}`);
+              } else {
+                console.log("Arquivo local de backup removido com sucesso!");
+              }
+            });
+
+            sshClient.end();
+          });
+        });
+      }).on("error", (err) => {
+        console.error(`Erro ao conectar via SSH: ${err.message}`);
+        reject(err);
+      }).connect(sshConfig);
+    });
+
+    const botToken = process.env.token;
+    const chatId = process.env.chatid;
+    const message = `Backup da filial ${bairro} realizado com sucesso no dia ${date}`;
+
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    await axios.post(telegramUrl, {
+      chat_id: chatId,
+      text: message,
+    });
 
     return { success: true, message: ['Caixa Fechado com Sucesso'] };
   } catch (error) {
@@ -128,9 +211,8 @@ async function relDiario(userno) {
   try {
     // Consulta para obter o nome do usuário
     const usuarioNomeQuery = `
-            SELECT pedno.userno as nome, usuario.nome
+            SELECT usuario.nome
             FROM usuario
-            INNER JOIN pedno ON pedno.userno = usuario.nome
             WHERE usuario.id =  ?
         `;
     const [usuarioNomeResult] = await pool.query(usuarioNomeQuery, [userno]);
@@ -142,49 +224,7 @@ async function relDiario(userno) {
     const usuarioNome = usuarioNomeResult[0].nome;
 
     // Consulta para obter o saldo inicial
-    const saldoInicialQuery = `
-    SELECT sd AS saldo_inicial FROM cxlog WHERE userno = ? AND date = CURRENT_DATE`;
     
-    const [SaldoInicial] = await pool.query(saldoInicialQuery, [userno]);
-    
-    const saldo_inicial = SaldoInicial[0].saldo_inicial;
-    
-    // Consulta para obter o total de vendas
-/*    const totalVendasQuery = `
-SELECT 
-    SUM(pedidos.total_vendas) AS total_vendas
-FROM (
-    SELECT 
-        SUM(pay.valor_pedido) AS total_vendas
-    FROM 
-        pay
-    INNER JOIN
-        pedidos
-    ON
-        pay.pedido = pedidos.pedido
-    INNER JOIN
-        pedno
-    ON
-        pay.pedido = pedno.pedido
-    WHERE
-        pedno.data_fechamento = CURRENT_DATE() 
-        AND pedno.sta = 1
-        AND pedno.userno = ?
-    GROUP BY
-        pedidos.pedido
-) AS pedidos;
-
-        `;
-    const [totalVendasResult] = await pool.query(totalVendasQuery, [usuarioNome]);
-    
-  */  
-    
-    
-    // resltado da query abaixo
-    
-   // const total_vendas = totalVendasResult[0].total_vendas;
-
-    // --> Consulta para obter o total de dinheiro -- Recebido (entrada no caixa)
     const valorrecebido = `
             SELECT sum(valor_recebido) AS recebido
             FROM pay
@@ -205,7 +245,6 @@ FROM (
     const [ValorRecebidoS] = await pool.query(valorrecebidoS, [usuarioNome]);
     const ValorrecebidoS = ValorRecebidoS[0].recebido;
                     
-  // --> Consulta para obter o total de dinheiro -- Troco
     const valortroco = `
             SELECT sum(bit4) AS troco
             FROM pay
@@ -215,7 +254,7 @@ FROM (
             
     const [ValorTroco] = await pool.query(valortroco, [usuarioNome]);
     const Valortroco = ValorTroco[0].troco
-                       // ------->>>>>>>> Teste de resultado <<<<<<<<<<<----------//  
+    
     const valortrocoS = `
             SELECT sum(bit4) AS troco
             FROM pay
@@ -225,12 +264,14 @@ FROM (
             
     const [ValorTrocoS] = await pool.query(valortrocoS, [usuarioNome]);
     const ValortrocoS = ValorTrocoS[0].troco
+
+    const valueCP = "SELECT val FROM sys WHERE id = 7";
+    const [rvalueCP] = await pool.query(valueCP);
+    const ValueCP = rvalueCP[0].val;
     
-//	--------------------->>>>>>> Valores com CP <<<<<<<<<---------------
-	const cpQuery = "select sum(valor_recebido + 12 - valor_pedido) as valorcp from pay inner join pedidos on pedidos.pedido = pay.pedido where pedidos.data_fechamento = current_date and pay.tipo = 1 and pedidos.userno = ? and pedidos.bit1 !=1 and pay.cp=1"
+	const cpQuery = `select sum(valor_recebido + ${ValueCP} - valor_pedido) as valorcp from pay inner join pedidos on pedidos.pedido = pay.pedido where pedidos.data_fechamento = current_date and pay.tipo = 1 and pedidos.userno = ? and pedidos.bit1 !=1 and pay.cp=1`
 	const [cpresult] = await pool.query(cpQuery, [usuarioNome]);
 	const vcp = cpresult[0].valorcp || "0";
-    // sangria
     
     const querySangria = `
       SELECT sdret AS sangria
@@ -247,9 +288,7 @@ WHERE NOT EXISTS (
 );
     `;
     const [resultSangria] = await pool.query(querySangria, [userno, userno]);
-    const sangria = resultSangria[0].sangria;
-                       // ------->>>>>>>> Teste de resultado <<<<<<<<<<<----------//  
-    
+    const sangria = resultSangria[0].sangria;    
     
     // novo saldo inicial 
     const sdinicial = "SELECT sd_old as sdinicial FROM s_log WHERE user_cx = ? AND date = current_date";
@@ -263,11 +302,7 @@ WHERE NOT EXISTS (
       rdiario_saldoinicial = SdinicialTrue[0].sdinicial
     } else {
       rdiario_saldoinicial = SdinicialFalse[0].sdinicial
-    }
-    
-//  ------------------------->>>>>>>>>>>>>> Retirando valor di CP  rel diario (outras formas de pagamento) <<<<<<<<<<<<<<<<<<<< -------------------------------- |
-const cpquery = "";
-    
+    }    
     
      const caixaDoDia = {
        recebido: Number(Valorrecebido),
@@ -278,8 +313,6 @@ const cpquery = "";
      
      const caixadia = caixaDoDia.recebido + caixaDoDia.rdiario_saldoinicial - caixaDoDia.troco - caixaDoDia.sangria 
      const caixaDia = parseFloat(caixadia.toFixed(2));
-                      // ------->>>>>>>> Teste de resultado <<<<<<<<<<<----------//
-                      
     
     const saldodinheiro = {
       recebido: Number(ValorrecebidoS),
@@ -288,9 +321,6 @@ const cpquery = "";
     }  
     
     const rdiarioSaldoDinheiro = saldodinheiro.recebido - saldodinheiro.troco + saldodinheiro.cp
-
-
-// valores do crédito
 
 const queryCredito = `
 SELECT
@@ -334,8 +364,6 @@ const queryPix = `
 const [resultPix] = await pool.query(queryPix, [usuarioNome]);
 const pix = resultPix[0].pix
 
-// debito 
-
 const queryDeb = `
   SELECT
     sum(pay.valor_recebido) as debito
@@ -355,8 +383,6 @@ const queryDeb = `
 
 const [resultDeb] = await pool.query(queryDeb, [usuarioNome]);
 const debito = resultDeb[0].debito
-
-// Total de vendas 
 
 const query = `
   SELECT
@@ -385,20 +411,14 @@ const vendas = {
 
 const tvendas = vendas.cartoes + vendas.dinheiro;
 
-// Cupom fidelidade
-
-const QCP = "SELECT COUNT(pedido) * 12 AS cupom_fidelidade FROM cp WHERE date = current_date";
+const QCP = `SELECT COUNT(pedido) * ${ValueCP} AS cupom_fidelidade FROM cp WHERE date = current_date`;
 const  [resultCP] = await pool.query(QCP);
 const cupomFidelidade = resultCP[0].cupom_fidelidade;
-
-
-
  
     return {
       success: true,
       usuarioNome,
       rdiario_saldoinicial,
-      //total_vendas,
       rdiarioSaldoDinheiro,
       caixaDia,
       sangria,
@@ -460,7 +480,7 @@ ORDER BY pt.tipo;
   if (results.length === 0) {
     return {
       success: false,
-      errors: ['Erro ao realizar sangria']
+      errors: ['Erro ao consultar sangria']
     }
   } else {
     return {
@@ -471,55 +491,50 @@ ORDER BY pt.tipo;
   } catch (error) {
     return {
       success: false,
-      errors: ['Erro ao realizar sangria']
+      errors: ['Erro ao consultar sangria']
     }
   }
 }
 
-async function sangria (user_cx, sdret, motivo){
+async function sangria(user_cx, sdret, motivo, sdi) {
   try {
-    
-    // Busca do usuário por nome
-    const buscaUser = `SELECT usuario FROM usuario where id = ?`
-    const [buscauser] = await pool.query(buscaUser, [user_cx]);
-    const usuario = buscauser[0].usuario;
-    
-    const saldoinicial = `SELECT sd FROM cxlog WHERE userno = ? AND date = CURRENT_DATE`;
-    const [SaldoInicial] = await pool.query(saldoinicial, [user_cx]);
-    
-    const saldo_inicial = SaldoInicial[0].sd;
-    
-    
-    
     const querySangria = `INSERT INTO s_log (sd_old, sdret, user_cx, motivo, date, time) VALUES (?,?,?,?, CURRENT_DATE, CURRENT_TIME)`;
-    const valuesSangria = [saldo_inicial, sdret, user_cx, motivo];
-    
+    const valuesSangria = [sdi, sdret, user_cx, motivo];
+
     if (sdret == 0) {
+      const errorMessage = `Erro na sangria: Não é possível realizar uma sangria no valor de R$ 0,00. Usuário: ${user_cx}`;
+      await sendErrorMessage(errorMessage);
       return {
         success: false,
         error: ['Não é possível realizar uma sangria no valor de R$ 0,00']
-      } 
+      };
     } else if (motivo == 0 || motivo === null || motivo === "") {
+      const errorMessage = `Erro na sangria: Motivo não informado. Usuário: ${user_cx}`;
+      await sendErrorMessage(errorMessage);
       return {
-          success: false,
-          error: ['Por favor insira o motivo da sangria']
-      }
-    } else if (saldo_inicial < sdret ) {
+        success: false,
+        error: ['Por favor insira o motivo da sangria']
+      };
+    } else if (sdi < sdret) {
+      const errorMessage = `Erro na sangria: Saldo insuficiente. Usuário: ${user_cx}`;
+      //await sendErrorMessage(errorMessage);
       return {
         success: false,
         error: ['Saldo insuficiente']
-      }
+      };
     }
-    
+
     const [sangria] = await pool.query(querySangria, valuesSangria);
-    
+
     return {
       success: true,
       message: ['Sangria realizada com sucesso']
     };
-    
+
   } catch (error) {
     console.error(error);
+    const errorMessage = `Erro no servidor durante a sangria: ${error.message}. Usuário: ${user_cx}`;
+    await sendErrorMessage(errorMessage);
     return {
       success: false,
       error: ['Erro no servidor, por favor contate o administrador', error]
