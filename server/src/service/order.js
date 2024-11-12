@@ -33,6 +33,20 @@ async function createOrder(order) {
       await connection.query(sql, values);
     }
 
+    for (const pagamento of order.pagamentos) {
+      const sqlpay = `INSERT INTO pay (pedido, tipo, valor_recebido, status, valor_pedido, bit3) VALUES (?,?,?,?,?,?)`;
+      const values2 = [
+        pagamento.pedido,
+        pagamento.tipo,
+        pagamento.valor_recebido,
+        pagamento.status,
+        pagamento.valor_pedido,
+        pagamento.bit3
+        ];
+
+      await connection.query(sqlpay, values2);
+    }
+
     await connection.commit();
     connection.release();
     return { success: true, message: "Pedido enviado com sucesso!" };
