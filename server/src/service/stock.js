@@ -16,7 +16,7 @@ async function stockList() {
       FROM
         produto
       GROUP BY 
-        nome
+        nome, categoria, codigo_produto, codigo_personalizado, preco_custo, tipo, quantidade, bit, img_produto
       ORDER BY 
         codigo_produto ASC
     `;
@@ -40,17 +40,19 @@ async function registerProduct(productDate) {
       categoria,
       codigo_personalizado,
       preco_custo,
+      preco_compra,
       tipo,
       quantidade,
       img_produto,
     } = productDate;
 
-    const query = `INSERT INTO produto (nome, categoria, codigo_personalizado, preco_custo, tipo, quantidade, img_produto, bit) VALUES (?, ?, ?, ?, ?, ?, ?,0)`;
+    const query = `INSERT INTO produto (nome, categoria, codigo_personalizado, preco_custo, preco_compra, tipo, quantidade, img_produto, bit) VALUES (?, ?, ?, ?, ?, ?, ?, ?,0)`;
     const values = [
       nome,
       categoria,
       codigo_personalizado,
       preco_custo,
+      preco_compra,
       tipo,
       quantidade,
       img_produto,
@@ -116,36 +118,78 @@ async function allProducts() {
     } catch (error) {
       return {
         success: false,
-        error: ['Erro no servidor, por favor entrar em contato com o administrador']
+        error: ['Erro no servidor, por favor entrar em contato com o administrador', error]
       }
     }
   }
 
-  async function productUpdate({ bit, quantidade, codigo_produto }) {
+  async function productUpdate({ bit, quantidade, codigo_produto, categoria, nome, preco_custo }) {
     try {
-      let query = 'UPDATE produto SET bit = ?';
-      const values = [bit];
-  
-      if (quantidade && quantidade.trim() !== '') { 
-        query += ', quantidade = ?'; 
-        values.push(quantidade);
-      }
-  
-      query += ' WHERE codigo_produto = ?';
-      values.push(codigo_produto);
-  
-      await pool.query(query, values);
-      return { success: true, message: 'Produto atualizado com sucesso' };
+        let query = 'UPDATE produto SET bit = ?';
+        const values = [bit];
+
+        if (quantidade && String(quantidade).trim() !== '') { 
+            query += ', quantidade = ?'; 
+            values.push(quantidade);
+        }
+        if (categoria && String(categoria).trim() !== '') { 
+            query += ', categoria = ?'; 
+            values.push(categoria);
+        }
+        if (nome && String(nome).trim() !== '') { 
+            query += ', nome = ?'; 
+            values.push(nome);
+        }
+        if (preco_custo && String(preco_custo).trim() !== '') { 
+            query += ', preco_custo = ?'; 
+            values.push(preco_custo);
+        }
+
+        query += ' WHERE codigo_produto = ?';
+        values.push(codigo_produto);
+
+        await pool.query(query, values);
+        return { success: true, message: 'Produto atualizado com sucesso' };
     } catch (error) {
-      return { success: false, error: ['Erro interno do servidor'] };
+        console.error(error);
+        return { success: false, error: ['Erro interno do servidor', error] };
     }
-  }
-  
+}
+
+
+
+async function deleteProduto(id) {
+  try {
+    const query = `DELETE FROM produto WHERE codigo_produto = ?`
+    const values = [id]
+
+    const [results] = await pool.query(query, values);
+
+    if (results.length === 0) {
+      return {
+        success: false,
+        erro: ['Erro ao excluir produto']
+      }
+    } else {
+      return {
+        success: true,
+        message: 'Produto excluído com sucesso'
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      erro: ['Erro ao excluir produto', error]
+    }
+  } 
+}
+
 
 module.exports = {
   stockList,
   registerProduct,
   allProducts,
   serachProductByName,
-  productUpdate
+  productUpdate,
+  deleteProduto
 };
